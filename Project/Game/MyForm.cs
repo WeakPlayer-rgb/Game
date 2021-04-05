@@ -25,6 +25,7 @@ namespace Game
             {
                 eventArgs.Cancel = true;
             }
+            else eventArgs.Cancel = true;
         }
     }
 }
