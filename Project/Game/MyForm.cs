@@ -21,11 +21,7 @@ namespace Game
         {
             var result = MessageBox.Show("R u sure u wanna exit?", "DONT DO IT", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
-            if (result != DialogResult.Yes)
-            {
-                eventArgs.Cancel = true;
-            }
-            else eventArgs.Cancel = true;
+            eventArgs.Cancel = true;
         }
     }
 }
