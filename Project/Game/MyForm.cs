@@ -19,12 +19,9 @@ namespace Game
 
         protected override void OnFormClosing(FormClosingEventArgs eventArgs)
         {
-            var result = MessageBox.Show("R u sure u wanna exit?", "", MessageBoxButtons.YesNo,
+            var result = MessageBox.Show("R u sure u wanna exit?", "DONT DO IT", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
-            if (result != DialogResult.Yes)
-            {
-                eventArgs.Cancel = true;
-            }
+            eventArgs.Cancel = true;
         }
     }
 }
