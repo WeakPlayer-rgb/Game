@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Game
 {
@@ -19,7 +11,7 @@ namespace Game
 
         protected override void OnFormClosing(FormClosingEventArgs eventArgs)
         {
-            var result = MessageBox.Show("R u sure u wanna exit?", "DONT DO IT", MessageBoxButtons.YesNo,
+            MessageBox.Show("R u sure u wanna exit?", "DONT DO IT", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             eventArgs.Cancel = true;
         }
