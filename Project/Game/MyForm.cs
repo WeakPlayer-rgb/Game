@@ -7,6 +7,13 @@ namespace Game
         public MyForm()
         {
             InitializeComponent();
+            
+            FormClosing += (sender,eventArgs) =>{
+                    var result = MessageBox.Show("Действительно закрыть?", "", MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+                    if (result != DialogResult.Yes)
+                        eventArgs.Cancel = true;
+            };
         }
 
         protected override void OnFormClosing(FormClosingEventArgs eventArgs)
