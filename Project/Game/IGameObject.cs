@@ -1,6 +1,6 @@
 ﻿namespace Game
 {
-    public interface ISctructure
+    public interface IGameObject
     {
         string GetImage();
         int DrawPrioritet();
