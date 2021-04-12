@@ -7,11 +7,12 @@ namespace Game
     {
         public Map()
         {
+            InitializeComponent();
             DoubleBuffered = true;
             var button = new Button
             {
                 Location = new Point(ClientSize.Height/3,ClientSize.Width/3),
-                Text = "Back!"
+                Text = @"Back!"
             };
             Controls.Add(button);
             button.Click += (_, _) =>
