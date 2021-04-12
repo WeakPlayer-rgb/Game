@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Windows.Forms.Design;
 
 namespace Game
 {
@@ -13,12 +12,12 @@ namespace Game
             DoubleBuffered = true;
             var backButton = new Button
             {
-                Location = new Point(ClientSize.Height / 3, ClientSize.Width / 3),
+                Location = new Point(ClientSize.Height / 4, ClientSize.Width / 4),
                 Text = @"Back!"
             };
             var list = new ListBox
             {
-                Location = new Point(backButton.Left,backButton.Top)
+                Location = new Point(backButton.Left,backButton.Bottom)
             };
             
             list.Items.AddRange(new object[]
@@ -43,7 +42,7 @@ namespace Game
                 Close();
                 Program.Context.MainForm.Show();
             };
-            buttonChangeResolution.Click += (s, x) =>
+            buttonChangeResolution.Click += (_, _) =>
             {
                 var (width, height) = (Tuple<int,int>)list.SelectedItem;
                 Program.screenSize = new Size(width, height);

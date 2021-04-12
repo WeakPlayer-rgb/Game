@@ -49,12 +49,12 @@ namespace Game
             };
             exitButton.Click += (s, e) =>
             {
-                var result = MessageBox.Show("Действительно закрыть?", "Не надо этого делать...",
+                var result = MessageBox.Show(@"Действительно закрыть?", "Не надо этого делать...",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes) Close();
             };
         }
 
-        public sealed override Color BackColor { get; set; }
+        public override Color BackColor { get; set; }
     }
 }
