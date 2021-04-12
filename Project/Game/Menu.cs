@@ -41,7 +41,7 @@ namespace Game
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            var result = MessageBox.Show("Действительно закрыть?", "",
+            var result = MessageBox.Show("Действительно закрыть?", "Не стоит этого делать.......",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result != DialogResult.Yes)
                 e.Cancel = true;
