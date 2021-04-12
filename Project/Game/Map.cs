@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace Game
 {
-    public partial class Map : Form
+    public sealed partial class Map : Form
     {
         public Map()
         {

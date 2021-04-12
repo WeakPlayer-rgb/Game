@@ -5,7 +5,7 @@ using System.Windows.Forms.Design;
 
 namespace Game
 {
-    public partial class Options : Form
+    public sealed partial class Options : Form
     {
         public Options()
         {

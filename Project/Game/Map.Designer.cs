@@ -2,7 +2,7 @@
 
 namespace Game
 {
-    partial class Map
+    sealed partial class Map
     {
         /// <summary>
         /// Required designer variable.

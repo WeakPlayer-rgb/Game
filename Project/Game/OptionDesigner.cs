@@ -1,6 +1,6 @@
 ﻿namespace Game
 {
-    partial class Options
+    sealed partial class Options
     {
         /// <summary>
         ///  Required designer variable.

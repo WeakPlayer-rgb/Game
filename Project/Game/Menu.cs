@@ -6,11 +6,10 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Game
 {
-    public partial class Menu : Form
+    public sealed partial class Menu : Form
     {
         public Menu()
         {
-            
             InitializeComponent();
             DoubleBuffered = true;
             BackColor = Color.Black;
