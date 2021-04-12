@@ -10,11 +10,11 @@
       <Compile Update="Map.cs">
         <SubType>Form</SubType>
       </Compile>
-      <Compile Update="OptionDesigner.cs">
-        <DependentUpon>Options.cs</DependentUpon>
-      </Compile>
       <Compile Update="Menu1.cs">
         <SubType>Form</SubType>
+      </Compile>
+      <Compile Update="OptionDesigner.cs">
+        <DependentUpon>Options.cs</DependentUpon>
       </Compile>
     </ItemGroup>
 

@@ -45,8 +45,12 @@ namespace Game
             };
             buttonChangeResolution.Click += (_, _) =>
             {
+                
                 var (width, height) = (Tuple<int,int>)list.SelectedItem;
                 Program.screenSize = new Size(width, height);
+                Program.Context.MainForm = new Options();
+                Close();
+                Program.Context.MainForm.Show();
             };
         }
     }
