@@ -21,6 +21,9 @@ namespace Game
                 Close();
                 Program.Context.MainForm.Show();
             };
+
+            var map = new int[10000, 10000];
+            
         }
     }
 }
