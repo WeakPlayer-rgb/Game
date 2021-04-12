@@ -13,7 +13,8 @@ namespace Game
             var backButton = new Button
             {
                 Location = new Point(ClientSize.Height / 4, ClientSize.Width / 4),
-                Text = @"Back!"
+                Text = @"Back!",
+                BackColor = Color.Chocolate,
             };
             var list = new ListBox
             {
