@@ -28,7 +28,8 @@ namespace Game
             {
                 Location = new Point(optionButton.Left, optionButton.Bottom),
                 Size = new Size(100, 50),
-                Text = "Exit"
+                Text = "Exit",
+                BackColor = Color.Aqua,
             };
 
             Controls.Add(startButton);
