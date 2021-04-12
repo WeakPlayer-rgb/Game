@@ -3,7 +3,6 @@
     public class Car
     {
         public readonly double Direction;
-
         public readonly Vector Location;
         public readonly int TakenCheckpointsCount;
         public readonly int Time;
@@ -32,11 +31,11 @@
         {
             if (IsCompleted(level)) return this;
             var nextCheckpoint = TakenCheckpointsCount % level.Checkpoints.Length;
-            var rocket = this;
+            var car = this;
             if (nextCheckpoint != level.Checkpoints.Length
                 && (Location - level.Checkpoints[nextCheckpoint]).Length < 20)
-                rocket = IncreaseCheckpoints();
-            return level.Physics.MoveRocket(rocket, 1.0, turn, 0.5);
+                car = IncreaseCheckpoints();
+            return level.Physics.MoveRocket(car, 1.0, turn, 0.5);
         }
 
         public Car IncreaseCheckpoints()
@@ -44,11 +43,11 @@
             return new Car(Location, Velocity, Direction, Time, TakenCheckpointsCount + 1);
         }
 
-        protected bool Equals(Car rocket)
+        protected bool Equals(Car car)
         {
-            return Location.Equals(rocket.Location) && Velocity.Equals(rocket.Velocity) &&
-                   Vector.DoubleEquals(Direction, rocket.Direction) && Time == rocket.Time &&
-                   TakenCheckpointsCount == rocket.TakenCheckpointsCount;
+            return Location.Equals(car.Location) && Velocity.Equals(car.Velocity) &&
+                   Vector.DoubleEquals(Direction, car.Direction) && Time == car.Time &&
+                   TakenCheckpointsCount == car.TakenCheckpointsCount;
         }
 
         public override bool Equals(object obj)
