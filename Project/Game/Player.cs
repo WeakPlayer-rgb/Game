@@ -7,7 +7,7 @@
             throw new System.NotImplementedException();
         }
 
-        public int DrawPrioritet(int priority)
+        public int DrawPriority(int priority)
         {
             throw new System.NotImplementedException();
         }
