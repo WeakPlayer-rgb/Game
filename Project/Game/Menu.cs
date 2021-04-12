@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using System.Windows.Forms.Design;
 
 namespace Game
 {
@@ -9,17 +8,21 @@ namespace Game
         public Menu()
         {
             InitializeComponent();
+            DoubleBuffered = true;
+            BackColor = Color.Black;
             var startButton = new Button
             {
                 Location = new Point(ClientSize.Width / 2, ClientSize.Height / 2),
                 Size = new Size(100, 50),
-                Text = "Start!"
+                Text = @"Start!",
+                BackColor = Color.Azure
             };
             var optionButton = new Button
             {
                 Location = new Point(startButton.Left, startButton.Bottom),
                 Size = new Size(100, 50),
-                Text = "Options"
+                Text = @"Options",
+                BackColor = Color.Chartreuse
             };
 
             Controls.Add(startButton);
@@ -37,5 +40,7 @@ namespace Game
                 Program.Context.MainForm.Show();
             };
         }
+
+        public sealed override Color BackColor { get; set; }
     }
 }

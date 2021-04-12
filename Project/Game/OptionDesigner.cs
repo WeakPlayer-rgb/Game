@@ -1,16 +1,14 @@
-﻿using System.ComponentModel;
-
-namespace Game
+﻿namespace Game
 {
-    partial class Map
+    partial class Options
     {
         /// <summary>
-        /// Required designer variable.
+        ///  Required designer variable.
         /// </summary>
-        private IContainer components = null;
+        private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Clean up any resources being used.
+        ///  Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
@@ -19,21 +17,21 @@ namespace Game
             {
                 components.Dispose();
             }
-
             base.Dispose(disposing);
         }
+
         #region Windows Form Designer generated code
 
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        ///  Required method for Designer support - do not modify
+        ///  the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = Program.screenSize;
-            this.Text = "Map_Designer";
+            this.Text = "MyForm";
         }
 
         #endregion
