@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
@@ -24,18 +25,26 @@ namespace Game
 
             Controls.Add(startButton);
             Controls.Add(optionButton);
-            startButton.Click += (_, _) =>
+            startButton.Click += (s, e) =>
             {
                 Program.Context.MainForm = new Map();
                 Close();
                 Program.Context.MainForm.Show();
             };
-            optionButton.Click += (_, _) =>
+            optionButton.Click += (s, e) =>
             {
                 Program.Context.MainForm = new Options();
                 Close();
                 Program.Context.MainForm.Show();
             };
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            var result = MessageBox.Show("Действительно закрыть?", "",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result != DialogResult.Yes)
+                e.Cancel = true;
         }
     }
 }
