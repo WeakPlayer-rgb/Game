@@ -14,7 +14,6 @@ namespace Game
                 Size = new Size(100,50),
                 Text = "Start!"
             };
-            
             Controls.Add(button);
             button.Click += (_, _) =>
             {
