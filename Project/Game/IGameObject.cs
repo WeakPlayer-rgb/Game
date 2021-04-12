@@ -3,7 +3,7 @@
     public interface IGameObject
     {
         string GetImage(string path);
-        int DrawPrioritet(int priority);
+        int DrawPriority(int priority);
         void Move();
     }
 }

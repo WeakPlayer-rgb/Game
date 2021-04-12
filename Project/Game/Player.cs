@@ -4,7 +4,7 @@
     {
         public string GetImage(string path) => "car.png";
 
-        public int DrawPrioritet(int priority) => 0;
+        public int DrawPriority(int priority) => 0;
 
         public void Move()
         {
