@@ -2,22 +2,17 @@
 
 namespace Game
 {
-    internal class resolution
+    public enum ResolutionWidth
     {
-        
+        First = 1280,
+        Second = 1920,
+        Third = 2560
     }
 
-    public enum Resolution_Width
+    public enum ResolutionHeight
     {
-        first = 1280,
-        second = 1920,
-        third = 2560
-    }
-
-    public enum Resolution_Height
-    {
-        first = 720,
-        second = 1080,
-        third = 1440
+        First = 720,
+        Second = 1080,
+        Third = 1440
     }
 }

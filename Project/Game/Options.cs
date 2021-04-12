@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
@@ -20,14 +21,32 @@ namespace Game
                 Location = new Point(backButton.Left,backButton.Top)
             };
             
-            list.Items.AddRange(new []{ "1280*720","1920*1080","2560*1440"});
+            list.Items.AddRange(new object[]
+            {
+                new Tuple<int,int>(1280, 720),
+                new Tuple<int,int>(1920, 1080),
+                new Tuple<int,int>(2560, 1440)
+            });
+
+            var buttonChangeResolution = new Button
+            {
+                Location = new Point(list.Left,list.Bottom),
+                Text = @"ChangeResolution"
+            };
+            
             Controls.Add(list);
             Controls.Add(backButton);
+            Controls.Add(buttonChangeResolution);
             backButton.Click += (_, _) =>
             {
                 Program.Context.MainForm = new Menu();
                 Close();
                 Program.Context.MainForm.Show();
+            };
+            buttonChangeResolution.Click += (s, x) =>
+            {
+                var (width, height) = (Tuple<int,int>)list.SelectedItem;
+                Program.screenSize = new Size(width, height);
             };
         }
     }
