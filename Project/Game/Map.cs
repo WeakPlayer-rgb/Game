@@ -11,7 +11,7 @@ namespace Game
             DoubleBuffered = true;
             var button = new Button
             {
-                Location = new Point(0,ClientSize.Height),
+                Location = new Point(0,0),
                 Text = @"Back!"
             };
             Controls.Add(button);
