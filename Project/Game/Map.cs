@@ -7,6 +7,7 @@ namespace Game
     {
         public Map()
         {
+            DoubleBuffered = true;
             var button = new Button
             {
                 Location = new Point(ClientSize.Height/3,ClientSize.Width/3),
