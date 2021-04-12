@@ -2,8 +2,8 @@
 {
     public interface IGameObject
     {
-        string GetImage();
-        int DrawPrioritet();
+        string GetImage(string path);
+        int DrawPrioritet(int priority);
         void Move();
     }
 }
