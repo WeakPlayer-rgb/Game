@@ -6,4 +6,10 @@
         <UseWindowsForms>true</UseWindowsForms>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Compile Update="Map.cs">
+        <SubType>Form</SubType>
+      </Compile>
+    </ItemGroup>
+
 </Project>
