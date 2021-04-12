@@ -17,10 +17,7 @@
             TakenCheckpointsCount = takenCheckpointsCount;
         }
 
-        public Vector GetNextRocketCheckpoint(Level level)
-        {
-            return level.Checkpoints[TakenCheckpointsCount % level.Checkpoints.Length];
-        }
+        public Vector GetNextRocketCheckpoint(Level level) => level.Checkpoints[TakenCheckpointsCount % level.Checkpoints.Length];
 
         public bool IsCompleted(Level level)
         {
