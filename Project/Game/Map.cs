@@ -25,12 +25,30 @@ namespace Game
             {
                 switch (args.KeyChar)
                 {
-                    case 'w':{
-                        
+                    case 'w' or 'W':
+                    {
+                        game.Car.ChangeVelocity(KeyButton.Forward);    
+                        break;
+                    }
+                    case 's' or 'S':
+                    {
+                        game.Car.ChangeVelocity(KeyButton.Backward);    
+                        break;
+                    }
+                    case 'a' or 'A':
+                    {
+                        game.Car.ChangeDirection(KeyButton.Left);    
+                        break;
+                    }
+                    case 'd' or 'D':
+                    {
+                        game.Car.ChangeDirection(KeyButton.Right);    
                         break;
                     }
                 }
+                game.ChangePlayerPosition();
             };
+            
         }
     }
 }

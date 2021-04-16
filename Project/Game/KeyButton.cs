@@ -2,6 +2,6 @@
 {
     public enum KeyButton
     {
-        forward = 1 ,backward = -1,left = -1,right = 1
+        Forward = 1 ,Backward = -1,Left = -1,Right = 1,None = 0
     }
 }

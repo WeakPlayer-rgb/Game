@@ -2,19 +2,17 @@
 {
     public class Game
     {
-        private IGameObject[,] map;
-        private readonly int Size;
-        private Vector playerPosition;
+        public Player Car;
+        public IGameObject[,] Map;
+        private readonly int size;
 
         public Game(int s)
         {
-            Size = s;
-            map = new IGameObject[Size, Size];
-            playerPosition = Vector.Zero;
+            size = s;
+            Map = new IGameObject[size, size];
+            Car = new Player();
         }
 
-        void ChangePlayerPosition(Vector move) => playerPosition += move;
-        
-        
+        public void ChangePlayerPosition() => Car.position += Car.Direction;
     }
 }
