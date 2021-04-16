@@ -2,10 +2,10 @@
 {
     public interface IGameObject
     {
-        int Speed { get; set; }
-        int Health { get; set; }
+        Vector Speed { get; set; }
+        double Health { get; set; }
         string GetImage(string path);
         int DrawPriority(int priority);
-        void Move();
+        void ChangeDirection(KeyButton ctrl);
     }
 }

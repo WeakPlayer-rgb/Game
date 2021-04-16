@@ -17,7 +17,7 @@
             TakenResources = takenResources;
         }
 
-        public Vector GetNextRocketCheckpoint(Level level) => level.Checkpoints[TakenCheckpointsCount % level.Checkpoints.Length];
+        public Vector GetNextRocketCheckpoint(Level level) => level.Checkpoints[TakenResources % level.Checkpoints.Length];
 
         public bool IsCompleted(Level level)
         {
@@ -59,7 +59,7 @@
         {
             unchecked
             {
-                var hashCode = 0;
+                var hashCode = 1;
                 hashCode = (hashCode * 397) ^ Location.GetHashCode();
                 hashCode = (hashCode * 397) ^ TakenResources;
                 hashCode = (hashCode * 397) ^ Time;

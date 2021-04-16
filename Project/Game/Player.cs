@@ -1,17 +1,18 @@
-﻿namespace Game
+﻿using System;
+
+namespace Game
 {
     public class Player : IGameObject
     {
-        public int Speed { get; set; }
-        public int Health { get; set; }
+        public Vector Speed { get; set; }
+        public double Health { get; set; }
+        
         public string GetImage(string path) => "car.png";
 
         public int DrawPriority(int priority) => 0;
-
-        public void Move()
+        public void ChangeDirection(KeyButton ctrl)
         {
             
-            throw new System.NotImplementedException();
         }
     }
 }

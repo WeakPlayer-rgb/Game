@@ -5,7 +5,7 @@ namespace Game
 {
     public sealed partial class Map : Form
     {
-        public Map()
+        public Map(Game game)
         {
             InitializeComponent();
             DoubleBuffered = true;
@@ -21,9 +21,16 @@ namespace Game
                 Close();
                 Program.Context.MainForm.Show();
             };
-
-            var map = new int[10000, 10000];
-            
+            KeyPress += (sender, args) =>
+            {
+                switch (args.KeyChar)
+                {
+                    case 'w':{
+                        
+                        break;
+                    }
+                }
+            };
         }
     }
 }
