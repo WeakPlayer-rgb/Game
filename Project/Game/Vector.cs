@@ -15,8 +15,7 @@ namespace Game
             X = x;
             Y = y;
         }
-
-
+        
         public Vector(Vector v)
         {
             X = v.X;

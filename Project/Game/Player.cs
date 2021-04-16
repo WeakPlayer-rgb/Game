@@ -6,6 +6,9 @@ namespace Game
     {
         public Vector position;
         public Vector Direction { get; set; }
+        public double StartingPosX { get; set; }
+        public double StartingPosY { get; set; }
+        public Vector Speed { get; set; }
         public double Health { get; set; }
         
         public string GetImage(string path) => "car.png";

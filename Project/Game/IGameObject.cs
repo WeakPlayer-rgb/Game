@@ -1,8 +1,12 @@
-﻿namespace Game
+﻿using System;
+
+namespace Game
 {
     public interface IGameObject
     {
-        Vector Direction { get; set; }
+        double StartingPosX { get; set; }
+        double StartingPosY { get; set; }
+        Vector Speed { get; set; }
         double Health { get; set; }
         string GetImage(string path);
         int DrawPriority(int priority);
