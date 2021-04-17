@@ -4,7 +4,7 @@ namespace NewGame
 {
     public class Player : IGameObject
     {
-        public Vector Position { get; set; } 
+        public Vector Position { get; set; }
         public Vector Direction { get; set; }
         public double Health { get; set; }
 
@@ -17,21 +17,19 @@ namespace NewGame
         public string GetImage() => "car.png";
 
         public int DrawPriority(int priority) => 0;
+
         public void ChangeDirection(KeyButton ctrl)
         {
             switch (ctrl)
             {
                 case KeyButton.Left:
                 {
-                   Direction = Direction.Rotate(Math.PI / 20);
-                   Position = Direction.Rotate(Math.PI / 20);
-                    
-                   break;
+                    Direction = Direction.Rotate(Math.PI / 20);
+                    break;
                 }
                 case KeyButton.Right:
                 {
-                    Position = Direction.Rotate(Math.PI / 20);
-                    Direction=Direction.Rotate(-Math.PI / 20);
+                    Direction = Direction.Rotate(-Math.PI / 20);
                     break;
                 }
                 case KeyButton.None:
@@ -47,18 +45,17 @@ namespace NewGame
             {
                 case KeyButton.Backward:
                 {
-                    Direction += new Vector(0, -1)*500;
-                    Position += Direction.Rotate(Math.PI / 20);
+                    //if (Direction.X-1e-3<=0 || Direction.Y-1e-3<=0) Direction=Vector.Zero;
+                    Direction *= 0.5;
                     break;
                 }
                 case KeyButton.Forward:
                 {
-                    Direction += new Vector(0, 1)*500;
-                    Position += Direction.Rotate(Math.PI / 20);
+                    Direction *= 3;
                     break;
                 }
                 case KeyButton.None:
-                    Position = Direction.Rotate(Math.PI / 20);
+                    Direction *= 0.95;
 
                     break;
                 default:
