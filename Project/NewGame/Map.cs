@@ -10,11 +10,11 @@ namespace NewGame
 {
     public sealed partial class Map : Form
     {
-        private Game game;
+        private Game Game;
         public Bitmap Car = image.car;
         public Map(Game g)
         {
-            game = g;
+            Game = g;
             InitializeComponent();
             DoubleBuffered = true;
             
@@ -36,27 +36,27 @@ namespace NewGame
                 {
                     case 'W':
                     {
-                        game.Car.ChangeVelocity(KeyButton.Forward);    
+                        Game.Car.ChangeVelocity(KeyButton.Forward);    
                         break;
                     }
                     case 'S':
                     {
-                        game.Car.ChangeVelocity(KeyButton.Backward);    
+                        Game.Car.ChangeVelocity(KeyButton.Backward);    
                         break;
                     }
                     case 'A':
                     {
-                        game.Car.ChangeDirection(KeyButton.Left);    
+                        Game.Car.ChangeDirection(KeyButton.Left);    
                         break;
                     }
                     case 'D':
                     {
-                        game.Car.ChangeDirection(KeyButton.Right);    
+                        Game.Car.ChangeDirection(KeyButton.Right);    
                         break;
                     }
                 }
-                game.ChangePlayerPosition();
-                Console.WriteLine(game.Car.Direction);
+                Game.ChangePlayerPosition();
+                Console.WriteLine(Game.Car.Direction);
                 Refresh();
             };
             
@@ -67,7 +67,7 @@ namespace NewGame
             {
                 var graphic = args.Graphics;
                 graphic.ScaleTransform(0.1f,0.1f);
-                graphic.RotateTransform((float) ((int)game.Car.Direction.Angle/2/Math.PI*360));
+                graphic.RotateTransform((float) ((int)Game.Car.Direction.Angle/2/Math.PI*360));
                 graphic.DrawImage(Car,ClientSize.Height/2,ClientSize.Width/2);
                 graphic.ResetTransform();
                 
@@ -95,27 +95,27 @@ namespace NewGame
             {
                 case 'W':
                 {
-                    game.Car.ChangeVelocity(KeyButton.Forward);    
+                    Game.Car.ChangeVelocity(KeyButton.Forward);    
                     break;
                 }
                 case 'S':
                 {
-                    game.Car.ChangeVelocity(KeyButton.Backward);    
+                    Game.Car.ChangeVelocity(KeyButton.Backward);    
                     break;
                 }
                 case 'A':
                 {
-                    game.Car.ChangeDirection(KeyButton.Left);    
+                    Game.Car.ChangeDirection(KeyButton.Left);    
                     break;
                 }
                 case 'D':
                 {
-                    game.Car.ChangeDirection(KeyButton.Right);    
+                    Game.Car.ChangeDirection(KeyButton.Right);    
                     break;
                 }
             }
-            game.ChangePlayerPosition();
-            Console.WriteLine(game.Car.Direction);
+            Game.ChangePlayerPosition();
+            Console.WriteLine(Game.Car.Direction);
         }
     }
 }
