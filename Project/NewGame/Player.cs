@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Game
+namespace NewGame
 {
     public class Player : IGameObject
     {

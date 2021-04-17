@@ -1,4 +1,4 @@
-﻿namespace Game
+﻿namespace NewGame
 {
     public class Physics
     {

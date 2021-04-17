@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Game
+namespace NewGame
 {
     public class Vector
     {

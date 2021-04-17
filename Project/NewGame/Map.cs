@@ -4,13 +4,14 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms.PropertyGridInternal;
+// using Game;
 
-namespace Game
+namespace NewGame
 {
     
     public sealed partial class Map : Form
     {
-        public Bitmap Car = Resource1.car;
+        public Bitmap Car = image.car;
         public Map(Game game)
         {
             InitializeComponent();
@@ -22,7 +23,7 @@ namespace Game
                 Text = @"Back!"
             };
             Controls.Add(button);
-            button.Click += (_, _) =>
+            button.Click += (_, __) =>
             {
                 Program.Context.MainForm = new Menu();
                 Close();

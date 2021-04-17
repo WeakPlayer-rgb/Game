@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 
-namespace Game
+namespace NewGame
 {
     public enum Turn
     {

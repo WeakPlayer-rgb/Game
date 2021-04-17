@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace Game
+namespace NewGame
 {
-    public sealed partial class Menu : Form
+    public partial class Menu : Form
     {
         public Menu()
         {
@@ -54,7 +54,6 @@ namespace Game
                 if (result == DialogResult.Yes) Close();
             };
         }
-
         public override Color BackColor { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Game
+namespace NewGame
 {
     public class Game
     {
