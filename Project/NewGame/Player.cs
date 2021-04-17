@@ -23,7 +23,7 @@ namespace NewGame
             {
                 case KeyButton.Left:
                 {
-                    Direction.Rotate(Math.PI / 20);
+                   Direction = Direction.Rotate(Math.PI / 20);
                     break;
                 }
                 case KeyButton.Right:

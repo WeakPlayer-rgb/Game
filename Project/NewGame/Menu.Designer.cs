@@ -2,7 +2,7 @@
 
 namespace NewGame
 {
-    partial class Menu
+    sealed partial class Menu
     {
         /// <summary>
         /// Required designer variable.

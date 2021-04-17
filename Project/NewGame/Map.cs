@@ -8,12 +8,13 @@ using System.Windows.Forms.PropertyGridInternal;
 
 namespace NewGame
 {
-    
     public sealed partial class Map : Form
     {
+        private Game game;
         public Bitmap Car = image.car;
-        public Map(Game game)
+        public Map(Game g)
         {
+            game = g;
             InitializeComponent();
             DoubleBuffered = true;
             
@@ -23,7 +24,7 @@ namespace NewGame
                 Text = @"Back!"
             };
             Controls.Add(button);
-            button.Click += (_, __) =>
+            button.Click += (_, _) =>
             {
                 Program.Context.MainForm = new Menu();
                 Close();
@@ -33,28 +34,29 @@ namespace NewGame
             {
                 switch (args.KeyChar)
                 {
-                    case 'w' or 'W':
+                    case 'W':
                     {
                         game.Car.ChangeVelocity(KeyButton.Forward);    
                         break;
                     }
-                    case 's' or 'S':
+                    case 'S':
                     {
                         game.Car.ChangeVelocity(KeyButton.Backward);    
                         break;
                     }
-                    case 'a' or 'A':
+                    case 'A':
                     {
                         game.Car.ChangeDirection(KeyButton.Left);    
                         break;
                     }
-                    case 'd' or 'D':
+                    case 'D':
                     {
                         game.Car.ChangeDirection(KeyButton.Right);    
                         break;
                     }
                 }
                 game.ChangePlayerPosition();
+                Console.WriteLine(game.Car.Direction);
             };
             
             var timer = new Timer {Interval = 100};
@@ -83,6 +85,36 @@ namespace NewGame
                 //     }
                 // }
             };
+            timer.Start();
+        }
+
+        protected override void OnKeyPress(KeyPressEventArgs e)
+        {
+            switch (e.KeyChar)
+            {
+                case 'W':
+                {
+                    game.Car.ChangeVelocity(KeyButton.Forward);    
+                    break;
+                }
+                case 'S':
+                {
+                    game.Car.ChangeVelocity(KeyButton.Backward);    
+                    break;
+                }
+                case 'A':
+                {
+                    game.Car.ChangeDirection(KeyButton.Left);    
+                    break;
+                }
+                case 'D':
+                {
+                    game.Car.ChangeDirection(KeyButton.Right);    
+                    break;
+                }
+            }
+            game.ChangePlayerPosition();
+            Console.WriteLine(game.Car.Direction);
         }
     }
 }

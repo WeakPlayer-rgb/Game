@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace NewGame
 {
-    public partial class Menu : Form
+    public sealed partial class Menu : Form
     {
         public Menu()
         {
@@ -49,7 +49,7 @@ namespace NewGame
             };
             exitButton.Click += (s, e) =>
             {
-                var result = MessageBox.Show(@"Действительно закрыть?", "Не надо этого делать...",
+                var result = MessageBox.Show(@"Действительно закрыть?", @"Не надо этого делать...",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes) Close();
             };

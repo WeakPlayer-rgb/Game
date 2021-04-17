@@ -14,7 +14,7 @@ namespace NewGame
         /// </summary>
         public static ApplicationContext Context { get; set; }
 
-        public static System.Drawing.Size screenSize { get; set; }
+        public static Size screenSize { get; set; }
 
         [STAThread]
         public static void Main()
