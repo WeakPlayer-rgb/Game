@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms.PropertyGridInternal;
+using NewGame;
 
 namespace Game
 {
@@ -22,7 +23,7 @@ namespace Game
                 Text = @"Back!"
             };
             Controls.Add(button);
-            button.Click += (_, _) =>
+            button.Click += (s, e) =>
             {
                 Program.Context.MainForm = new Menu();
                 Close();

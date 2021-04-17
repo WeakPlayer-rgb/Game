@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using NewGame;
 
 namespace Game
 {
@@ -37,13 +38,13 @@ namespace Game
             Controls.Add(list);
             Controls.Add(backButton);
             Controls.Add(buttonChangeResolution);
-            backButton.Click += (_, _) =>
+            backButton.Click += (s, e) =>
             {
                 Program.Context.MainForm = new Menu();
                 Close();
                 Program.Context.MainForm.Show();
             };
-            buttonChangeResolution.Click += (_, _) =>
+            buttonChangeResolution.Click += (s, e) =>
             {
                 
                 var (width, height) = (Tuple<int,int>)list.SelectedItem;

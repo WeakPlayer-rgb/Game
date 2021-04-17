@@ -1,13 +1,13 @@
-﻿using System.ComponentModel;
+﻿using NewGame;
 
 namespace Game
 {
-    sealed partial class Menu
+    sealed partial class Options
     {
         /// <summary>
         ///  Required designer variable.
         /// </summary>
-        private IContainer components = null;
+        private System.ComponentModel.IContainer components;
 
         /// <summary>
         ///  Clean up any resources being used.
@@ -15,10 +15,11 @@ namespace Game
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && components != null)
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -33,7 +34,7 @@ namespace Game
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = Program.screenSize;
-            this.Text = "Menu_Designer";
+            this.Text = "MyForm";
         }
 
         #endregion
