@@ -57,10 +57,11 @@ namespace NewGame
                 }
                 game.ChangePlayerPosition();
                 Console.WriteLine(game.Car.Direction);
+                Refresh();
             };
             
             var timer = new Timer {Interval = 100};
-            timer.Tick += (sender, args) => Invalidate();
+            timer.Tick += (sender, args) => Refresh();
 
             Paint += (sender, args) =>
             {
