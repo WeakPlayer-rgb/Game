@@ -7,18 +7,19 @@ using System.Windows.Forms.PropertyGridInternal;
 
 namespace NewGame
 {
-    public sealed partial class Map : Form
+    public sealed partial class GameVisualisation : Form
     {
         private Game game;
+        private Physics standardPhysics;
         public Bitmap Car = image.car;
         private Label label;
-        public Map(Game g)
+        public GameVisualisation(Game g)
         {
-            KeyPreview = true;
             game = g;
-            InitializeComponent();
+            KeyPreview = true;
+            standardPhysics = new Physics();
             DoubleBuffered = true;
-            label = new Label{Location = new Point(500,500)};
+            label = new Label{Location = new Point(500,500), AutoSize = true};
             var button = new Button
             {
                 Location = new Point(0,0),
@@ -61,8 +62,9 @@ namespace NewGame
                         break;
                     }
                 }
-                game.ChangePlayerPosition();
-                label.Text += "Xyu";
+
+                //Physics.MoveCar(new Car(new Vector(2, 3), Vector.Zero, 3, 1, 2), 3, Turn.Left, 3);
+                label.Text += string.Format($@"{args.KeyChar}");
                 Refresh();
             };
             
@@ -95,6 +97,7 @@ namespace NewGame
                 //     }
                 // }
             };
+            InitializeComponent();
             Controls.Add(label);
             timer.Start();
         }

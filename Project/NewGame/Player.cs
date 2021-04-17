@@ -4,7 +4,7 @@ namespace NewGame
 {
     public class Player : IGameObject
     {
-        public Vector Position { get; set; }
+        public Vector Position { get; set; } 
         public Vector Direction { get; set; }
         public double Health { get; set; }
 
@@ -34,6 +34,10 @@ namespace NewGame
                     Direction=Direction.Rotate(-Math.PI / 20);
                     break;
                 }
+                case KeyButton.None:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(ctrl), ctrl, null);
             }
         }
 

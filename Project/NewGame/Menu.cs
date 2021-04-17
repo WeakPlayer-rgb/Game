@@ -37,7 +37,7 @@ namespace NewGame
             Controls.Add(exitButton);
             startButton.Click += (s, e) =>
             {
-                Program.Context.MainForm = new Map(new Game(10000));
+                Program.Context.MainForm = new GameVisualisation(new Game(10000));
                 Close();
                 Program.Context.MainForm.Show();
             };

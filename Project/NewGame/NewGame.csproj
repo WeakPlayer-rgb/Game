@@ -48,7 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Car.cs" />
-    <Compile Include="game.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="IGameObject.cs" />
     <Compile Include="image.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -57,10 +57,10 @@
     </Compile>
     <Compile Include="KeyButton.cs" />
     <Compile Include="Level.cs" />
-    <Compile Include="Map.cs">
+    <Compile Include="GameVisualisation.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Map.Designer.cs" />
+    <Compile Include="GameVisualisation.Designer.cs" />
     <Compile Include="Menu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,6 +69,7 @@
     </Compile>
     <Compile Include="OptionDesigner.cs">
       <SubType>Form</SubType>
+      <DependentUpon>Options.cs</DependentUpon>
     </Compile>
     <Compile Include="Options.cs">
       <SubType>Form</SubType>
@@ -83,7 +84,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>image.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Map.resx" />
+    <EmbeddedResource Include="GameVisualisation.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

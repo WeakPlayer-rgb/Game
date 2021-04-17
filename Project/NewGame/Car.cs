@@ -59,7 +59,7 @@
         {
             unchecked
             {
-                var hashCode = 1;
+                var hashCode = 12;
                 hashCode = (hashCode * 397) ^ Location.GetHashCode();
                 hashCode = (hashCode * 397) ^ TakenResources;
                 hashCode = (hashCode * 397) ^ Time;
