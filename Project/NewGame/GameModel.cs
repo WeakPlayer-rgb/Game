@@ -15,5 +15,7 @@ namespace NewGame
             Car = new Player(new Vector(size/2,size/2));
             Map[(int) Car.Position.X, (int) Car.Position.Y] = Car;
         }
+
+        public void ChangePosition() => Car.Position += Car.Direction;
     }
 }
