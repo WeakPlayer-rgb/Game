@@ -4,20 +4,21 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms.PropertyGridInternal;
-// using Game;
 
 namespace NewGame
 {
     public sealed partial class Map : Form
     {
-        private Game Game;
+        private Game game;
         public Bitmap Car = image.car;
+        private Label label;
         public Map(Game g)
         {
-            Game = g;
+            KeyPreview = true;
+            game = g;
             InitializeComponent();
             DoubleBuffered = true;
-            
+            label = new Label{Location = new Point(500,500)};
             var button = new Button
             {
                 Location = new Point(0,0),
@@ -30,44 +31,48 @@ namespace NewGame
                 Close();
                 Program.Context.MainForm.Show();
             };
+            
             KeyPress += (sender, args) =>
             {
                 switch (args.KeyChar)
                 {
-                    case 'W':
+                    case 'w':
                     {
-                        Game.Car.ChangeVelocity(KeyButton.Forward);    
+                        game.Car.ChangeVelocity(KeyButton.Forward);    
                         break;
                     }
-                    case 'S':
+                    case 's':
                     {
-                        Game.Car.ChangeVelocity(KeyButton.Backward);    
+                        game.Car.ChangeVelocity(KeyButton.Backward);    
                         break;
                     }
-                    case 'A':
+                    case 'a':
                     {
-                        Game.Car.ChangeDirection(KeyButton.Left);    
+                        game.Car.ChangeDirection(KeyButton.Left);    
                         break;
                     }
-                    case 'D':
+                    case 'd':
                     {
-                        Game.Car.ChangeDirection(KeyButton.Right);    
+                        game.Car.ChangeDirection(KeyButton.Right);    
                         break;
                     }
                 }
-                Game.ChangePlayerPosition();
-                Console.WriteLine(Game.Car.Direction);
+                game.ChangePlayerPosition();
+                label.Text += "Xyu";
                 Refresh();
             };
             
             var timer = new Timer {Interval = 100};
-            timer.Tick += (sender, args) => Refresh();
-
+            timer.Tick += (sender, args) =>
+            {
+                Activate();
+                Refresh();
+            };
             Paint += (sender, args) =>
             {
                 var graphic = args.Graphics;
                 graphic.ScaleTransform(0.1f,0.1f);
-                graphic.RotateTransform((float) ((int)Game.Car.Direction.Angle/2/Math.PI*360));
+                graphic.RotateTransform((float) ((int)game.Car.Direction.Angle/2/Math.PI*360));
                 graphic.DrawImage(Car,ClientSize.Height/2,ClientSize.Width/2);
                 graphic.ResetTransform();
                 
@@ -86,36 +91,8 @@ namespace NewGame
                 //     }
                 // }
             };
+            Controls.Add(label);
             timer.Start();
-        }
-
-        protected override void OnKeyPress(KeyPressEventArgs e)
-        {
-            switch (e.KeyChar)
-            {
-                case 'W':
-                {
-                    Game.Car.ChangeVelocity(KeyButton.Forward);    
-                    break;
-                }
-                case 'S':
-                {
-                    Game.Car.ChangeVelocity(KeyButton.Backward);    
-                    break;
-                }
-                case 'A':
-                {
-                    Game.Car.ChangeDirection(KeyButton.Left);    
-                    break;
-                }
-                case 'D':
-                {
-                    Game.Car.ChangeDirection(KeyButton.Right);    
-                    break;
-                }
-            }
-            Game.ChangePlayerPosition();
-            Console.WriteLine(Game.Car.Direction);
         }
     }
 }
