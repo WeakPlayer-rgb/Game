@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms.PropertyGridInternal;
-// using Game;
 
 namespace NewGame
 {
@@ -12,12 +11,14 @@ namespace NewGame
     {
         private Game game;
         public Bitmap Car = image.car;
+        private Label label;
         public Map(Game g)
         {
+            KeyPreview = true;
             game = g;
             InitializeComponent();
             DoubleBuffered = true;
-            
+            label = new Label{Location = new Point(500,500)};
             var button = new Button
             {
                 Location = new Point(0,0),
@@ -30,39 +31,43 @@ namespace NewGame
                 Close();
                 Program.Context.MainForm.Show();
             };
+            
             KeyPress += (sender, args) =>
             {
                 switch (args.KeyChar)
                 {
-                    case 'W':
+                    case 'w':
                     {
                         game.Car.ChangeVelocity(KeyButton.Forward);    
                         break;
                     }
-                    case 'S':
+                    case 's':
                     {
                         game.Car.ChangeVelocity(KeyButton.Backward);    
                         break;
                     }
-                    case 'A':
+                    case 'a':
                     {
                         game.Car.ChangeDirection(KeyButton.Left);    
                         break;
                     }
-                    case 'D':
+                    case 'd':
                     {
                         game.Car.ChangeDirection(KeyButton.Right);    
                         break;
                     }
                 }
                 game.ChangePlayerPosition();
-                Console.WriteLine(game.Car.Direction);
+                label.Text += "Xyu";
                 Refresh();
             };
             
             var timer = new Timer {Interval = 100};
-            timer.Tick += (sender, args) => Refresh();
-
+            timer.Tick += (sender, args) =>
+            {
+                Activate();
+                Refresh();
+            };
             Paint += (sender, args) =>
             {
                 var graphic = args.Graphics;
@@ -86,36 +91,8 @@ namespace NewGame
                 //     }
                 // }
             };
+            Controls.Add(label);
             timer.Start();
-        }
-
-        protected override void OnKeyPress(KeyPressEventArgs e)
-        {
-            switch (e.KeyChar)
-            {
-                case 'W':
-                {
-                    game.Car.ChangeVelocity(KeyButton.Forward);    
-                    break;
-                }
-                case 'S':
-                {
-                    game.Car.ChangeVelocity(KeyButton.Backward);    
-                    break;
-                }
-                case 'A':
-                {
-                    game.Car.ChangeDirection(KeyButton.Left);    
-                    break;
-                }
-                case 'D':
-                {
-                    game.Car.ChangeDirection(KeyButton.Right);    
-                    break;
-                }
-            }
-            game.ChangePlayerPosition();
-            Console.WriteLine(game.Car.Direction);
         }
     }
 }
