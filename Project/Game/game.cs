@@ -1,8 +1,10 @@
-﻿namespace Game
+﻿using System.Windows.Forms;
+
+namespace Game
 {
     public class Game
     {
-        public Player Car;
+        public readonly Player Car;
         public IGameObject[,] Map;
         private readonly int size;
 
@@ -10,9 +12,9 @@
         {
             size = s;
             Map = new IGameObject[size, size];
-            Car = new Player();
+            Car = new Player(new Vector(size/2,size/2));
         }
 
-        public void ChangePlayerPosition() => Car.position += Car.Direction;
+        public void ChangePlayerPosition() => Car.Position += Car.Direction;
     }
 }

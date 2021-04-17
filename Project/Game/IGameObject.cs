@@ -8,7 +8,7 @@ namespace Game
         double StartingPosY { get; set; }
         Vector Speed { get; set; }
         double Health { get; set; }
-        string GetImage(string path);
+        string GetImage();
         int DrawPriority(int priority);
         void ChangeDirection(KeyButton ctrl);
         void ChangeVelocity(KeyButton ctrl);
