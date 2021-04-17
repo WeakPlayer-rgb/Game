@@ -36,21 +36,25 @@ namespace NewGame
             {
                 switch (args.KeyChar)
                 {
+                    case 'W':
                     case 'w':
                     {
                         game.Car.ChangeVelocity(KeyButton.Forward);    
                         break;
                     }
+                    case 'S':
                     case 's':
                     {
                         game.Car.ChangeVelocity(KeyButton.Backward);    
                         break;
                     }
+                    case 'A':
                     case 'a':
                     {
                         game.Car.ChangeDirection(KeyButton.Left);    
                         break;
                     }
+                    case 'D':
                     case 'd':
                     {
                         game.Car.ChangeDirection(KeyButton.Right);    
