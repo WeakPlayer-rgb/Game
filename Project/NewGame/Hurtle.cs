@@ -8,9 +8,9 @@
         public Vector Speed { get; set; }
         public double Health { get; set; }
 
-        public string GetImage(string path)
+        public string GetImage()
         {
-            return path;
+            throw new System.NotImplementedException();
         }
 
         public int DrawPriority(int priority)

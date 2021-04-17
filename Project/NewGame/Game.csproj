@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net5.0-windows</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
+        <TargetFramework>net5.0-windows</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
@@ -39,8 +39,6 @@
       <PackageReference Include="NUnit" Version="3.13.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\TestProject1\TestProject1.csproj" />
-    </ItemGroup>
+   
 
 </Project>
