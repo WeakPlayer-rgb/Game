@@ -47,14 +47,12 @@ namespace NewGame
             {
                 case KeyButton.Backward:
                 {
-                    Direction += new Vector(0, -1)*500;
-                    Position += Direction.Rotate(Math.PI / 20);
+                    Direction += new Vector(0, -1)*2;
                     break;
                 }
                 case KeyButton.Forward:
                 {
-                    Direction += new Vector(0, 1)*500;
-                    Position += Direction.Rotate(Math.PI / 20);
+                    Direction += new Vector(0, 1)*2;
                     break;
                 }
                 case KeyButton.None:

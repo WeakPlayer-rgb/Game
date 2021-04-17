@@ -110,6 +110,8 @@
   <ItemGroup>
     <Content Include="Ideas.txt" />
     <Content Include="Images\car.png" />
+    <None Include="Images\car1.png" />
+    <None Include="Resources\car1.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
