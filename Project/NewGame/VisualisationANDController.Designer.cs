@@ -2,7 +2,7 @@
 
 namespace NewGame
 {
-    partial class GameVisualisation
+    partial class VisualisationANDController
     {
         /// <summary>
         /// Required designer variable.

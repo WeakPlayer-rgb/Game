@@ -7,19 +7,22 @@ using System.Windows.Forms.PropertyGridInternal;
 
 namespace NewGame
 {
-    public sealed partial class GameVisualisation : Form
+    /// <summary>
+    /// TODO: Split visual and control part apart. Doesn't fit in MVC. Ask Ilya if that's ok.
+    /// </summary>
+    public sealed partial class VisualisationANDController : Form
     {
-        private Game game;
+        private GameModel _gameModel;
         private Physics standardPhysics;
         public Bitmap Car = image.car;
         private Label label;
-        public GameVisualisation(Game g)
+        public VisualisationANDController(GameModel g)
         {
-            game = g;
+            _gameModel = g;
             KeyPreview = true;
             standardPhysics = new Physics();
             DoubleBuffered = true;
-            label = new Label{Location = new Point(500,500), AutoSize = true};
+            label = new Label{Location = new Point(500,500), MaximumSize = ClientSize};
             var button = new Button
             {
                 Location = new Point(0,0),
@@ -40,25 +43,25 @@ namespace NewGame
                     case 'W':
                     case 'w':
                     {
-                        game.Car.ChangeVelocity(KeyButton.Forward);    
+                        _gameModel.Car.ChangeVelocity(KeyButton.Forward);    
                         break;
                     }
                     case 'S':
                     case 's':
                     {
-                        game.Car.ChangeVelocity(KeyButton.Backward);    
+                        _gameModel.Car.ChangeVelocity(KeyButton.Backward);    
                         break;
                     }
                     case 'A':
                     case 'a':
                     {
-                        game.Car.ChangeDirection(KeyButton.Left);    
+                        _gameModel.Car.ChangeDirection(KeyButton.Left);    
                         break;
                     }
                     case 'D':
                     case 'd':
                     {
-                        game.Car.ChangeDirection(KeyButton.Right);    
+                        _gameModel.Car.ChangeDirection(KeyButton.Right);    
                         break;
                     }
                 }
@@ -68,7 +71,7 @@ namespace NewGame
                 Refresh();
             };
             
-            var timer = new Timer {Interval = 100};
+            var timer = new Timer {Interval = 10};
             timer.Tick += (sender, args) =>
             {
                 Activate();
@@ -78,8 +81,8 @@ namespace NewGame
             {
                 var graphic = args.Graphics;
                 graphic.ScaleTransform(0.1f,0.1f);
-                graphic.RotateTransform((float) ((int)game.Car.Direction.Angle/2/Math.PI*360));
-                graphic.DrawImage(Car,ClientSize.Height/2,ClientSize.Width/2);
+                graphic.RotateTransform((float) ((int)_gameModel.Car.Direction.Angle/2/Math.PI*360));
+                graphic.DrawImage(Car,(int)_gameModel.Car.Position.X,(int)_gameModel.Car.Position.Y);
                 graphic.ResetTransform();
                 
                 // for (var y =(int) game.Car.Position.Y - ClientSize.Height / 2;
