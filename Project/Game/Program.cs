@@ -17,7 +17,7 @@ namespace Game
         public static System.Drawing.Size screenSize { get; set; }
 
         [STAThread]
-        static void Main()
+        public static void Main()
         {
             // Application.SetHighDpiMode(HighDpiMode.SystemAware);
             // Application.EnableVisualStyles();

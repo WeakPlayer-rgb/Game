@@ -4,7 +4,7 @@
     {
         Vector Direction { get; set; }
         double Health { get; set; }
-        string GetImage(string path);
+        string GetImage();
         int DrawPriority(int priority);
         void ChangeDirection(KeyButton ctrl);
         void ChangeVelocity(KeyButton ctrl);
