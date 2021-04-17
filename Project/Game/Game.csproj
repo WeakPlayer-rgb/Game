@@ -100,6 +100,7 @@
     <ItemGroup>
       <Content Include="Game.csproj" />
       <Content Include="Ideas.txt" />
+      <Content Include="Images\car.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
