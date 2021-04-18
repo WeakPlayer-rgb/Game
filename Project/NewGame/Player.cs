@@ -39,24 +39,30 @@ namespace NewGame
             }
         }
 
-        public void ChangeVelocity(KeyButton ctrl)
+        public void ChangeVelocity(KeyButton ctrl, Vector currentDir)
         {
             switch (ctrl)
             {
                 case KeyButton.Backward:
                 {
+                    if (Direction.Length - 1 <= 0) Direction *= -3;
                     //if (Direction.X-1e-3<=0 || Direction.Y-1e-3<=0) Direction=Vector.Zero;
-                    Direction *= 0.5;
+                    else Direction = 0.5 * currentDir;
                     break;
                 }
                 case KeyButton.Forward:
                 {
-                    Direction *= 3;
+                    if (Direction.Length < 10)
+                    {
+                        if (Equals(Direction, Vector.Zero)) Direction += new Vector(currentDir.X, currentDir.Y);
+                        Direction *= 3;
+                    }
+
                     break;
                 }
                 case KeyButton.None:
-                    Direction *= 0.95;
-
+                    Direction *= 0.96;
+                    if ((Direction - new Vector(0.5, 0.5)).Length < 0) Direction = Vector.Zero;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ctrl), ctrl, null);

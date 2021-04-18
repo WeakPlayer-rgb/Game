@@ -22,7 +22,7 @@ namespace NewGame
             KeyPreview = true;
             standardPhysics = new Physics();
             DoubleBuffered = true;
-            var label = new Label{Location = new Point(500,500), MaximumSize = ClientSize};
+            var label = new Label {Location = new Point(500, 500), MaximumSize = ClientSize};
             // var button = new Button
             // {
             //     Location = new Point(0,0),
@@ -35,7 +35,8 @@ namespace NewGame
             //     Close();
             //     Program.Context.MainForm.Show();
             // };
-            
+
+            /* TODO: keyPress is just one repeatable action. KeyDown needed.
             KeyPress += (sender, args) =>
             {
                 if (args.KeyChar == '.')
@@ -64,11 +65,40 @@ namespace NewGame
                 label.Text = string.Format($@"{args.KeyChar}");
                 Refresh();
             };
-            
+            */
+
+            // me
+            KeyDown += (sender, args) =>
+            {
+                //65, 83, 68, 190
+                switch (args.KeyValue)
+                {
+                    case 190:
+                        gameModel.Car.Position = new Vector(500, 500);
+                        gameModel.Car.Direction = new Vector(-10, -5);
+                        break;
+                    case 87:
+                        gameModel.Car.ChangeVelocity(KeyButton.Forward, gameModel.Car.Direction);
+                        break;
+                    case 83:
+                        gameModel.Car.ChangeVelocity(KeyButton.Backward, gameModel.Car.Direction);
+                        break;
+                    case 65:
+                        gameModel.Car.ChangeDirection(KeyButton.Left);
+                        break;
+                    case 68:
+                        gameModel.Car.ChangeDirection(KeyButton.Right);
+                        break;
+                }
+
+                //Physics.MoveCar(new Car(new Vector(2, 3), Vector.Zero, 3, 1, 2), 3, Turn.Left, 3);
+                label.Text = string.Format($@"{args.KeyValue}");
+                Refresh();
+            };
             var timer = new Timer {Interval = 50};
             timer.Tick += (sender, args) =>
             {
-                gameModel.Car.ChangeVelocity(KeyButton.None);
+                gameModel.Car.ChangeVelocity(KeyButton.None, gameModel.Car.Direction);
                 gameModel.ChangePosition();
                 Activate();
                 Refresh();
@@ -76,11 +106,13 @@ namespace NewGame
             Paint += (sender, args) =>
             {
                 var graphic = args.Graphics;
-                graphic.TranslateTransform((int)gameModel.Car.Position.X,(int)gameModel.Car.Position.Y);
-                graphic.RotateTransform((float) ((float)gameModel.Car.Direction.Angle/Math.PI*180+90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
-                graphic.DrawImage(car,-14,-25);
-                graphic.TranslateTransform(-(int)gameModel.Car.Position.X,-(int)gameModel.Car.Position.Y);
-                
+                graphic.TranslateTransform((int) gameModel.Car.Position.X, (int) gameModel.Car.Position.Y);
+                graphic.RotateTransform(
+                    (float) ((float) gameModel.Car.Direction.Angle / Math.PI * 180 +
+                             90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
+                graphic.DrawImage(car, -14, -25);
+                graphic.TranslateTransform(-(int) gameModel.Car.Position.X, -(int) gameModel.Car.Position.Y);
+
                 // for (var y =(int) game.Car.Position.Y - ClientSize.Height / 2;
                 //     y < game.Car.Position.Y + ClientSize.Height / 2;
                 //     y++)
