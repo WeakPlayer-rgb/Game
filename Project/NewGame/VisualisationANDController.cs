@@ -14,15 +14,15 @@ namespace NewGame
     {
         private GameModel gameModel;
         private Physics standardPhysics;
-        public Bitmap Car = image.car1;
-        private Label label;
+        private readonly Bitmap car = image.test;
+
         public VisualisationAndController(GameModel g)
         {
             gameModel = g;
             KeyPreview = true;
             standardPhysics = new Physics();
             DoubleBuffered = true;
-            label = new Label{Location = new Point(500,500), MaximumSize = ClientSize};
+            var label = new Label{Location = new Point(500,500), MaximumSize = ClientSize};
             // var button = new Button
             // {
             //     Location = new Point(0,0),
@@ -38,36 +38,26 @@ namespace NewGame
             
             KeyPress += (sender, args) =>
             {
-                switch (args.KeyChar)
+                if (args.KeyChar == '.')
                 {
-                    case '.':
-                        _gameModel.Car.Position = new Vector(1000, 1000);
-                        _gameModel.Car.Direction = new Vector(-10,-5);
-                        break;
-                    case 'W':
-                    case 'w':
-                    {
-                        gameModel.Car.ChangeVelocity(KeyButton.Forward);    
-                        break;
-                    }
-                    case 'S':
-                    case 's':
-                    {
-                        gameModel.Car.ChangeVelocity(KeyButton.Backward);    
-                        break;
-                    }
-                    case 'A':
-                    case 'a':
-                    {
-                        gameModel.Car.ChangeDirection(KeyButton.Left);    
-                        break;
-                    }
-                    case 'D':
-                    case 'd':
-                    {
-                        gameModel.Car.ChangeDirection(KeyButton.Right);    
-                        break;
-                    }
+                    gameModel.Car.Position = new Vector(500, 500);
+                    gameModel.Car.Direction = new Vector(-10, -5);
+                }
+                if (args.KeyChar is 'W' or 'w')
+                {
+                    gameModel.Car.ChangeVelocity(KeyButton.Forward);
+                }
+                else if (args.KeyChar is 'S' or 's')
+                {
+                    gameModel.Car.ChangeVelocity(KeyButton.Backward);
+                }
+                if (args.KeyChar is 'A' or 'a')
+                {
+                    gameModel.Car.ChangeDirection(KeyButton.Left);
+                }
+                else if (args.KeyChar is 'D' or 'd')
+                {
+                    gameModel.Car.ChangeDirection(KeyButton.Right);
                 }
 
                 //Physics.MoveCar(new Car(new Vector(2, 3), Vector.Zero, 3, 1, 2), 3, Turn.Left, 3);
@@ -78,21 +68,18 @@ namespace NewGame
             var timer = new Timer {Interval = 50};
             timer.Tick += (sender, args) =>
             {
-                _gameModel.Car.ChangeVelocity(KeyButton.None);
-                _gameModel.ChangePosition();
+                gameModel.Car.ChangeVelocity(KeyButton.None);
+                gameModel.ChangePosition();
                 Activate();
                 Refresh();
             };
             Paint += (sender, args) =>
             {
                 var graphic = args.Graphics;
-                graphic.ScaleTransform(0.1f,0.1f);
-                graphic.FillEllipse(Brushes.Blue, new Rectangle(new Point((int)_gameModel.Car.Position.X,(int)_gameModel.Car.Position.Y), new Size(30, 30)));
-                graphic.TranslateTransform((int)_gameModel.Car.Position.X-67,(int)_gameModel.Car.Position.Y-32 );
-                graphic.RotateTransform((float) ((float)_gameModel.Car.Direction.Angle/Math.PI*180+180) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
-                graphic.DrawImage(Car,(int)_gameModel.Car.Position.X,(int)_gameModel.Car.Position.Y);
-                graphic.TranslateTransform((int)-_gameModel.Car.Position.X+67,(int)-_gameModel.Car.Position.Y+32);
-                graphic.ResetTransform();
+                graphic.TranslateTransform((int)gameModel.Car.Position.X,(int)gameModel.Car.Position.Y);
+                graphic.RotateTransform((float) ((float)gameModel.Car.Direction.Angle/Math.PI*180+90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
+                graphic.DrawImage(car,-14,-25);
+                graphic.TranslateTransform(-(int)gameModel.Car.Position.X,-(int)gameModel.Car.Position.Y);
                 
                 // for (var y =(int) game.Car.Position.Y - ClientSize.Height / 2;
                 //     y < game.Car.Position.Y + ClientSize.Height / 2;

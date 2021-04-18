@@ -24,12 +24,12 @@ namespace NewGame
             {
                 case KeyButton.Left:
                 {
-                    Direction = Direction.Rotate(Math.PI / 20);
+                    Direction = Direction.Rotate(-Math.PI / 20);
                     break;
                 }
                 case KeyButton.Right:
                 {
-                    Direction = Direction.Rotate(-Math.PI / 20);
+                    Direction = Direction.Rotate(Math.PI / 20);
                     break;
                 }
                 case KeyButton.None:
