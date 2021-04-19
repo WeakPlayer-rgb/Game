@@ -60,13 +60,11 @@ namespace NewGame
                     default:
                         gameModel.Car.ChangeVelocity(KeyButton.None);
                         break;
-                    //Physics.MoveCar(new Car(new Vector(2, 3), Vector.Zero, 3, 1, 2), 3, Turn.Left, 3);
                 }
-
                 label.Text = string.Format($@"{args.KeyChar}");
                 Refresh();
             };
-
+            
 
             // me
             /*KeyDown += (sender, args) =>
@@ -101,18 +99,17 @@ namespace NewGame
             var timer = new Timer {Interval = 50};
             timer.Tick += (sender, args) =>
             {
-                //gameModel.Car.ChangeVelocity(KeyButton.None);
+                //gameModel.Car.ChangeVelocity(KeyButton.None, gameModel.Car.Direction);
                 gameModel.ChangePosition();
-                Activate();
                 Refresh();
+                Activate();
             };
             Paint += (sender, args) =>
             {
                 var graphic = args.Graphics;
                 graphic.TranslateTransform((int) gameModel.Car.Position.X, (int) gameModel.Car.Position.Y);
                 graphic.RotateTransform(
-                    (float) ((float) gameModel.Car.Direction.Angle / Math.PI * 180 + 90)
-                    /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
+                    (float) ((float) gameModel.Car.Direction.Angle / Math.PI * 180+90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
                 graphic.DrawImage(car, -14, -25);
                 graphic.TranslateTransform(-(int) gameModel.Car.Position.X, -(int) gameModel.Car.Position.Y);
 
