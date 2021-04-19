@@ -16,7 +16,6 @@ namespace NewGame
             Position = p;
             angle = 0;
             velocity = Direction.Length;
-            //Direction =  
         }
 
         public string GetImage() => "car.png";
@@ -29,16 +28,12 @@ namespace NewGame
             {
                 case KeyButton.Left:
                 {
-                    //Direction += Direction.Rotate(-Math.PI / 30);
                     angle -= Math.PI / 30;
-                    //Direction.Angle += angle;
-                    //Direction += angle;
                     break;
                 }
                 case KeyButton.Right:
                 {
                     angle += Math.PI / 30;
-                    //Direction = Direction.Rotate(Math.PI / 30);
                     break;
                 }
                 case KeyButton.None:
@@ -68,7 +63,7 @@ namespace NewGame
                     }
                     else if (velocity > 0) velocity *= 0.6;
                     if (velocity <= -10) velocity = -10;
-                    //if (Direction.X-1e-3<=0 || Direction.Y-1e-3<=0) Direction=Vector.Zero;
+
                     break;
                 }
                 case KeyButton.Forward:
@@ -82,17 +77,22 @@ namespace NewGame
                         velocity = 0;
                     }
 
-                    if (velocity > 0 && velocity < 10)
-                    {
-                        velocity *= 3;
-                    }
+                    else
+                        switch (velocity)
+                        {
+                            case > 0 and < 10:
+                                velocity *= 3;
+                                break;
+                            case >= 10:
+                                velocity = 10;
+                                break;
+                        }
 
-                    if (velocity >= 10) velocity = 10;
                     break;
                 }
                 case KeyButton.None:
                     velocity *= 0.95;
-                    if (velocity < 1 && velocity > 1) velocity = 0;
+                    if (velocity is < 1 and > -1) velocity = 0;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ctrl), ctrl, null);
