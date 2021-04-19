@@ -6,7 +6,10 @@ namespace NewGame
     {
         public Vector Position { get; set; }
         public Vector Direction { get; set; }
+        public Vector Speed { get; set; }
         public double Health { get; set; }
+        private double angle;
+        private double velocity;
 
         public Player(Vector p)
         {
@@ -24,12 +27,12 @@ namespace NewGame
             {
                 case KeyButton.Left:
                 {
-                    Direction = Direction.Rotate(-Math.PI / 20);
+                    Direction = Direction.Rotate(-Math.PI / 30);
                     break;
                 }
                 case KeyButton.Right:
                 {
-                    Direction = Direction.Rotate(Math.PI / 20);
+                    Direction = Direction.Rotate(Math.PI / 30);
                     break;
                 }
                 case KeyButton.None:
@@ -58,12 +61,10 @@ namespace NewGame
                         if (Equals(Direction, Vector.Zero)) Direction += new Vector(Direction.X, Direction.Y);
                         Direction *= 3;
                     }
-                    
-
                     break;
                 }
                 case KeyButton.None:
-                    Direction *= 0.96;
+                    Direction *= 0.4;
                     if ((Direction - new Vector(0.5, 0.5)).Length < 0) Direction = Vector.Zero;
                     break;
                 default:

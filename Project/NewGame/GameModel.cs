@@ -12,7 +12,7 @@ namespace NewGame
         {
             size = s;
             Map = new IGameObject[size, size];
-            Car = new Player(new Vector(size/2,size/2));
+            Car = new Player(new Vector(500,500));
             Map[(int) Car.Position.X, (int) Car.Position.Y] = Car;
         }
 

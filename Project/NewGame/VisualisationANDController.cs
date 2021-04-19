@@ -39,29 +39,28 @@ namespace NewGame
              //TODO: keyPress is just one repeatable action. KeyDown needed.
             KeyPress += (sender, args) =>
             {
-                if (args.KeyChar == '.')
+                switch (args.KeyChar)
                 {
-                    gameModel.Car.Position = new Vector(500, 500);
-                    gameModel.Car.Direction = new Vector(-10, -5);
+                    case '.':
+                        gameModel.Car.Position = new Vector(500, 500);
+                        gameModel.Car.Direction = new Vector(-10, -5);
+                        break;
+                    case 'W' or 'w':
+                        gameModel.Car.ChangeVelocity(KeyButton.Forward);
+                        break;
+                    case 'S' or 's':
+                        gameModel.Car.ChangeVelocity(KeyButton.Backward);
+                        break;
+                    case 'A' or 'a':
+                        gameModel.Car.ChangeDirection(KeyButton.Left);
+                        break;
+                    case 'D' or 'd':
+                        gameModel.Car.ChangeDirection(KeyButton.Right);
+                        break;
+                    default:
+                        gameModel.Car.ChangeVelocity(KeyButton.None);
+                        break;
                 }
-                if (args.KeyChar is 'W' or 'w')
-                {
-                    gameModel.Car.ChangeVelocity(KeyButton.Forward);
-                }
-                else if (args.KeyChar is 'S' or 's')
-                {
-                    gameModel.Car.ChangeVelocity(KeyButton.Backward);
-                }
-                if (args.KeyChar is 'A' or 'a')
-                {
-                    gameModel.Car.ChangeDirection(KeyButton.Left);
-                }
-                else if (args.KeyChar is 'D' or 'd')
-                {
-                    gameModel.Car.ChangeDirection(KeyButton.Right);
-                }
-
-                //Physics.MoveCar(new Car(new Vector(2, 3), Vector.Zero, 3, 1, 2), 3, Turn.Left, 3);
                 label.Text = string.Format($@"{args.KeyChar}");
                 Refresh();
             };
@@ -102,8 +101,8 @@ namespace NewGame
             {
                 //gameModel.Car.ChangeVelocity(KeyButton.None, gameModel.Car.Direction);
                 gameModel.ChangePosition();
-                Activate();
                 Refresh();
+                Activate();
             };
             Paint += (sender, args) =>
             {
