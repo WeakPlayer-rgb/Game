@@ -22,20 +22,9 @@ namespace NewGame
             KeyPreview = true;
             standardPhysics = new Physics();
             DoubleBuffered = true;
+            var none = true;
             var label = new Label {Location = new Point(500, 500), MaximumSize = ClientSize};
-            // var button = new Button
-            // {
-            //     Location = new Point(0,0),
-            //     Text = @"Back!"
-            // };
-            // Controls.Add(button);
-            // button.Click += (_, _) =>
-            // {
-            //     Program.Context.MainForm = new Menu();
-            //     Close();
-            //     Program.Context.MainForm.Show();
-            // };
-
+            var queue = new Queue<int>();
              //TODO: keyPress is just one repeatable action. KeyDown needed.
             KeyPress += (sender, args) =>
             {
@@ -61,45 +50,47 @@ namespace NewGame
                         gameModel.Car.ChangeVelocity(KeyButton.None);
                         break;
                 }
-                label.Text = string.Format($@"{args.KeyChar}");
+                none = false;
+                label.Text += string.Format($@"{args.KeyChar}");
                 Refresh();
             };
-            
-
             // me
-            /*KeyDown += (sender, args) =>
-            {
-                //65, 83, 68, 190
-                switch (args.KeyValue)
-                {
-                    case 190:
-                        gameModel.Car.Position = new Vector(500, 500);
-                        gameModel.Car.Direction = new Vector(-10, -5);
-                        break;
-                    case 87:
-                        gameModel.Car.ChangeVelocity(KeyButton.Forward);
-                        break;
-                    case 83:
-                        gameModel.Car.ChangeVelocity(KeyButton.Backward);
-                        break;
-                    case 65:
-                        gameModel.Car.ChangeDirection(KeyButton.Left);
-                        break;
-                    case 68:
-                        gameModel.Car.ChangeDirection(KeyButton.Right);
-                        break;
-                    default:gameModel.Car.ChangeVelocity(KeyButton.None);
-                        break;
-                }
-
-                //Physics.MoveCar(new Car(new Vector(2, 3), Vector.Zero, 3, 1, 2), 3, Turn.Left, 3);
-                label.Text = string.Format($@"{args.KeyValue}");
-                Refresh();
-            };*/
+             // KeyDown += (sender, args) =>
+             // {
+             //     //65, 83, 68, 190
+             //     switch (args.KeyValue)
+             //     {
+             //         case 190:
+             //             gameModel.Car.Position = new Vector(500, 500);
+             //             gameModel.Car.Direction = new Vector(-10, -5);
+             //             break;
+             //         case 87:
+             //             gameModel.Car.ChangeVelocity(KeyButton.Forward);
+             //             break;
+             //         case 83:
+             //             gameModel.Car.ChangeVelocity(KeyButton.Backward);
+             //             break;
+             //         case 65:
+             //             gameModel.Car.ChangeDirection(KeyButton.Left);
+             //             break;
+             //         case 68:
+             //             gameModel.Car.ChangeDirection(KeyButton.Right);
+             //             break;
+             //         default:gameModel.Car.ChangeVelocity(KeyButton.None);
+             //             break;
+             //     }
+             //
+             //     //Physics.MoveCar(new Car(new Vector(2, 3), Vector.Zero, 3, 1, 2), 3, Turn.Left, 3);
+             //     label.Text = string.Format($@"{args.KeyValue}");
+             //     Refresh();
+             // };
+             
             var timer = new Timer {Interval = 50};
             timer.Tick += (sender, args) =>
             {
                 //gameModel.Car.ChangeVelocity(KeyButton.None, gameModel.Car.Direction);
+                if(none)gameModel.Car.ChangeVelocity(KeyButton.None);
+                none = true;
                 gameModel.ChangePosition();
                 Refresh();
                 Activate();

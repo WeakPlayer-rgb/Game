@@ -56,7 +56,7 @@ namespace NewGame
                 case KeyButton.Forward:
                 {
                     
-                    if (Direction.Length < 1)
+                    if (Direction.Length < 5)
                     {
                         if (Equals(Direction, Vector.Zero)) Direction += new Vector(Direction.X, Direction.Y);
                         Direction *= 3;
@@ -64,7 +64,7 @@ namespace NewGame
                     break;
                 }
                 case KeyButton.None:
-                    Direction *= 0.4;
+                    Direction *= 0.95;
                     if ((Direction - new Vector(0.5, 0.5)).Length < 0) Direction = Vector.Zero;
                     break;
                 default:
