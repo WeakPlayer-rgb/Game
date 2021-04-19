@@ -36,7 +36,7 @@ namespace NewGame
             //     Program.Context.MainForm.Show();
             // };
 
-            /* TODO: keyPress is just one repeatable action. KeyDown needed.
+             //TODO: keyPress is just one repeatable action. KeyDown needed.
             KeyPress += (sender, args) =>
             {
                 if (args.KeyChar == '.')
@@ -65,10 +65,10 @@ namespace NewGame
                 label.Text = string.Format($@"{args.KeyChar}");
                 Refresh();
             };
-            */
+            
 
             // me
-            KeyDown += (sender, args) =>
+            /*KeyDown += (sender, args) =>
             {
                 //65, 83, 68, 190
                 switch (args.KeyValue)
@@ -78,10 +78,10 @@ namespace NewGame
                         gameModel.Car.Direction = new Vector(-10, -5);
                         break;
                     case 87:
-                        gameModel.Car.ChangeVelocity(KeyButton.Forward, gameModel.Car.Direction);
+                        gameModel.Car.ChangeVelocity(KeyButton.Forward);
                         break;
                     case 83:
-                        gameModel.Car.ChangeVelocity(KeyButton.Backward, gameModel.Car.Direction);
+                        gameModel.Car.ChangeVelocity(KeyButton.Backward);
                         break;
                     case 65:
                         gameModel.Car.ChangeDirection(KeyButton.Left);
@@ -89,16 +89,18 @@ namespace NewGame
                     case 68:
                         gameModel.Car.ChangeDirection(KeyButton.Right);
                         break;
+                    default:gameModel.Car.ChangeVelocity(KeyButton.None);
+                        break;
                 }
 
                 //Physics.MoveCar(new Car(new Vector(2, 3), Vector.Zero, 3, 1, 2), 3, Turn.Left, 3);
                 label.Text = string.Format($@"{args.KeyValue}");
                 Refresh();
-            };
+            };*/
             var timer = new Timer {Interval = 50};
             timer.Tick += (sender, args) =>
             {
-                gameModel.Car.ChangeVelocity(KeyButton.None, gameModel.Car.Direction);
+                //gameModel.Car.ChangeVelocity(KeyButton.None, gameModel.Car.Direction);
                 gameModel.ChangePosition();
                 Activate();
                 Refresh();
