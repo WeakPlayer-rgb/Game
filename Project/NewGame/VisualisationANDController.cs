@@ -32,7 +32,7 @@ namespace NewGame
                 {
                     case '.':
                         gameModel.Car.Position = new Vector(500, 500);
-                        gameModel.Car.Direction = new Vector(-10, -5);
+                        //gameModel.Car.Direction = new Vector(-10, -5);
                         break;
                     case 'W' or 'w':
                         gameModel.Car.ChangeVelocity(KeyButton.Forward);

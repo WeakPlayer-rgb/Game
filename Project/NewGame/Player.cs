@@ -58,20 +58,17 @@ namespace NewGame
                     {
                         velocity -= 1;
                     }
-                    if (velocity - 1 <= 0)
+                    else if (velocity is < 1 and > 0)
                     {
                         velocity = 0;
                     }
-
-                    if (velocity < 0)
+                    else if (velocity < 0)
                     {
                         velocity *= 3;
                     }
-
+                    else if (velocity > 0) velocity *= 0.6;
                     if (velocity <= -10) velocity = -10;
-                    if (velocity > 0) velocity *= 0.6;
                     //if (Direction.X-1e-3<=0 || Direction.Y-1e-3<=0) Direction=Vector.Zero;
-                    
                     break;
                 }
                 case KeyButton.Forward:
@@ -94,8 +91,8 @@ namespace NewGame
                     break;
                 }
                 case KeyButton.None:
-                    velocity *= 0.4;
-                    if (velocity < 1) velocity = 0;
+                    velocity *= 0.95;
+                    if (velocity < 1 && velocity > 1) velocity = 0;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ctrl), ctrl, null);
