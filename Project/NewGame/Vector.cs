@@ -15,8 +15,7 @@ namespace NewGame
             X = x;
             Y = y;
         }
-
-
+        
         public Vector(Vector v)
         {
             X = v.X;

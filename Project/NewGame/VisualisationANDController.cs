@@ -23,20 +23,64 @@ namespace NewGame
             standardPhysics = new Physics();
             DoubleBuffered = true;
             var label = new Label {Location = new Point(500, 500), MaximumSize = ClientSize};
-            // var button = new Button
-            // {
-            //     Location = new Point(0,0),
-            //     Text = @"Back!"
-            // };
-            // Controls.Add(button);
-            // button.Click += (_, _) =>
-            // {
-            //     Program.Context.MainForm = new Menu();
-            //     Close();
-            //     Program.Context.MainForm.Show();
-            // };
 
-            //TODO: keyPress is just one repeatable action. KeyDown needed.
+            KeyPressMethod(label);
+            // me
+            KeyDownMethod(label);
+
+            var timer = Timer();
+
+            PaintMethod();
+
+            InitializeComponent();
+            Controls.Add(label);
+            timer.Start();
+        }
+
+        private Timer Timer()
+        {
+            var timer = new Timer {Interval = 50};
+            timer.Tick += (sender, args) =>
+            {
+                //gameModel.Car.ChangeVelocity(KeyButton.None, gameModel.Car.Direction);
+                gameModel.ChangePosition();
+                Refresh();
+                Activate();
+            };
+            return timer;
+        }
+
+        private void PaintMethod()
+        {
+            Paint += (sender, args) =>
+            {
+                var graphic = args.Graphics;
+                graphic.TranslateTransform((int) gameModel.Car.Position.X, (int) gameModel.Car.Position.Y);
+                graphic.RotateTransform(
+                    (float) ((float) gameModel.Car.Direction.Angle / Math.PI * 180 +
+                             90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
+                graphic.DrawImage(car, -14, -25);
+                graphic.TranslateTransform(-(int) gameModel.Car.Position.X, -(int) gameModel.Car.Position.Y);
+
+                // for (var y =(int) game.Car.Position.Y - ClientSize.Height / 2;
+                //     y < game.Car.Position.Y + ClientSize.Height / 2;
+                //     y++)
+                // {
+                //     for (var x =(int) game.Car.Position.X - ClientSize.Width / 2;
+                //         x < game.Car.Position.X + ClientSize.Width / 2;
+                //         x++)
+                //     {
+                //         if (game.Map[y, x] != null)
+                //         {
+                //             
+                //         }
+                //     }
+                // }
+            };
+        }
+
+        private void KeyPressMethod(Label label)
+        {
             KeyPress += (sender, args) =>
             {
                 switch (args.KeyChar)
@@ -61,13 +105,15 @@ namespace NewGame
                         gameModel.Car.ChangeVelocity(KeyButton.None);
                         break;
                 }
+
                 label.Text = string.Format($@"{args.KeyChar}");
                 Refresh();
             };
-            
+        }
 
-            // me
-            /*KeyDown += (sender, args) =>
+        private void KeyDownMethod(Label label)
+        {
+            KeyDown += (sender, args) =>
             {
                 //65, 83, 68, 190
                 switch (args.KeyValue)
@@ -88,49 +134,15 @@ namespace NewGame
                     case 68:
                         gameModel.Car.ChangeDirection(KeyButton.Right);
                         break;
-                    default:gameModel.Car.ChangeVelocity(KeyButton.None);
+                    default:
+                        gameModel.Car.ChangeVelocity(KeyButton.None);
                         break;
                 }
 
                 //Physics.MoveCar(new Car(new Vector(2, 3), Vector.Zero, 3, 1, 2), 3, Turn.Left, 3);
                 label.Text = string.Format($@"{args.KeyValue}");
                 Refresh();
-            };*/
-            var timer = new Timer {Interval = 50};
-            timer.Tick += (sender, args) =>
-            {
-                //gameModel.Car.ChangeVelocity(KeyButton.None, gameModel.Car.Direction);
-                gameModel.ChangePosition();
-                Refresh();
-                Activate();
             };
-            Paint += (sender, args) =>
-            {
-                var graphic = args.Graphics;
-                graphic.TranslateTransform((int) gameModel.Car.Position.X, (int) gameModel.Car.Position.Y);
-                graphic.RotateTransform(
-                    (float) ((float) gameModel.Car.Direction.Angle / Math.PI * 180+90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
-                graphic.DrawImage(car, -14, -25);
-                graphic.TranslateTransform(-(int) gameModel.Car.Position.X, -(int) gameModel.Car.Position.Y);
-
-                // for (var y =(int) game.Car.Position.Y - ClientSize.Height / 2;
-                //     y < game.Car.Position.Y + ClientSize.Height / 2;
-                //     y++)
-                // {
-                //     for (var x =(int) game.Car.Position.X - ClientSize.Width / 2;
-                //         x < game.Car.Position.X + ClientSize.Width / 2;
-                //         x++)
-                //     {
-                //         if (game.Map[y, x] != null)
-                //         {
-                //             
-                //         }
-                //     }
-                // }
-            };
-            InitializeComponent();
-            Controls.Add(label);
-            timer.Start();
         }
     }
 }

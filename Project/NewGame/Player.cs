@@ -15,6 +15,8 @@ namespace NewGame
         {
             Direction = Vector.Zero;
             Position = p;
+            angle = Direction.Angle;
+            velocity = Direction.Length;
         }
 
         public string GetImage() => "car.png";
@@ -27,7 +29,8 @@ namespace NewGame
             {
                 case KeyButton.Left:
                 {
-                    Direction = Direction.Rotate(-Math.PI / 30);
+                    Direction += Direction.Rotate(-Math.PI / 30);
+                    //Direction += angle;
                     break;
                 }
                 case KeyButton.Right:
