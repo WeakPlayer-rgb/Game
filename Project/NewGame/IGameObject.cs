@@ -2,7 +2,7 @@
 {
     public interface IGameObject
     {
-        Vector Direction { get; set; }
+        Vector Direction { get;  }
         double Health { get; set; }
         string GetImage();
         int DrawPriority(int priority);

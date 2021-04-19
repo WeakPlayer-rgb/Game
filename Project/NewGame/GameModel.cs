@@ -16,6 +16,6 @@ namespace NewGame
             Map[(int) Car.Position.X, (int) Car.Position.Y] = Car;
         }
 
-        public void ChangePosition() => Car.Position += Car.Direction;
+        public void ChangePosition() => Car.Position += Car.Speed;
     }
 }

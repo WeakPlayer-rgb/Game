@@ -26,7 +26,7 @@ namespace NewGame
 
             KeyPressMethod(label);
             // me
-            KeyDownMethod(label);
+            //KeyDownMethod(label);
 
             var timer = Timer();
 
@@ -87,7 +87,7 @@ namespace NewGame
                 {
                     case '.':
                         gameModel.Car.Position = new Vector(500, 500);
-                        gameModel.Car.Direction = new Vector(-10, -5);
+                        //gameModel.Car.Direction = new Vector(-10, -5);
                         break;
                     case 'W' or 'w':
                         gameModel.Car.ChangeVelocity(KeyButton.Forward);
@@ -120,7 +120,7 @@ namespace NewGame
                 {
                     case 190:
                         gameModel.Car.Position = new Vector(500, 500);
-                        gameModel.Car.Direction = new Vector(-10, -5);
+                        //gameModel.Car.Direction = new Vector(-10, -5);
                         break;
                     case 87:
                         gameModel.Car.ChangeVelocity(KeyButton.Forward);

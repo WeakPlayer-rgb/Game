@@ -5,18 +5,18 @@ namespace NewGame
     public class Player : IGameObject
     {
         public Vector Position { get; set; }
-        public Vector Direction { get; set; }
-        public Vector Speed { get; set; }
+        public Vector Direction => new Vector(1, 0).Rotate(angle);
+        public Vector Speed => new Vector(Direction.X, Direction.Y) * velocity;
         public double Health { get; set; }
         private double angle;
         private double velocity;
 
         public Player(Vector p)
         {
-            Direction = Vector.Zero;
             Position = p;
-            angle = Direction.Angle;
+            angle = 0;
             velocity = Direction.Length;
+            //Direction =  
         }
 
         public string GetImage() => "car.png";
@@ -29,13 +29,16 @@ namespace NewGame
             {
                 case KeyButton.Left:
                 {
-                    Direction += Direction.Rotate(-Math.PI / 30);
+                    //Direction += Direction.Rotate(-Math.PI / 30);
+                    angle -= Math.PI / 30;
+                    //Direction.Angle += angle;
                     //Direction += angle;
                     break;
                 }
                 case KeyButton.Right:
                 {
-                    Direction = Direction.Rotate(Math.PI / 30);
+                    angle += Math.PI / 30;
+                    //Direction = Direction.Rotate(Math.PI / 30);
                     break;
                 }
                 case KeyButton.None:
@@ -51,24 +54,48 @@ namespace NewGame
             {
                 case KeyButton.Backward:
                 {
-                    if (Direction.Length - 1 <= 0) Direction *= -3;
+                    if (velocity == 0)
+                    {
+                        velocity -= 1;
+                    }
+                    if (velocity - 1 <= 0)
+                    {
+                        velocity = 0;
+                    }
+
+                    if (velocity < 0)
+                    {
+                        velocity *= 3;
+                    }
+
+                    if (velocity <= -10) velocity = -10;
+                    if (velocity > 0) velocity *= 0.6;
                     //if (Direction.X-1e-3<=0 || Direction.Y-1e-3<=0) Direction=Vector.Zero;
-                    else Direction = 0.5 * Direction;
+                    
                     break;
                 }
                 case KeyButton.Forward:
                 {
-                    
-                    if (Direction.Length < 1)
+                    if (velocity == 0)
                     {
-                        if (Equals(Direction, Vector.Zero)) Direction += new Vector(Direction.X, Direction.Y);
-                        Direction *= 3;
+                        velocity += 1;
                     }
+                    else if (velocity + 1 <= 0)
+                    {
+                        velocity = 0;
+                    }
+
+                    if (velocity > 0 && velocity < 10)
+                    {
+                        velocity *= 3;
+                    }
+
+                    if (velocity >= 10) velocity = 10;
                     break;
                 }
                 case KeyButton.None:
-                    Direction *= 0.4;
-                    if ((Direction - new Vector(0.5, 0.5)).Length < 0) Direction = Vector.Zero;
+                    velocity *= 0.4;
+                    if (velocity < 1) velocity = 0;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ctrl), ctrl, null);
