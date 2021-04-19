@@ -39,7 +39,7 @@ namespace NewGame
             }
         }
 
-        public void ChangeVelocity(KeyButton ctrl, Vector currentDir)
+        public void ChangeVelocity(KeyButton ctrl)
         {
             switch (ctrl)
             {
@@ -47,16 +47,18 @@ namespace NewGame
                 {
                     if (Direction.Length - 1 <= 0) Direction *= -3;
                     //if (Direction.X-1e-3<=0 || Direction.Y-1e-3<=0) Direction=Vector.Zero;
-                    else Direction = 0.5 * currentDir;
+                    else Direction = 0.5 * Direction;
                     break;
                 }
                 case KeyButton.Forward:
                 {
-                    if (Direction.Length < 10)
+                    
+                    if (Direction.Length < 1)
                     {
-                        if (Equals(Direction, Vector.Zero)) Direction += new Vector(currentDir.X, currentDir.Y);
+                        if (Equals(Direction, Vector.Zero)) Direction += new Vector(Direction.X, Direction.Y);
                         Direction *= 3;
                     }
+                    
 
                     break;
                 }

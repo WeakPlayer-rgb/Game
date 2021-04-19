@@ -7,6 +7,6 @@
         string GetImage();
         int DrawPriority(int priority);
         void ChangeDirection(KeyButton ctrl);
-        void ChangeVelocity(KeyButton ctrl, Vector vector);
+        void ChangeVelocity(KeyButton ctrl);
     }
 }
