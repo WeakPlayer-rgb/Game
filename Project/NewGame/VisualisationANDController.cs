@@ -108,8 +108,7 @@ namespace NewGame
                 var graphic = args.Graphics;
                 graphic.TranslateTransform((int) gameModel.Car.Position.X, (int) gameModel.Car.Position.Y);
                 graphic.RotateTransform(
-                    (float) ((float) gameModel.Car.Direction.Angle / Math.PI * 180 +
-                             90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
+                    (float) ((float) gameModel.Car.Direction.Angle / Math.PI * 180+90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
                 graphic.DrawImage(car, -14, -25);
                 graphic.TranslateTransform(-(int) gameModel.Car.Position.X, -(int) gameModel.Car.Position.Y);
 
