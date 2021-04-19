@@ -15,8 +15,7 @@ namespace NewGame
             X = x;
             Y = y;
         }
-
-
+        
         public Vector(Vector v)
         {
             X = v.X;
@@ -24,7 +23,12 @@ namespace NewGame
         }
 
         public double Length => Math.Sqrt(X * X + Y * Y);
-        public double Angle => Math.Atan2(Y, X);
+        public double Angle
+        {
+            get => Math.Atan2(Y, X);
+            //internal set => Angle = value;
+        }
+        
 
         public static bool DoubleEquals(double a, double b)
         {
