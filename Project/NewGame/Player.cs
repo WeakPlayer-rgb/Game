@@ -58,7 +58,6 @@ namespace NewGame
                         if (Equals(Direction, Vector.Zero)) Direction += new Vector(Direction.X, Direction.Y);
                         Direction *= 3;
                     }
-                    
 
                     break;
                 }
