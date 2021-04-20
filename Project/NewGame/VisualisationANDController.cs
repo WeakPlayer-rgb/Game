@@ -76,7 +76,7 @@ namespace NewGame
                 }
             };
 
-            var timer = new Timer { Interval = 20 };
+            var timer = new Timer { Interval = 100 };
             timer.Tick += (sender, args) =>
             {
                 ReactOnControl(gameModel);
@@ -86,15 +86,15 @@ namespace NewGame
             Paint += (sender, args) =>
             {
                 var graphic = args.Graphics;
-                for (int x = 0; x < ClientSize.Width; x += 96)
-                for (int y = 0; y < ClientSize.Height; y += 96)
-                    graphic.DrawImage(image.grass, new Point(x, y));
+                for (int x = 0; x < ClientSize.Width; x += 32)
+                    for (int y = 0; y < ClientSize.Height; y += 32)
+                        graphic.DrawImage(image.grass, new Point(x, y));
                 graphic.TranslateTransform((int)gameModel.Car.Position.X, (int)gameModel.Car.Position.Y);
                 graphic.RotateTransform(
                     (float)((float)gameModel.Car.Direction.Angle / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
                 graphic.DrawImage(gameModel.Car.GetImage(), -14, -25);
                 graphic.TranslateTransform(-(int)gameModel.Car.Position.X, -(int)gameModel.Car.Position.Y);
-                
+
 
             };
             InitializeComponent();
