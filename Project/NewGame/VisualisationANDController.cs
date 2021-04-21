@@ -88,20 +88,18 @@ namespace NewGame
                 gameModel.ChangePosition();
                 Refresh();
             };
-            
+
 
             Paint += (sender, args) =>
             {
                 var graphic = args.Graphics;
-                
                 graphic.DrawImage(grass, new Point(0, 0));
                 graphic.TranslateTransform((int)gameModel.Car.Position.X, (int)gameModel.Car.Position.Y);
                 graphic.RotateTransform(
                     (float)((float)gameModel.Car.Direction.Angle / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
                 graphic.DrawImage(gameModel.Car.GetImage(), -14, -25);
                 graphic.TranslateTransform(-(int)gameModel.Car.Position.X, -(int)gameModel.Car.Position.Y);
-
-
+                graphic.ResetTransform();
             };
             InitializeComponent();
             timer.Start();
@@ -117,22 +115,22 @@ namespace NewGame
         private Bitmap CreatLine(Image grass, int width, int height)
         {
             if (width < grass.Width) return (Bitmap)grass;
-            var Image = CreatLine(grass, width / 2, height);
+            var Image = CreatLine(grass, width / 2, height);    
             var outputImage = new Bitmap(Image.Width * 2, grass.Height);
-            using Graphics graphics = Graphics.FromImage(outputImage);
+            Graphics graphics = Graphics.FromImage(outputImage);
             graphics.DrawImage(Image, new Point(0, 0));
-            graphics.DrawImage(Image,new Point(Image.Width,0));
+            graphics.DrawImage(Image, new Point(Image.Width, 0));
             return outputImage;
         }
 
         private Bitmap CreateColumn(Image grass, int width, int height)
         {
-            if (height < grass.Height) return (Bitmap) grass;
+            if (height < grass.Height) return (Bitmap)grass;
             var Image = CreateColumn(grass, width, height / 2);
             var outputImage = new Bitmap(width, Image.Height * 2);
-            using Graphics graphics = Graphics.FromImage(outputImage);
-            graphics.DrawImage(Image,new Point(0,0));
-            graphics.DrawImage(Image,new Point(0,Image.Height));
+            Graphics graphics = Graphics.FromImage(outputImage);
+            graphics.DrawImage(Image, new Point(0, 0));
+            graphics.DrawImage(Image, new Point(0, Image.Height));
             return outputImage;
         }
 
