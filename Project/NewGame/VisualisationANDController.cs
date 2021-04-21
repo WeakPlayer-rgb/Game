@@ -94,12 +94,13 @@ namespace NewGame
             {
                 var graphic = args.Graphics;
                 graphic.DrawImage(grass, new Point(-(int)gameModel.Car.Position.X%32-32, -(int)gameModel.Car.Position.Y%32-32));
-                graphic.TranslateTransform((int)ClientSize.Width/2, (int)ClientSize.Height/2);
+                
+                graphic.TranslateTransform(ClientSize.Width / 2, ClientSize.Height / 2);
                 graphic.RotateTransform(
                     (float)((float)gameModel.Car.Direction / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
-                graphic.DrawImage(gameModel.Car.GetImage(), -14, -25);
-                graphic.FillEllipse(Brushes.Coral, 0, 0, 2, 2);
-                graphic.TranslateTransform(-(int)ClientSize.Width / 2, -(int)ClientSize.Height / 2);
+                graphic.DrawImage(gameModel.Car.GetImage(), -17, -30);
+                //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
+                graphic.TranslateTransform(-ClientSize.Width / 2, -ClientSize.Height / 2);
                 graphic.ResetTransform();
             };
             InitializeComponent();

@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Car.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="GameModel.cs" />
     <Compile Include="IGameObject.cs" />
     <Compile Include="KeyButton.cs" />
@@ -113,7 +114,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CustomToolNamespace>NewGame\bin\Release</CustomToolNamespace>
     </Content>
-    <None Include="Images\car1.png" />
+    <None Include="Images\car1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CustomToolNamespace>NewGame\bin\release</CustomToolNamespace>
+    </None>
     <None Include="Resources\car1.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

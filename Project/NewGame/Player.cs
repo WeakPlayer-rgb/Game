@@ -21,7 +21,7 @@ namespace NewGame
             //Direction =  
         }
 
-        public Image GetImage() => Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "test.png"));
+        public Image GetImage() => Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "car1.png"));
 
         public int DrawPriority(int priority) => 0;
 
