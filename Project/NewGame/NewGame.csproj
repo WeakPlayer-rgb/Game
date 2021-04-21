@@ -50,11 +50,6 @@
     <Compile Include="Car.cs" />
     <Compile Include="GameModel.cs" />
     <Compile Include="IGameObject.cs" />
-    <Compile Include="image.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>image.resx</DependentUpon>
-    </Compile>
     <Compile Include="KeyButton.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="VisualisationANDController.cs">
@@ -80,10 +75,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Turn.cs" />
     <Compile Include="Vector.cs" />
-    <EmbeddedResource Include="image.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>image.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="VisualisationANDController.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -109,10 +100,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ideas.txt" />
-    <Content Include="Images\car.png" />
-    <None Include="Images\grass.png" />
+    <Content Include="Images\car.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Generator>NewGame\bin\Release</Generator>
+    </Content>
+    <Content Include="Images\grass.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CustomToolNamespace>NewGame\bin\Release</CustomToolNamespace>
+    </Content>
     <Content Include="Resources\grass.png" />
-    <None Include="Images\test.png" />
+    <Content Include="Images\test.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CustomToolNamespace>NewGame\bin\Release</CustomToolNamespace>
+    </Content>
     <None Include="Images\car1.png" />
     <None Include="Resources\car1.bmp" />
   </ItemGroup>

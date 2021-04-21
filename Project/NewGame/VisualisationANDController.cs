@@ -6,7 +6,10 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Remoting.Channels;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms.PropertyGridInternal;
+using static System.Drawing.Bitmap;
+
 // ReSharper disable All
 
 namespace NewGame
@@ -18,15 +21,17 @@ namespace NewGame
     {
         private GameModel gameModel;
         private Physics standardPhysics;
-        private readonly Bitmap car = image.test;
         private bool isWdown = false;
         private bool isAdown = false;
         private bool isDdown = false;
         private bool isSdown = false;
-
+        private Image grass;
         public VisualisationAndController(GameModel g)
         {
             Activate();
+            var PathToGrass = Path.Combine(Directory.GetCurrentDirectory(), "Images", "grass.png");
+            var bmp = Image.FromFile(PathToGrass);
+            var Grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
             gameModel = g;
             KeyPreview = true;
             standardPhysics = new Physics();
@@ -76,19 +81,20 @@ namespace NewGame
                 }
             };
 
-            var timer = new Timer { Interval = 100 };
+            var timer = new Timer { Interval = 5 };
             timer.Tick += (sender, args) =>
             {
                 ReactOnControl(gameModel);
                 gameModel.ChangePosition();
                 Refresh();
             };
+            
+
             Paint += (sender, args) =>
             {
                 var graphic = args.Graphics;
-                for (int x = 0; x < ClientSize.Width; x += 32)
-                    for (int y = 0; y < ClientSize.Height; y += 32)
-                        graphic.DrawImage(image.grass, new Point(x, y));
+                
+                graphic.DrawImage(grass, new Point(0, 0));
                 graphic.TranslateTransform((int)gameModel.Car.Position.X, (int)gameModel.Car.Position.Y);
                 graphic.RotateTransform(
                     (float)((float)gameModel.Car.Direction.Angle / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
@@ -99,6 +105,35 @@ namespace NewGame
             };
             InitializeComponent();
             timer.Start();
+        }
+
+        protected override void OnClientSizeChanged(EventArgs e)
+        {
+            var PathToGrass = Path.Combine(Directory.GetCurrentDirectory(), "Images", "grass.png");
+            var bmp = Image.FromFile(PathToGrass);
+            grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
+        }
+
+        private Bitmap CreatLine(Image grass, int width, int height)
+        {
+            if (width < grass.Width) return (Bitmap)grass;
+            var Image = CreatLine(grass, width / 2, height);
+            var outputImage = new Bitmap(Image.Width * 2, grass.Height);
+            using Graphics graphics = Graphics.FromImage(outputImage);
+            graphics.DrawImage(Image, new Point(0, 0));
+            graphics.DrawImage(Image,new Point(Image.Width,0));
+            return outputImage;
+        }
+
+        private Bitmap CreateColumn(Image grass, int width, int height)
+        {
+            if (height < grass.Height) return (Bitmap) grass;
+            var Image = CreateColumn(grass, width, height / 2);
+            var outputImage = new Bitmap(width, Image.Height * 2);
+            using Graphics graphics = Graphics.FromImage(outputImage);
+            graphics.DrawImage(Image,new Point(0,0));
+            graphics.DrawImage(Image,new Point(0,Image.Height));
+            return outputImage;
         }
 
         void ReactOnControl(GameModel game)

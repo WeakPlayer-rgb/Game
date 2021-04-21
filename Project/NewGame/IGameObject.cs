@@ -7,7 +7,7 @@ namespace NewGame
     {
         Vector Direction { get;  }
         double Health { get; set; }
-        Bitmap GetImage();
+        Image GetImage();
         int DrawPriority(int priority);
         void ChangeDirection(KeyButton ctrl);
         void ChangeVelocity(KeyButton ctrl);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 
 namespace NewGame
 {
@@ -20,7 +21,7 @@ namespace NewGame
             //Direction =  
         }
 
-        public Bitmap GetImage() => image.test;
+        public Image GetImage() => Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "test.png"));
 
         public int DrawPriority(int priority) => 0;
 
