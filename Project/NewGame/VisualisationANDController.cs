@@ -93,12 +93,13 @@ namespace NewGame
             Paint += (sender, args) =>
             {
                 var graphic = args.Graphics;
-                graphic.DrawImage(grass, new Point(0, 0));
-                graphic.TranslateTransform((int)gameModel.Car.Position.X, (int)gameModel.Car.Position.Y);
+                graphic.DrawImage(grass, new Point(-(int)gameModel.Car.Position.X%32-32, -(int)gameModel.Car.Position.Y%32-32));
+                graphic.TranslateTransform((int)ClientSize.Width/2, (int)ClientSize.Height/2);
                 graphic.RotateTransform(
-                    (float)((float)gameModel.Car.Direction.Angle / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
+                    (float)((float)gameModel.Car.Direction / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
                 graphic.DrawImage(gameModel.Car.GetImage(), -14, -25);
-                graphic.TranslateTransform(-(int)gameModel.Car.Position.X, -(int)gameModel.Car.Position.Y);
+                graphic.FillEllipse(Brushes.Coral, 0, 0, 2, 2);
+                graphic.TranslateTransform(-(int)ClientSize.Width / 2, -(int)ClientSize.Height / 2);
                 graphic.ResetTransform();
             };
             InitializeComponent();
@@ -109,7 +110,7 @@ namespace NewGame
         {
             var PathToGrass = Path.Combine(Directory.GetCurrentDirectory(), "Images", "grass.png");
             var bmp = Image.FromFile(PathToGrass);
-            grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
+            grass = CreateColumn(CreatLine(bmp, ClientSize.Width+64, ClientSize.Height+64), ClientSize.Width+64, ClientSize.Height+64);
         }
 
         private Bitmap CreatLine(Image grass, int width, int height)

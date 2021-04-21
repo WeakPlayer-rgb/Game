@@ -7,8 +7,8 @@ namespace NewGame
     public class Player : IGameObject
     {
         public Vector Position { get; set; }
-        public Vector Direction => new Vector(1, 0).Rotate(angle);
-        public Vector Speed => new Vector(Direction.X, Direction.Y) * velocity;
+        public double Direction => angle;
+        public Vector Speed => new Vector(1, 0).Rotate(Direction) * velocity;
         public double Health { get; set; }
         private double angle;
         private double velocity;
@@ -81,8 +81,8 @@ namespace NewGame
                                 velocity = 0;
                                 break;
                         }
-                        if (velocity is > 0 and < 10) velocity *= 1.07;
-                        if (velocity >= 7) velocity = 7;
+                        if (velocity is > 0 and < 8) velocity *= 1.07;
+                        if (velocity >= 8) velocity = 7;
                         break;
                     }
                 case KeyButton.None:

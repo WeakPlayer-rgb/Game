@@ -5,7 +5,7 @@ namespace NewGame
 {
     public interface IGameObject
     {
-        Vector Direction { get;  }
+        double Direction { get;  }
         double Health { get; set; }
         Image GetImage();
         int DrawPriority(int priority);
