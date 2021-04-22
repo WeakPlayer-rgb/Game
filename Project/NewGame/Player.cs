@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
 
 namespace NewGame
 {
     public class Player : IGameObject
     {
         public Vector Position { get; set; }
-        public Vector Direction => new Vector(1, 0).Rotate(angle);
-        public Vector Speed => new Vector(Direction.X, Direction.Y) * velocity;
+        public double Direction => angle;
+        public Vector Speed => new Vector(1, 0).Rotate(Direction) * velocity;
         public double Health { get; set; }
         private double angle;
         private double velocity;
@@ -15,10 +17,11 @@ namespace NewGame
         {
             Position = p;
             angle = 0;
-            velocity = Direction.Length;
+            velocity = 0;
+            //Direction =  
         }
 
-        public string GetImage() => "car.png";
+        public Image GetImage() => Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "car1.png"));
 
         public int DrawPriority(int priority) => 0;
 
@@ -27,15 +30,15 @@ namespace NewGame
             switch (ctrl)
             {
                 case KeyButton.Left:
-                {
-                    angle -= Math.PI / 30;
-                    break;
-                }
+                    {
+                        angle -= Math.PI / 40;
+                        break;
+                    }
                 case KeyButton.Right:
-                {
-                    angle += Math.PI / 30;
-                    break;
-                }
+                    {
+                        angle += Math.PI / 40;
+                        break;
+                    }
                 case KeyButton.None:
                     break;
                 default:
@@ -48,51 +51,43 @@ namespace NewGame
             switch (ctrl)
             {
                 case KeyButton.Backward:
-                {
-                    if (velocity == 0)
                     {
-                        velocity -= 1;
-                    }
-                    else if (velocity is < 1 and > 0)
-                    {
-                        velocity = 0;
-                    }
-                    else if (velocity < 0)
-                    {
-                        velocity *= 3;
-                    }
-                    else if (velocity > 0) velocity *= 0.6;
-                    if (velocity <= -10) velocity = -10;
-
-                    break;
-                }
-                case KeyButton.Forward:
-                {
-                    if (velocity == 0)
-                    {
-                        velocity += 1;
-                    }
-                    else if (velocity + 1 <= 0)
-                    {
-                        velocity = 0;
-                    }
-
-                    else
                         switch (velocity)
                         {
-                            case > 0 and < 10:
-                                velocity *= 3;
+                            case 0:
+                                velocity -= 1;
                                 break;
-                            case >= 10:
-                                velocity = 10;
+                            case < 0.25 and > 0:
+                                velocity = 0;
+                                break;
+                            case < 0:
+                                velocity *= 1.05;
+                                break;
+                            case > 0:
+                                velocity *= 0.6;
                                 break;
                         }
-
-                    break;
-                }
+                        if (velocity <= -5) velocity = -5;
+                        break;
+                    }
+                case KeyButton.Forward:
+                    {
+                        switch (velocity)
+                        {
+                            case 0:
+                                velocity += 1;
+                                break;
+                            case <= -0.25:
+                                velocity = 0;
+                                break;
+                        }
+                        if (velocity is > 0 and < 8) velocity *= 1.07;
+                        if (velocity >= 8) velocity = 7;
+                        break;
+                    }
                 case KeyButton.None:
-                    velocity *= 0.95;
-                    if (velocity is < 1 and > -1) velocity = 0;
+                    velocity *= 0.97;
+                    if (velocity is < 0.25 and > -0.25) velocity = 0;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ctrl), ctrl, null);

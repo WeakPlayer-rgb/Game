@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
+using System.Runtime.Remoting.Channels;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms.PropertyGridInternal;
+using static System.Drawing.Bitmap;
+
+// ReSharper disable All
 
 namespace NewGame
 {
@@ -14,114 +21,129 @@ namespace NewGame
     {
         private GameModel gameModel;
         private Physics standardPhysics;
-        private readonly Bitmap car = image.test;
-
+        private bool isWdown = false;
+        private bool isAdown = false;
+        private bool isDdown = false;
+        private bool isSdown = false;
+        private Image grass;
         public VisualisationAndController(GameModel g)
         {
+            Activate();
+            var PathToGrass = Path.Combine(Directory.GetCurrentDirectory(), "Images", "grass.png");
+            var bmp = Image.FromFile(PathToGrass);
+            var Grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
             gameModel = g;
             KeyPreview = true;
             standardPhysics = new Physics();
             DoubleBuffered = true;
-            var none = true;
-            var label = new Label {Location = new Point(500, 500), MaximumSize = ClientSize};
+            var label = new Label { Location = new Point(500, 500), MaximumSize = ClientSize };
             var queue = new Queue<int>();
-             //TODO: keyPress is just one repeatable action. KeyDown needed.
+            //TODO: keyPress is just one repeatable action. KeyDown needed.
             KeyPress += (sender, args) =>
             {
                 switch (args.KeyChar)
                 {
                     case '.':
                         gameModel.Car.Position = new Vector(500, 500);
-                        //gameModel.Car.Direction = new Vector(-10, -5);
                         break;
                     case 'W' or 'w':
-                        gameModel.Car.ChangeVelocity(KeyButton.Forward);
+                        isWdown = true;
                         break;
                     case 'S' or 's':
-                        gameModel.Car.ChangeVelocity(KeyButton.Backward);
+                        isSdown = true;
                         break;
                     case 'A' or 'a':
-                        gameModel.Car.ChangeDirection(KeyButton.Left);
+                        isAdown = true;
                         break;
                     case 'D' or 'd':
-                        gameModel.Car.ChangeDirection(KeyButton.Right);
-                        break;
-                    default:
-                        gameModel.Car.ChangeVelocity(KeyButton.None);
+                        isDdown = true;
                         break;
                 }
-                none = false;
-                label.Text += string.Format($@"{args.KeyChar}");
+                Activate();
                 Refresh();
             };
-            // me
-             // KeyDown += (sender, args) =>
-             // {
-             //     //65, 83, 68, 190
-             //     switch (args.KeyValue)
-             //     {
-             //         case 190:
-             //             gameModel.Car.Position = new Vector(500, 500);
-             //             gameModel.Car.Direction = new Vector(-10, -5);
-             //             break;
-             //         case 87:
-             //             gameModel.Car.ChangeVelocity(KeyButton.Forward);
-             //             break;
-             //         case 83:
-             //             gameModel.Car.ChangeVelocity(KeyButton.Backward);
-             //             break;
-             //         case 65:
-             //             gameModel.Car.ChangeDirection(KeyButton.Left);
-             //             break;
-             //         case 68:
-             //             gameModel.Car.ChangeDirection(KeyButton.Right);
-             //             break;
-             //         default:gameModel.Car.ChangeVelocity(KeyButton.None);
-             //             break;
-             //     }
-             //
-             //     //Physics.MoveCar(new Car(new Vector(2, 3), Vector.Zero, 3, 1, 2), 3, Turn.Left, 3);
-             //     label.Text = string.Format($@"{args.KeyValue}");
-             //     Refresh();
-             // };
-             
-            var timer = new Timer {Interval = 50};
+            KeyUp += (sender, args) =>
+            {
+                switch (args.KeyValue)
+                {
+                    case 'W' or 'w':
+                        isWdown = false;
+                        break;
+                    case 'D' or 'd':
+                        isDdown = false;
+                        break;
+                    case 'A' or 'a':
+                        isAdown = false;
+                        break;
+                    case 'S' or 's':
+                        isSdown = false;
+                        break;
+                }
+            };
+
+            var timer = new Timer { Interval = 5 };
             timer.Tick += (sender, args) =>
             {
-                //gameModel.Car.ChangeVelocity(KeyButton.None, gameModel.Car.Direction);
-                if(none)gameModel.Car.ChangeVelocity(KeyButton.None);
-                none = true;
+                ReactOnControl(gameModel);
                 gameModel.ChangePosition();
                 Refresh();
-                Activate();
             };
+
+
             Paint += (sender, args) =>
             {
                 var graphic = args.Graphics;
-                graphic.TranslateTransform((int) gameModel.Car.Position.X, (int) gameModel.Car.Position.Y);
+                graphic.DrawImage(grass, new Point(-(int)gameModel.Car.Position.X%32-32, -(int)gameModel.Car.Position.Y%32-32));
+                
+                graphic.TranslateTransform(ClientSize.Width / 2, ClientSize.Height / 2);
                 graphic.RotateTransform(
-                    (float) ((float) gameModel.Car.Direction.Angle / Math.PI * 180+90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
-                graphic.DrawImage(car, -14, -25);
-                graphic.TranslateTransform(-(int) gameModel.Car.Position.X, -(int) gameModel.Car.Position.Y);
-
-                // for (var y =(int) game.Car.Position.Y - ClientSize.Height / 2;
-                //     y < game.Car.Position.Y + ClientSize.Height / 2;
-                //     y++)
-                // {
-                //     for (var x =(int) game.Car.Position.X - ClientSize.Width / 2;
-                //         x < game.Car.Position.X + ClientSize.Width / 2;
-                //         x++)
-                //     {
-                //         if (game.Map[y, x] != null)
-                //         {
-                //             
-                //         }
-                //     }
-                // }
+                    (float)((float)gameModel.Car.Direction / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
+                graphic.DrawImage(gameModel.Car.GetImage(), -17, -30);
+                //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
+                graphic.TranslateTransform(-ClientSize.Width / 2, -ClientSize.Height / 2);
+                graphic.ResetTransform();
             };
             InitializeComponent();
-            Controls.Add(label);
             timer.Start();
+        }
+
+        protected override void OnClientSizeChanged(EventArgs e)
+        {
+            var PathToGrass = Path.Combine(Directory.GetCurrentDirectory(), "Images", "grass.png");
+            var bmp = Image.FromFile(PathToGrass);
+            grass = CreateColumn(CreatLine(bmp, ClientSize.Width+64, ClientSize.Height+64), ClientSize.Width+64, ClientSize.Height+64);
+        }
+
+        private Bitmap CreatLine(Image grass, int width, int height)
+        {
+            if (width < grass.Width) return (Bitmap)grass;
+            var Image = CreatLine(grass, width / 2, height);    
+            var outputImage = new Bitmap(Image.Width * 2, grass.Height);
+            Graphics graphics = Graphics.FromImage(outputImage);
+            graphics.DrawImage(Image, new Point(0, 0));
+            graphics.DrawImage(Image, new Point(Image.Width, 0));
+            return outputImage;
+        }
+
+        private Bitmap CreateColumn(Image grass, int width, int height)
+        {
+            if (height < grass.Height) return (Bitmap)grass;
+            var Image = CreateColumn(grass, width, height / 2);
+            var outputImage = new Bitmap(width, Image.Height * 2);
+            Graphics graphics = Graphics.FromImage(outputImage);
+            graphics.DrawImage(Image, new Point(0, 0));
+            graphics.DrawImage(Image, new Point(0, Image.Height));
+            return outputImage;
+        }
+
+        void ReactOnControl(GameModel game)
+        {
+            if (isWdown) game.Car.ChangeVelocity(KeyButton.Forward);
+            if (isAdown) game.Car.ChangeDirection(KeyButton.Left);
+            if (isDdown) game.Car.ChangeDirection(KeyButton.Right);
+            if (isSdown) game.Car.ChangeVelocity(KeyButton.Backward);
+            if (!isWdown && !isSdown)
+                game.Car.ChangeVelocity(KeyButton.None);
         }
     }
 }
