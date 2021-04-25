@@ -47,11 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Car.cs" />
     <Compile Include="GameModel.cs" />
     <Compile Include="IGameObject.cs" />
     <Compile Include="KeyButton.cs" />
-    <Compile Include="Level.cs" />
     <Compile Include="VisualisationANDController.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,7 +67,6 @@
     <Compile Include="Options.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Physics.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

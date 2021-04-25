@@ -20,7 +20,6 @@ namespace NewGame
     public sealed partial class VisualisationAndController : Form
     {
         private GameModel gameModel;
-        private Physics standardPhysics;
         private bool isWdown = false;
         private bool isAdown = false;
         private bool isDdown = false;
@@ -34,7 +33,6 @@ namespace NewGame
             var Grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
             gameModel = g;
             KeyPreview = true;
-            standardPhysics = new Physics();
             DoubleBuffered = true;
             var label = new Label { Location = new Point(500, 500), MaximumSize = ClientSize };
             var queue = new Queue<int>();
