@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tree.cs" />
     <Compile Include="GameModel.cs" />
     <Compile Include="IGameObject.cs" />
     <Compile Include="KeyButton.cs" />
@@ -104,6 +105,10 @@
     <Content Include="Images\grass.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CustomToolNamespace>NewGame\bin\Release</CustomToolNamespace>
+    </Content>
+    <Content Include="Images\tree.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CustomToolNamespace>NewGame\bin\release</CustomToolNamespace>
     </Content>
     <Content Include="Resources\grass.png" />
     <Content Include="Images\test.png">
