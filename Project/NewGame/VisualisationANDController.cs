@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Channels;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms.PropertyGridInternal;
@@ -20,7 +21,6 @@ namespace NewGame
     public sealed partial class VisualisationAndController : Form
     {
         private GameModel gameModel;
-        private Physics standardPhysics;
         private bool isWdown = false;
         private bool isAdown = false;
         private bool isDdown = false;
@@ -34,17 +34,15 @@ namespace NewGame
             var Grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
             gameModel = g;
             KeyPreview = true;
-            standardPhysics = new Physics();
             DoubleBuffered = true;
-            var label = new Label { Location = new Point(500, 500), MaximumSize = ClientSize };
-            var queue = new Queue<int>();
-            //TODO: keyPress is just one repeatable action. KeyDown needed.
+            var labelX = new Label { Location = new Point(0, 0), Width = 150 };
+            var labelY = new Label { Location = new Point(0, labelX.Size.Height), Width = 150 };
             KeyPress += (sender, args) =>
             {
                 switch (args.KeyChar)
                 {
                     case '.':
-                        gameModel.Car.Position = new Vector(500, 500);
+                        gameModel.Car.Position = new Vector(10, 10);
                         break;
                     case 'W' or 'w' or 'ц' or 'Ц':
                         isWdown = true;
@@ -84,6 +82,8 @@ namespace NewGame
             var timer = new Timer { Interval = 5 };
             timer.Tick += (sender, args) =>
             {
+                labelX.Text = "X: " + gameModel.Car.Position.X.ToString();
+                labelY.Text = "Y: " + gameModel.Car.Position.Y.ToString();
                 ReactOnControl(gameModel);
                 gameModel.ChangePosition();
                 Refresh();
@@ -93,31 +93,51 @@ namespace NewGame
             Paint += (sender, args) =>
             {
                 var graphic = args.Graphics;
-                graphic.DrawImage(grass, new Point(-(int)gameModel.Car.Position.X%32-32, -(int)gameModel.Car.Position.Y%32-32));
-                
-                graphic.TranslateTransform(ClientSize.Width / 2, ClientSize.Height / 2);
+                var carX = gameModel.Car.Position.X;
+                var carY = gameModel.Car.Position.Y;
+                var width = ClientSize.Width;
+                var height = ClientSize.Height;
+                var tree = new Tree().GetImage();
+                graphic.DrawImage(grass, new Point(-(int)carX % 32 - 32, -(int)carY % 32 - 32));
+
+                graphic.TranslateTransform(width / 2, height / 2);
                 graphic.RotateTransform(
                     (float)((float)gameModel.Car.Direction / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
                 graphic.DrawImage(gameModel.Car.GetImage(), -17, -30);
                 //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
-                graphic.TranslateTransform(-ClientSize.Width / 2, -ClientSize.Height / 2);
+                graphic.TranslateTransform(-width / 2, -height / 2);
                 graphic.ResetTransform();
+                graphic.TranslateTransform((float)-carX + width / 2, (float)-carY + height / 2);
+                foreach (var obj in gameModel.Map.Keys)
+                {
+                    if (carX - width / 1.5 < obj.X*32 && obj.X*32 < carX + width / 1.5 && 
+                        carY - height / 1.5 < obj.Y*32 && obj.Y*32 < carY + height / 1.5)
+                        graphic.DrawImage(tree, obj.X * 32, obj.Y * 32);
+                }
+                graphic.FillEllipse(Brushes.Red, -5, -5, 10, 10);
+                graphic.FillRectangle(Brushes.Red,0,0,10000,5);
+                graphic.FillRectangle(Brushes.Red,0,0,5,10000);
+                graphic.FillRectangle(Brushes.Red,9995,0,5,10000);
+                graphic.FillRectangle(Brushes.Red,0,9995,10000,5);
             };
+            Controls.Add(labelY);
+            Controls.Add(labelX);
             InitializeComponent();
             timer.Start();
         }
+
 
         protected override void OnClientSizeChanged(EventArgs e)
         {
             var PathToGrass = Path.Combine(Directory.GetCurrentDirectory(), "Images", "grass.png");
             var bmp = Image.FromFile(PathToGrass);
-            grass = CreateColumn(CreatLine(bmp, ClientSize.Width+64, ClientSize.Height+64), ClientSize.Width+64, ClientSize.Height+64);
+            grass = CreateColumn(CreatLine(bmp, ClientSize.Width + 64, ClientSize.Height + 64), ClientSize.Width + 64, ClientSize.Height + 64);
         }
 
         private Bitmap CreatLine(Image grass, int width, int height)
         {
             if (width < grass.Width) return (Bitmap)grass;
-            var Image = CreatLine(grass, width / 2, height);    
+            var Image = CreatLine(grass, width / 2, height);
             var outputImage = new Bitmap(Image.Width * 2, grass.Height);
             Graphics graphics = Graphics.FromImage(outputImage);
             graphics.DrawImage(Image, new Point(0, 0));
