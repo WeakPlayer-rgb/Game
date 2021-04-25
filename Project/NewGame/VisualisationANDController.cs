@@ -20,7 +20,6 @@ namespace NewGame
     public sealed partial class VisualisationAndController : Form
     {
         private GameModel gameModel;
-        private Physics standardPhysics;
         private bool isWdown = false;
         private bool isAdown = false;
         private bool isDdown = false;
@@ -34,7 +33,6 @@ namespace NewGame
             var Grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
             gameModel = g;
             KeyPreview = true;
-            standardPhysics = new Physics();
             DoubleBuffered = true;
             var label = new Label { Location = new Point(500, 500), MaximumSize = ClientSize };
             var queue = new Queue<int>();
@@ -46,16 +44,16 @@ namespace NewGame
                     case '.':
                         gameModel.Car.Position = new Vector(500, 500);
                         break;
-                    case 'W' or 'w':
+                    case 'W' or 'w' or 'ц' or 'Ц':
                         isWdown = true;
                         break;
-                    case 'S' or 's':
+                    case 'S' or 's' or 'ы' or 'Ы':
                         isSdown = true;
                         break;
-                    case 'A' or 'a':
+                    case 'A' or 'a' or 'ф' or 'Ф':
                         isAdown = true;
                         break;
-                    case 'D' or 'd':
+                    case 'D' or 'd' or 'в' or 'В':
                         isDdown = true;
                         break;
                 }
@@ -66,17 +64,17 @@ namespace NewGame
             {
                 switch (args.KeyValue)
                 {
-                    case 'W' or 'w':
+                    case 'W' or 'w' or 'ц' or 'Ц':
                         isWdown = false;
                         break;
-                    case 'D' or 'd':
-                        isDdown = false;
+                    case 'S' or 's' or 'ы' or 'Ы':
+                        isSdown = false;
                         break;
-                    case 'A' or 'a':
+                    case 'A' or 'a' or 'ф' or 'Ф':
                         isAdown = false;
                         break;
-                    case 'S' or 's':
-                        isSdown = false;
+                    case 'D' or 'd' or 'в' or 'В':
+                        isDdown = false;
                         break;
                 }
             };
