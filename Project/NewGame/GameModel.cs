@@ -15,7 +15,7 @@ namespace NewGame
         {
             size = s;
             Map = new Dictionary<Point, IGameObject>();
-            Player = new Player(new Vector(500, 500));
+            Player = new Player(new Vector(500, 500), 100);
             var rnd = new Random();
             for (var i = 0; i < 3000; i++)
             {
@@ -40,7 +40,12 @@ namespace NewGame
                 y < 0 ? size : y > size ? -size : 0);
             foreach (var key in Map.Keys)
             {
-                if (AreIntersected(Player.ObjRectangle, Map[key].ObjRectangle)) Player.ChangeVelocity(KeyButton.Break);
+                // three vectors in all points of the rectangle
+                if (AreIntersected(Player.ObjRectangle, Map[key].ObjRectangle))
+                {
+                    Player.ChangeVelocity(KeyButton.Break);
+                    break;
+                }
             }
         }
 

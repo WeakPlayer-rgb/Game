@@ -111,7 +111,7 @@ namespace NewGame
                 graphic.RotateTransform(
                     (float)((float)gameModel.Player.Direction / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
                 graphic.DrawImage(gameModel.Player.GetImage(), -17, -30);
-                graphic.DrawRectangle(Pens.Red, -17,-30,35,65);
+                graphic.DrawRectangle(Pens.Red, -17, -30, gameModel.Player.ObjRectangle.Width, gameModel.Player.ObjRectangle.Height);
                 //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
                 graphic.TranslateTransform(-width / 2, -height / 2);
                 graphic.ResetTransform();
@@ -119,7 +119,7 @@ namespace NewGame
                 for (var x = ((int)carX - width / 2) / 32 - 2; x < ((int)carX + width / 2) / 32 + 1; x++)
                     for (var y = ((int)carY - height / 2) / 32 - 2; y < ((int)carY + height / 2) / 32 + 1; y++)
                     {
-                        var point = new Point(NotBehindScreen(x * 32), NotBehindScreen(y * 32));
+                        var point = new Point(KeepOnScreen(x * 32), KeepOnScreen(y * 32));
                         if (gameModel.Map.ContainsKey(point))
                         {
                             graphic.DrawImage(tree, x * 32, y * 32);
@@ -138,7 +138,7 @@ namespace NewGame
             timer.Start();
         }
 
-        private int NotBehindScreen(int x)
+        private int KeepOnScreen(int x)
         {
             return x < 0 ? gameModel.size + x : x >= gameModel.size ? x - gameModel.size : x;
         }

@@ -15,12 +15,12 @@ namespace NewGame
         private double angle;
         private double velocity;
 
-        public Player(Vector p)
+        public Player(Vector p, double health)
         {
+            Health = health;
             Position = p;
             angle = 0;
             velocity = 0;
-            //Direction =  
         }
 
         public Image GetImage() => Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "car1.png"));
