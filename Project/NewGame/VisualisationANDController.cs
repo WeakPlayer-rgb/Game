@@ -16,11 +16,10 @@ using static System.Drawing.Bitmap;
 namespace NewGame
 {
     /// <summary>
-    /// 
+    /// TODO: Split visual and control part apart. Doesn't fit in MVC. Ask Ilya if that's ok.
     /// </summary>
     public sealed partial class VisualisationAndController : Form
     {
-        public Graphics[] GameBorders = new Graphics[] { };
         private GameModel gameModel;
         private bool isWdown = false;
         private bool isAdown = false;
@@ -93,30 +92,36 @@ namespace NewGame
 
             Paint += (sender, args) =>
             {
-                var graphics = args.Graphics;
+                var graphic = args.Graphics;
                 var carX = gameModel.Car.Position.X;
                 var carY = gameModel.Car.Position.Y;
                 var width = ClientSize.Width;
                 var height = ClientSize.Height;
                 var tree = new Tree().GetImage();
-                graphics.DrawImage(grass, new Point(-(int)carX % 32 - 32, -(int)carY % 32 - 32));
+                graphic.DrawImage(grass, new Point(-(int)carX % 32 - 32, -(int)carY % 32 - 32));
 
-                graphics.TranslateTransform(width / 2, height / 2);
-                graphics.RotateTransform(
+                graphic.TranslateTransform(width / 2, height / 2);
+                graphic.RotateTransform(
                     (float)((float)gameModel.Car.Direction / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
-                graphics.DrawImage(gameModel.Car.GetImage(), -17, -30);
+                graphic.DrawImage(gameModel.Car.GetImage(), -17, -30);
                 //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
-                graphics.TranslateTransform(-width / 2, -height / 2);
-                graphics.ResetTransform();
-                graphics.TranslateTransform((float)-carX + width / 2, (float)-carY + height / 2);
-                foreach (var obj in gameModel.Map.Keys)
-                {
-                    if (carX - width / 1.5 < obj.X*32 && obj.X*32 < carX + width / 1.5 && 
-                        carY - height / 1.5 < obj.Y*32 && obj.Y*32 < carY + height / 1.5)
-                        graphics.DrawImage(tree, obj.X * 32, obj.Y * 32);
-                }
-                graphics.FillEllipse(Brushes.Red, -5, -5, 10, 10);
-                MakeGameBorders(graphics);
+                graphic.TranslateTransform(-width / 2, -height / 2);
+                graphic.ResetTransform();
+                graphic.TranslateTransform((float)-carX + width / 2, (float)-carY + height / 2);
+                for (var x = ((int)carX - width / 2) / 32 - 2; x < ((int)carX + width / 2) / 32 + 1; x++)
+                    for (var y = ((int)carY - height / 2) / 32 - 2; y < ((int)carY + height / 2) / 32 + 1; y++)
+                    {
+                        var point = new Point(NotBehindScreen(x * 32), NotBehindScreen(y * 32));
+                        if (gameModel.Map.ContainsKey(point))
+                        {
+                            graphic.DrawImage(tree, x * 32, y * 32);
+                        }
+                    }
+                graphic.FillEllipse(Brushes.Red, -5, -5, 10, 10);
+                graphic.FillRectangle(Brushes.Red, 0, 0, 10000, 5);
+                graphic.FillRectangle(Brushes.Red, 0, 0, 5, 10000);
+                graphic.FillRectangle(Brushes.Red, 9995, 0, 5, 10000);
+                graphic.FillRectangle(Brushes.Red, 0, 9995, 10000, 5);
             };
             Controls.Add(labelY);
             Controls.Add(labelX);
@@ -124,12 +129,9 @@ namespace NewGame
             timer.Start();
         }
 
-        private static void MakeGameBorders(Graphics graphic)
+        private int NotBehindScreen(int x)
         {
-            graphic.FillRectangle(Brushes.Red, 0, 0, 10000, 5);
-            graphic.FillRectangle(Brushes.Red, 0, 0, 5, 10000);
-            graphic.FillRectangle(Brushes.Red, 9995, 0, 5, 10000);
-            graphic.FillRectangle(Brushes.Red, 0, 9995, 10000, 5);
+            return x < 0 ? gameModel.size + x : x > gameModel.size ? x - gameModel.size : x;
         }
 
 

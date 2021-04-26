@@ -19,7 +19,8 @@ namespace NewGame
             var rnd = new Random();
             for (var i = 0; i < 3000; i++)
             {
-                Map[new Point(rnd.Next(-15, size/32+15),rnd.Next(-15,size/32+15))] = new Tree();
+                var newPoint = new Point(rnd.Next(1, size / 32), rnd.Next(1, size / 32));
+                Map[new Point(newPoint.X*32,newPoint.Y*32)] = new Tree();
             }
             Map[new Point(0, 0)] = new Tree();
         }

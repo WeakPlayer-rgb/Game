@@ -37,7 +37,7 @@ namespace NewGame
             Controls.Add(exitButton);
             startButton.Click += (s, e) =>
             {
-                Program.Context.MainForm = new VisualisationAndController(new GameModel(10000));
+                Program.Context.MainForm = new VisualisationAndController(new GameModel(32*250));
                 Close();
                 Program.Context.MainForm.Show();
             };
