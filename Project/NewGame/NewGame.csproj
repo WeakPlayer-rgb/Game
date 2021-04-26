@@ -62,8 +62,8 @@
       <DependentUpon>Menu.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionDesigner.cs">
-      <SubType>Form</SubType>
       <DependentUpon>Options.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Options.cs">
       <SubType>Form</SubType>

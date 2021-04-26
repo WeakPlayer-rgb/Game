@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Channels;
@@ -104,6 +105,7 @@ namespace NewGame
                 graphic.RotateTransform(
                     (float)((float)gameModel.Car.Direction / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
                 graphic.DrawImage(gameModel.Car.GetImage(), -17, -30);
+                graphic.DrawRectangle(Pens.Red, -17,-30,35,65);
                 //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
                 graphic.TranslateTransform(-width / 2, -height / 2);
                 graphic.ResetTransform();
@@ -115,13 +117,14 @@ namespace NewGame
                         if (gameModel.Map.ContainsKey(point))
                         {
                             graphic.DrawImage(tree, x * 32, y * 32);
+                            graphic.DrawRectangle(Pens.Red, x*32,y*32,40,75);
                         }
                     }
-                graphic.FillEllipse(Brushes.Red, -5, -5, 10, 10);
-                graphic.FillRectangle(Brushes.Red, 0, 0, 10000, 5);
-                graphic.FillRectangle(Brushes.Red, 0, 0, 5, 10000);
-                graphic.FillRectangle(Brushes.Red, 9995, 0, 5, 10000);
-                graphic.FillRectangle(Brushes.Red, 0, 9995, 10000, 5);
+                //graphic.FillEllipse(Brushes.Red, -5, -5, 10, 10);
+                //graphic.FillRectangle(Brushes.Red, 0, 0, 10000, 5);
+                //graphic.FillRectangle(Brushes.Red, 0, 0, 5, 10000);
+                //graphic.FillRectangle(Brushes.Red, 9995, 0, 5, 10000);
+                //graphic.FillRectangle(Brushes.Red, 0, 9995, 10000, 5);
             };
             Controls.Add(labelY);
             Controls.Add(labelX);
