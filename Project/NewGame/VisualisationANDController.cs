@@ -134,7 +134,7 @@ namespace NewGame
 
         private int NotBehindScreen(int x)
         {
-            return x < 0 ? gameModel.size + x : x > gameModel.size ? x - gameModel.size : x;
+            return x < 0 ? gameModel.size + x : x >= gameModel.size ? x - gameModel.size : x;
         }
 
 
