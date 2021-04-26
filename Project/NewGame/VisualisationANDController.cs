@@ -43,7 +43,7 @@ namespace NewGame
                 switch (args.KeyChar)
                 {
                     case '.':
-                        gameModel.Car.Position = new Vector(10, 10);
+                        gameModel.Player.Position = new Vector(10, 10);
                         break;
                     case 'W' or 'w' or 'ц' or 'Ц':
                         isWdown = true;
@@ -83,8 +83,8 @@ namespace NewGame
             var timer = new Timer { Interval = 5 };
             timer.Tick += (sender, args) =>
             {
-                labelX.Text = "X: " + gameModel.Car.Position.X.ToString();
-                labelY.Text = "Y: " + gameModel.Car.Position.Y.ToString();
+                labelX.Text = "X: " + gameModel.Player.Position.X.ToString();
+                labelY.Text = "Y: " + gameModel.Player.Position.Y.ToString();
                 ReactOnControl(gameModel);
                 gameModel.ChangePosition();
                 Refresh();
@@ -94,17 +94,17 @@ namespace NewGame
             Paint += (sender, args) =>
             {
                 var graphic = args.Graphics;
-                var carX = gameModel.Car.Position.X;
-                var carY = gameModel.Car.Position.Y;
+                var carX = gameModel.Player.Position.X;
+                var carY = gameModel.Player.Position.Y;
                 var width = ClientSize.Width;
                 var height = ClientSize.Height;
-                var tree = new Tree().GetImage();
+                var tree = new Tree(Point.Empty).GetImage();
                 graphic.DrawImage(grass, new Point(-(int)carX % 32 - 32, -(int)carY % 32 - 32));
 
                 graphic.TranslateTransform(width / 2, height / 2);
                 graphic.RotateTransform(
-                    (float)((float)gameModel.Car.Direction / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
-                graphic.DrawImage(gameModel.Car.GetImage(), -17, -30);
+                    (float)((float)gameModel.Player.Direction / Math.PI * 180 + 90) /*((int)_gameModel.Car.Direction.Angle/2/Math.PI*360*/);
+                graphic.DrawImage(gameModel.Player.GetImage(), -17, -30);
                 graphic.DrawRectangle(Pens.Red, -17,-30,35,65);
                 //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
                 graphic.TranslateTransform(-width / 2, -height / 2);
@@ -169,12 +169,12 @@ namespace NewGame
 
         void ReactOnControl(GameModel game)
         {
-            if (isWdown) game.Car.ChangeVelocity(KeyButton.Forward);
-            if (isAdown) game.Car.ChangeDirection(KeyButton.Left);
-            if (isDdown) game.Car.ChangeDirection(KeyButton.Right);
-            if (isSdown) game.Car.ChangeVelocity(KeyButton.Backward);
+            if (isWdown) game.Player.ChangeVelocity(KeyButton.Forward);
+            if (isAdown) game.Player.ChangeDirection(KeyButton.Left);
+            if (isDdown) game.Player.ChangeDirection(KeyButton.Right);
+            if (isSdown) game.Player.ChangeVelocity(KeyButton.Backward);
             if (!isWdown && !isSdown)
-                game.Car.ChangeVelocity(KeyButton.None);
+                game.Player.ChangeVelocity(KeyButton.None);
         }
     }
 }
