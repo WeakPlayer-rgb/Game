@@ -5,6 +5,7 @@ namespace NewGame
 {
     public interface IGameObject
     {
+        Rectangle ObjRectangle { get; }
         double Direction { get;  }
         double Health { get; set; }
         Image GetImage();

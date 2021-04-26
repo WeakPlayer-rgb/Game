@@ -8,10 +8,17 @@ using System.Threading.Tasks;
 
 namespace NewGame
 {
-    class Tree:IGameObject
+    class Tree : IGameObject
     {
+        public Rectangle ObjRectangle => new((int)Position.X+40, (int)Position.Y+70, 20, 50);
+        public Vector Position { get; }
         public double Direction { get; }
         public double Health { get; set; }
+
+        public Tree(Point position)
+        {
+            Position = new Vector(position.X, position.Y);
+        }
         public Image GetImage() => Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "tree.png"));
 
         public int DrawPriority(int priority) => 0;
