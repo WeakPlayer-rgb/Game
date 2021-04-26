@@ -10,7 +10,7 @@ namespace NewGame
 {
     class Tree : IGameObject
     {
-        public Rectangle ObjRectangle => new((int)Position.X+40, (int)Position.Y+70, 20, 50);
+        public Rectangle ObjRectangle => new((int)Position.X, (int)Position.Y, 20, 50);
         public Vector Position { get; }
         public double Direction { get; }
         public double Health { get; set; }
