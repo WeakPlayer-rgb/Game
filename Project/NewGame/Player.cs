@@ -31,12 +31,12 @@ namespace NewGame
             {
                 case KeyButton.Left:
                     {
-                        angle -= Math.PI / 40;
+                        angle -= Math.PI / 30;
                         break;
                     }
                 case KeyButton.Right:
                     {
-                        angle += Math.PI / 40;
+                        angle += Math.PI / 30;
                         break;
                     }
                 case KeyButton.None:
@@ -82,7 +82,7 @@ namespace NewGame
                                 break;
                         }
                         if (velocity is > 0 and < 8) velocity *= 1.07;
-                        if (velocity >= 8) velocity = 7;
+                        if (velocity >= 20) velocity = 20;
                         break;
                     }
                 case KeyButton.None:

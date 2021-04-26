@@ -57,6 +57,12 @@ namespace NewGame
                     case 'D' or 'd' or 'в' or 'В':
                         isDdown = true;
                         break;
+                    case 'F' or 'f' or 'а' or 'А':
+                        if (WindowState == FormWindowState.Normal)
+                            WindowState = FormWindowState.Maximized;
+                        else
+                            WindowState = FormWindowState.Normal;
+                        break;
                 }
                 Activate();
                 Refresh();
@@ -80,7 +86,7 @@ namespace NewGame
                 }
             };
 
-            var timer = new Timer { Interval = 5 };
+            var timer = new Timer { Interval = 20 };
             timer.Tick += (sender, args) =>
             {
                 labelX.Text = "X: " + gameModel.Car.Position.X.ToString();
