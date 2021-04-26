@@ -123,7 +123,7 @@ namespace NewGame
                         if (gameModel.Map.ContainsKey(point))
                         {
                             graphic.DrawImage(tree, x * 32, y * 32);
-                            graphic.DrawRectangle(Pens.Red, x*32,y*32,40,75);
+                            graphic.DrawRectangle(Pens.Red, gameModel.Map[point].ObjRectangle);
                         }
                     }
                 //graphic.FillEllipse(Brushes.Red, -5, -5, 10, 10);
