@@ -14,6 +14,7 @@ namespace NewGame
         public double Health { get; set; }
         private double angle;
         private double velocity;
+        public int CoolDown { get; set; }
 
         public Player(Vector p)
         {
@@ -23,7 +24,7 @@ namespace NewGame
             //Direction =  
         }
 
-        public Image GetImage() => Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "car1.png"));
+        public string GetImage() => "car1.png";
 
         public int DrawPriority(int priority) => 0;
 
@@ -84,7 +85,7 @@ namespace NewGame
                                 break;
                         }
                         if (velocity is > 0 and < 8) velocity *= 1.07;
-                        if (velocity >= 20) velocity = 20;
+                        if (velocity >= 40) velocity = 40;
                         break;
                     }
                 case KeyButton.None:
