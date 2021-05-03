@@ -96,6 +96,10 @@ namespace NewGame
             graphic.DrawImage(images[player.GetImage()], -17, -30);
             graphic.DrawRectangle(Pens.Red, -17, -30, player.ObjRectangle.Width,
                 player.ObjRectangle.Height);
+            ///
+            graphic.FillEllipse(Brushes.Brown, -17, -30, 2, 2);
+            graphic.FillEllipse(Brushes.Brown, 28, -30, 2, 2);
+            /// 
             //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
             graphic.ResetTransform();
             graphic.TranslateTransform((float) -carX + width / 2, (float) -carY + height / 2);
@@ -180,8 +184,8 @@ namespace NewGame
                 ClientSize.Height + 64);
         }
 
-        private int NotBehindScreen(int x) => x < 0 ? gameModel.size + x :
-            x >= gameModel.size ? x - gameModel.size : x;
+        private int NotBehindScreen(int x) => x < 0 ? gameModel.Size + x :
+            x >= gameModel.Size ? x - gameModel.Size : x;
 
         private Bitmap CreatLine(Image grass, int width, int height)
         {

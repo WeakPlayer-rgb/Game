@@ -8,7 +8,7 @@ namespace NewGame
     {
         public Vector Position { get; set; }
         public Rectangle ObjRectangle => 
-            new((int) Position.X, (int) Position.Y, 35, 65);
+            new((int) Position.X, (int) Position.Y, 45, 80);
         public double Direction => angle;
         public Vector Speed => new Vector(1, 0).Rotate(Direction) * velocity;
         public double Health { get; set; }
@@ -93,7 +93,7 @@ namespace NewGame
                     if (velocity is < 0.25 and > -0.25) velocity = 0;
                     break;
                 case KeyButton.Break:
-                    velocity = 0.9;
+                    velocity = 0;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ctrl), ctrl, null);

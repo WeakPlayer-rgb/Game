@@ -9,29 +9,26 @@ namespace NewGame
     {
         public readonly Player Player;
         public Dictionary<Point, IGameObject> Map;
-        public readonly int size;
-        public Dictionary<Point,Bullet> Bullets;
+        public readonly int Size;
+        public Dictionary<Point, Bullet> Bullets;
 
         public GameModel(int s)
         {
-            size = s;
+            Size = s;
             Map = new Dictionary<Point, IGameObject>();
-            Player = new Player(new Vector(500, 500), 100);
-            
-            Player = new Player(new Vector(size/2, size/2), 100);
-            
-            var rnd = new Random();
-            for (var i = 0; i < 500; i++)
-            {
-                var newPoint = new Point(rnd.Next(0, size / 32), rnd.Next(0, size / 32)); // 40, 70
-                Map[new Point(newPoint.X * 32, newPoint.Y * 32)] =
-                    new Tree(new Point(newPoint.X * 32, newPoint.Y * 32));
-            }
+            Player = new Player(new Vector(Size / 2, Size / 2), 100);
+            SpawnTrees();
             Bullets = new Dictionary<Point, Bullet>();
         }
 
         public void ChangePosition()
         {
+            if (IsPlayerIntersected())
+            {
+                Player.ChangeVelocity(KeyButton.Break);
+                return;
+            }
+
             Player.Position += Player.Speed;
             var x = Player.Position.X;
             var y = Player.Position.Y;
@@ -39,30 +36,48 @@ namespace NewGame
             //if (Car.Position.Y > size) Car.Position -= new Vector(0, size);
             //if (Car.Position.X < 0) Car.Position += new Vector(size, 0);
             //if (Car.Position.Y < 0) Car.Position += new Vector(0, size);
-            Player.Position += new Vector(x < 0 ? size : x > size ? -size : 0,
-                y < 0 ? size : y > size ? -size : 0);
-            foreach (var key in Map.Keys)
-            {
-                // three vectors in all points of the rectangle
-                if (AreIntersected(Player.ObjRectangle, Map[key].ObjRectangle))
-                {
-                    Player.ChangeVelocity(KeyButton.Break);
-                    break;
-                }
-            }
+            Player.Position += new Vector(x < 0 ? Size : x > Size ? -Size : 0,
+                y < 0 ? Size : y > Size ? -Size : 0);
         }
 
-        public void MoveBullets()
+        public bool IsPlayerIntersected()
         {
-            var newBullets = new Dictionary<Point, Bullet>();
-            foreach (var point in Bullets.Keys)
+            var playerPos = Player.Position;
+            var leftDot = new Vector(playerPos.X - 17, playerPos.Y - 30).Rotate(Player.Direction);
+            var rightDot = new Vector(playerPos.X + 28, playerPos.Y - 30).Rotate(Player.Direction);
+            //var playerRect = new Rectangle(leftTop., rightTop, 1, 1);
+            const int limit = 50;
+            for (var dy = -limit; dy <= limit; dy++)
+            for (var dx = -limit; dx <= limit; dx++)
             {
-                newBullets[new Point(point.X + (int) Bullets[point].Direction.X,
-                            point.Y + (int) Bullets[point].Direction.Y)] =
-                    Bullets[point];
+                var potentialPos = new Point((int) playerPos.X + dx, (int) playerPos.Y + dy);
+                if (!Map.ContainsKey(potentialPos)) continue;
+                var obj = Map[potentialPos];
+                var objRectangle = obj.ObjRectangle;
+                var top = objRectangle.Top;
+                var bottom = objRectangle.Bottom;
+                var left = objRectangle.Left;
+                var right = objRectangle.Right;
+                return IsIntersected(leftDot, rightDot, left,right, bottom, top);
             }
-            Bullets = newBullets;
+
+            return false;
         }
+
+        public bool IsIntersected(Vector leftDot, Vector rightDot, int left, int right, int bottom, int top)
+        {
+            var a = Math.Max(leftDot.X, left) <= Math.Min(rightDot.X, right);
+            var b = Math.Max(leftDot.Y, bottom) <= Math.Min(rightDot.Y, top);
+            var c = Math.Max(rightDot.X, left) <= Math.Min(leftDot.Y, right);
+            var d = Math.Max(rightDot.Y, bottom) <= Math.Min(leftDot.Y, top);
+            //return a && b || c&&d || a&&c || a&&d||b&&c||b&&d;
+            return a && b;
+        }
+
+        /*private double CalcLength(int point1, int point2)
+        {
+            return Math.Sqrt(point1 * point1 - point2 * point2);
+        }*/
 
         public static bool AreIntersected(Rectangle r1, Rectangle r2)
         {
@@ -89,9 +104,33 @@ namespace NewGame
             return -1;
         }
 
+        public void MoveBullets()
+        {
+            var newBullets = new Dictionary<Point, Bullet>();
+            foreach (var point in Bullets.Keys)
+            {
+                newBullets[new Point(point.X + (int) Bullets[point].Direction.X,
+                        point.Y + (int) Bullets[point].Direction.Y)] =
+                    Bullets[point];
+            }
+
+            Bullets = newBullets;
+        }
+
         public void AddBullet(Bullet bullet, Point position)
         {
             Bullets[position] = bullet;
+        }
+
+        private void SpawnTrees()
+        {
+            var rnd = new Random();
+            for (var i = 0; i < 500; i++)
+            {
+                var newPoint = new Point(rnd.Next(0, Size / 32), rnd.Next(0, Size / 32)); // 40, 70
+                Map[new Point(newPoint.X * 32, newPoint.Y * 32)] =
+                    new Tree(new Point(newPoint.X * 32, newPoint.Y * 32));
+            }
         }
     }
 }
