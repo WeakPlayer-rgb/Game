@@ -10,21 +10,24 @@ namespace NewGame
         public readonly Player Player;
         public Dictionary<Point, IGameObject> Map;
         public readonly int size;
+        public Dictionary<Point,Bullet> Bullets;
 
         public GameModel(int s)
         {
             size = s;
             Map = new Dictionary<Point, IGameObject>();
             Player = new Player(new Vector(500, 500), 100);
+            
+            Player = new Player(new Vector(size/2, size/2));
+            
             var rnd = new Random();
-            for (var i = 0; i < 3000; i++)
+            for (var i = 0; i < 500; i++)
             {
                 var newPoint = new Point(rnd.Next(0, size / 32), rnd.Next(0, size / 32)); // 40, 70
                 Map[new Point(newPoint.X * 32, newPoint.Y * 32)] =
                     new Tree(new Point(newPoint.X * 32, newPoint.Y * 32));
             }
-
-            Map[new Point(0, 0)] = new Tree(new Point(0, 0));
+            Bullets = new Dictionary<Point, Bullet>();
         }
 
         public void ChangePosition()
@@ -47,6 +50,18 @@ namespace NewGame
                     break;
                 }
             }
+        }
+
+        public void MoveBullets()
+        {
+            var newBullets = new Dictionary<Point, Bullet>();
+            foreach (var point in Bullets.Keys)
+            {
+                newBullets[new Point(point.X + (int) Bullets[point].Direction.X,
+                            point.Y + (int) Bullets[point].Direction.Y)] =
+                    Bullets[point];
+            }
+            Bullets = newBullets;
         }
 
         public static bool AreIntersected(Rectangle r1, Rectangle r2)
@@ -72,6 +87,11 @@ namespace NewGame
             if (r2.Bottom <= r1.Bottom && r2.Top >= r1.Top && r2.Left >= r1.Left && r2.Right <= r1.Right)
                 return 1;
             return -1;
+        }
+
+        public void AddBullet(Bullet bullet, Point position)
+        {
+            Bullets[position] = bullet;
         }
     }
 }

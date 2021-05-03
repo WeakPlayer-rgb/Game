@@ -10,7 +10,7 @@ namespace NewGame
 {
     class Tree : IGameObject
     {
-        public Rectangle ObjRectangle => new((int)Position.X, (int)Position.Y, 40, 50);
+        public Rectangle ObjRectangle => new((int) Position.X, (int) Position.Y, 20, 50);
         public Vector Position { get; }
         public double Direction { get; }
         public double Health { get; set; }
@@ -19,7 +19,8 @@ namespace NewGame
         {
             Position = new Vector(position.X, position.Y);
         }
-        public Image GetImage() => Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "tree.png"));
+
+        public string GetImage() => "tree.png";
 
         public int DrawPriority(int priority) => 0;
 

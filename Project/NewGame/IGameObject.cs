@@ -8,7 +8,7 @@ namespace NewGame
         Rectangle ObjRectangle { get; }
         double Direction { get;  }
         double Health { get; set; }
-        Image GetImage();
+        string GetImage();
         int DrawPriority(int priority);
         void ChangeDirection(KeyButton ctrl);
         void ChangeVelocity(KeyButton ctrl);

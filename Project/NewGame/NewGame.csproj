@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Channel.cs" />
+    <Compile Include="Bullet.cs" />
     <Compile Include="Tree.cs" />
     <Compile Include="GameModel.cs" />
     <Compile Include="IGameObject.cs" />
