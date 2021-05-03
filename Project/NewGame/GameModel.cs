@@ -18,7 +18,7 @@ namespace NewGame
             Map = new Dictionary<Point, IGameObject>();
             Player = new Player(new Vector(500, 500), 100);
             
-            Player = new Player(new Vector(size/2, size/2));
+            Player = new Player(new Vector(size/2, size/2), 100);
             
             var rnd = new Random();
             for (var i = 0; i < 500; i++)
