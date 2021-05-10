@@ -131,11 +131,6 @@ namespace NewGame
             return Math.Sqrt(point1 * point1 - point2 * point2);
         }*/
 
-        private bool isIntersected(IGameObject toCheck, IGameObject potentiallyIntersecting)
-        {
-            return false;
-        }
-
         public static bool AreIntersected(Rectangle r1, Rectangle r2)
         {
             var a = Math.Max(r1.Left, r2.Left) <= Math.Min(r1.Right, r2.Right);
