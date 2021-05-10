@@ -50,8 +50,9 @@ namespace NewGame
             var Grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width,
                 ClientSize.Height);
 
-            var labelX = new Label {Location = new Point(0, 0), Width = 150};
-            var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 150};
+            var labelX = new Label {Location = new Point(0, 0), Width = 100};
+            var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 100};
+            var labelSpeed = new Label {Location = new Point(0, 150), Width = 250};
 
             MouseClick += (sender, args) =>
             {
@@ -69,6 +70,7 @@ namespace NewGame
             {
                 labelX.Text = "X: " + player.Position.X.ToString();
                 labelY.Text = "Y: " + player.Position.Y.ToString();
+                labelSpeed.Text = player.Speed.ToString();
                 ReactOnControl(gameModel);
                 gameModel.ChangePosition();
                 gameModel.MoveBullets();
@@ -78,6 +80,7 @@ namespace NewGame
 
             Controls.Add(labelY);
             Controls.Add(labelX);
+            Controls.Add(labelSpeed);
             InitializeComponent();
             timer.Start();
         }
