@@ -49,8 +49,9 @@ namespace NewGame
             var bmp = Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "grass.png"));
             var Grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width,
                 ClientSize.Height);
-
-            var labelSpeed = new Label {Location = new Point(0, labelY.Size.Height), Width = 150};
+            var labelX = new Label {Location = new Point(0, 0), Width = 100};
+            var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 100};
+            var labelSpeed = new Label {Location = new Point(0, labelY.Location.Y+labelY.Size.Height), Width = 250};
 
             MouseClick += (sender, args) =>
             {
@@ -211,6 +212,8 @@ namespace NewGame
             return outputImage;
         }
 
+        
+        private void ReactOnControl(GameModel game)
         {
             if (isWdown) game.Player.ChangeVelocity(KeyButton.Forward);
             if (isAdown) game.Player.ChangeDirection(KeyButton.Left);
