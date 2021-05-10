@@ -1,11 +1,12 @@
-﻿using System.Collections;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace NewGame
 {
     public interface IGameObject
     {
+        
         Rectangle ObjRectangle { get; }
+        public int MaxHealth();
         double Direction { get;  }
         double Health { get; set; }
         string GetImage();

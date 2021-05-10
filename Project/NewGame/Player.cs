@@ -6,9 +6,14 @@ namespace NewGame
 {
     public class Player : IGameObject
     {
-        public Vector Position { get; set; }
+        public Point Position { get; set; }
+        private const int maxHealth = 100;
+        public int Damage { get; set; }
+        public int MaxHealth() => maxHealth;
+
         public Rectangle ObjRectangle => 
             new((int) Position.X, (int) Position.Y, 35, 65);
+
         public double Direction => angle;
         public Vector Speed => new Vector(1, 0).Rotate(Direction) * velocity;
         public double Health { get; set; }
@@ -16,12 +21,12 @@ namespace NewGame
         private double velocity;
         public int CoolDown { get; set; }
 
-        public Player(Vector p)
+        public Player(Point p)
         {
             Position = p;
             angle = 0;
             velocity = 0;
-            //Direction =  
+            Damage = 10;
         }
 
         public string GetImage() => "car1.png";

@@ -11,13 +11,16 @@ namespace NewGame
     class Tree : IGameObject
     {
         public Rectangle ObjRectangle => new((int) Position.X, (int) Position.Y, 20, 50);
-        public Vector Position { get; }
+        private Point Position { get;  }
         public double Direction { get; }
+        private const int maxHealth = 100;
+        public int MaxHealth() => maxHealth;
         public double Health { get; set; }
 
         public Tree(Point position)
         {
-            Position = new Vector(position.X, position.Y);
+            Position = position;
+            Health = maxHealth;
         }
 
         public string GetImage() => "tree.png";
