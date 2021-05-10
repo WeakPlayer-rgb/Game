@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NewGame
 {
     class Tree : IGameObject
     {
-        public Rectangle ObjRectangle => new((int) Position.X, (int) Position.Y, 20, 50);
+        public Rectangle ObjRectangle => new(Position.X, Position.Y, 50, 85);
         private Point Position { get;  }
         public double Direction { get; }
-        private const int maxHealth = 100;
         public int MaxHealth() => maxHealth;
         public double Health { get; set; }
+        private const int maxHealth = 100;
 
         public Tree(Point position)
         {

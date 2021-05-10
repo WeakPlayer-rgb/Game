@@ -51,6 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Channel.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Tree.cs" />

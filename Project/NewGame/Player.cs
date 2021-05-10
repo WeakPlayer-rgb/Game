@@ -7,19 +7,17 @@ namespace NewGame
     public class Player : IGameObject
     {
         public Point Position { get; set; }
-        private const int maxHealth = 100;
         public int Damage { get; set; }
         public int MaxHealth() => maxHealth;
-
         public Rectangle ObjRectangle => 
-            new((int) Position.X, (int) Position.Y, 35, 65);
-
+            new(Position.X, Position.Y, 45, 80);
         public double Direction => angle;
         public Vector Speed => new Vector(1, 0).Rotate(Direction) * velocity;
+        public int CoolDown { get; set; }
         public double Health { get; set; }
         private double angle;
         private double velocity;
-        public int CoolDown { get; set; }
+        private const int maxHealth = 100;
 
         public Player(Point p)
         {
@@ -98,7 +96,7 @@ namespace NewGame
                     if (velocity is < 0.25 and > -0.25) velocity = 0;
                     break;
                 case KeyButton.Break:
-                    velocity = 0.9;
+                    velocity = 0;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ctrl), ctrl, null);
