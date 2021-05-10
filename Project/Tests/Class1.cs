@@ -17,7 +17,7 @@ namespace ClassLibrary1
         [Test]
         public void TurnTest()
         {
-            var car = new Player(new Vector(0, 0), 100);
+            var car = new Player(new Point(0, 0));
             car.ChangeVelocity(KeyButton.Forward);
             car.ChangeDirection(KeyButton.Left);
             Console.WriteLine(car.Direction);

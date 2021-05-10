@@ -57,10 +57,10 @@ namespace NewGame
             {
                 if (coolDownShot <= 0)
                 {
-                    var bullet = new Bullet(new Vector(args.Location.X - ClientSize.Width / 2,
-                        args.Location.Y - ClientSize.Height / 2));
                     coolDownShot = player.CoolDown;
-                    gameModel.Bullets[new Point((int) player.Position.X, (int) player.Position.Y)] = bullet;
+                    gameModel.AddBullet(new Bullet(new Vector(args.Location.X - ClientSize.Width / 2,
+                            args.Location.Y - ClientSize.Height / 2),
+                        new Point((int) player.Position.X, (int) player.Position.Y),gameModel.Player.Damage));
                 }
             };
 
@@ -71,6 +71,7 @@ namespace NewGame
                 labelY.Text = "Y: " + player.Position.Y.ToString();
                 ReactOnControl(gameModel);
                 gameModel.ChangePosition();
+                gameModel.MoveBullets();
                 coolDownShot -= 1;
                 Refresh();
             };
@@ -111,20 +112,25 @@ namespace NewGame
                 {
                     graphic.DrawImage(images[gameModel.Map[point].GetImage()], x * 32, y * 32);
                     graphic.DrawRectangle(Pens.Red, gameModel.Map[point].ObjRectangle);
+                    if (gameModel.Map[point].Health != gameModel.Map[point].MaxHealth())
+                    {
+                        graphic.DrawRectangle(Pens.Black, x * 32, (y + 2) * 32, 32, 5);
+                        graphic.FillRectangle(Brushes.GreenYellow, x * 32+1, (y + 2) * 32+1,
+                           (float) 32 * ((float)gameModel.Map[point].Health / gameModel.Map[point].MaxHealth()), 4);
+                    }
                 }
             }
 
-            var forRemove = new List<Point>();
+            var forRemove = new List<Bullet>();
 
-            foreach (var point in gameModel.Bullets.Keys)
+            foreach (var bullet in gameModel.Bullets)
             {
-                graphic.FillEllipse(Brushes.Black, point.X, point.Y, 5, 5);
-                gameModel.Bullets[point].ChangeTick();
-                if (gameModel.Bullets[point].Tick >= 100) forRemove.Add(point);
+                graphic.FillEllipse(Brushes.Black, bullet.Position.X, bullet.Position.Y, 5, 5);
+                bullet.ChangeTick();
+                if (bullet.Tick >= 100) forRemove.Add(bullet);
             }
 
-            foreach (var point in forRemove) gameModel.Bullets.Remove(point);
-            gameModel.MoveBullets();
+            foreach (var bullet in forRemove) gameModel.Bullets.Remove(bullet);
         }
 
         protected override void OnKeyPress(KeyPressEventArgs args)
@@ -132,7 +138,7 @@ namespace NewGame
             switch (args.KeyChar)
             {
                 case '.':
-                    player.Position = new Vector(10, 10);
+                    player.Position = new Point(10, 10);
                     break;
                 case 'W' or 'w' or 'ц' or 'Ц':
                     isWdown = true;

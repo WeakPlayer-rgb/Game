@@ -10,36 +10,75 @@ namespace NewGame
         public readonly Player Player;
         public Dictionary<Point, IGameObject> Map;
         public readonly int Size;
-        public Dictionary<Point, Bullet> Bullets;
+        public readonly List<Bullet> Bullets;
 
         public GameModel(int s)
         {
             Size = s;
             Map = new Dictionary<Point, IGameObject>();
-            Player = new Player(new Vector(Size / 2, Size / 2), 100);
-            SpawnTrees();
-            Bullets = new Dictionary<Point, Bullet>();
+
+            Player = new Player(new Point(Size / 2, Size / 2));
+
+            var rnd = new Random();
+            for (var i = 0; i < 500; i++)
+            {
+                var newPoint = new Point(rnd.Next(0, Size / 32), rnd.Next(0, Size / 32)); // 40, 70
+                if (!Map.ContainsKey(newPoint))
+                    Map[new Point(newPoint.X * 32, newPoint.Y * 32)] =
+                        new Tree(new Point(newPoint.X * 32, newPoint.Y * 32));
+            }
+
+            Bullets = new List<Bullet>();
         }
 
         public void ChangePosition()
         {
-            if (IsPlayerIntersected())
-            {
-                Player.ChangeVelocity(KeyButton.Break);
-                return;
-            }
-
-            Player.Position += Player.Speed;
-            var x = Player.Position.X;
-            var y = Player.Position.Y;
-            //if (Car.Position.X > size) Car.Position -= new Vector(size, 0);
-            //if (Car.Position.Y > size) Car.Position -= new Vector(0, size);
-            //if (Car.Position.X < 0) Car.Position += new Vector(size, 0);
-            //if (Car.Position.Y < 0) Car.Position += new Vector(0, size);
-            Player.Position += new Vector(x < 0 ? Size : x > Size ? -Size : 0,
-                y < 0 ? Size : y > Size ? -Size : 0);
+            Player.Position = new Point((int) Player.Speed.X + Player.Position.X,
+                (int) Player.Speed.Y + Player.Position.Y);
+            var dx = Player.Position.X < 0 ? Size : Player.Position.X > Size ? -Size : 0;
+            var x = Player.Position.X + dx;
+            var dy = Player.Position.Y < 0 ? Size : Player.Position.Y > Size ? -Size : 0;
+            var y = Player.Position.Y + dy;
+            Player.Position = new Point(x, y);
+            // foreach (var key in Map.Keys)
+            // {
+            //     if (AreIntersected(Player.ObjRectangle, Map[key].ObjRectangle)) Player.ChangeVelocity(KeyButton.Break);
+            // }
         }
 
+        public void MoveBullets()
+        {
+            var forRemoveBullets = new List<Bullet>();
+            var forRemoveGameObject = new List<Point>();
+            foreach (var bullet in Bullets)
+            {
+                bullet.Position = new Point(bullet.Position.X + (int) bullet.Direction.X,
+                    bullet.Position.Y + (int) bullet.Direction.Y);
+                var point = new Point(bullet.Position.X / 32 * 32, bullet.Position.Y / 32 * 32);
+                if (Map.ContainsKey(point))
+                {
+                    Map[point].Health -= bullet.Damage;
+                    forRemoveBullets.Add(bullet);
+                    if(Map[point].Health <=0)
+                        forRemoveGameObject.Add(point);
+                }
+                else if (Map.ContainsKey(new Point(point.X, point.Y - 32)))
+                {
+                    Map[new Point(point.X, point.Y - 32)].Health -= bullet.Damage;
+                    forRemoveBullets.Add(bullet);
+                    if(Map[new Point(point.X, point.Y - 32)].Health <=0)
+                        forRemoveGameObject.Add(new Point(point.X, point.Y - 32));
+                }
+            }
+
+            foreach (var bullet in forRemoveBullets) Bullets.Remove(bullet);
+            foreach (var point in forRemoveGameObject)
+            {
+                Map.Remove(point);
+                Player.Damage += 10;
+            }
+        }
+        
         public bool IsPlayerIntersected()
         {
             var playerPos = Player.Position;
@@ -104,33 +143,9 @@ namespace NewGame
             return -1;
         }
 
-        public void MoveBullets()
+        public void AddBullet(Bullet bullet)
         {
-            var newBullets = new Dictionary<Point, Bullet>();
-            foreach (var point in Bullets.Keys)
-            {
-                newBullets[new Point(point.X + (int) Bullets[point].Direction.X,
-                        point.Y + (int) Bullets[point].Direction.Y)] =
-                    Bullets[point];
-            }
-
-            Bullets = newBullets;
-        }
-
-        public void AddBullet(Bullet bullet, Point position)
-        {
-            Bullets[position] = bullet;
-        }
-
-        private void SpawnTrees()
-        {
-            var rnd = new Random();
-            for (var i = 0; i < 500; i++)
-            {
-                var newPoint = new Point(rnd.Next(0, Size / 32), rnd.Next(0, Size / 32)); // 40, 70
-                Map[new Point(newPoint.X * 32, newPoint.Y * 32)] =
-                    new Tree(new Point(newPoint.X * 32, newPoint.Y * 32));
-            }
+            Bullets.Add(bullet);
         }
     }
 }
