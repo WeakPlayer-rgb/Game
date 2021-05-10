@@ -33,17 +33,28 @@ namespace NewGame
 
         public void ChangePosition()
         {
-            Player.Position = new Point((int) Player.Speed.X + Player.Position.X,
-                (int) Player.Speed.Y + Player.Position.Y);
+            if (IsPlayerIntersected())
+            {
+                var slowDownMultiplier = Player.Speed.X/2;
+                ChangePos(slowDownMultiplier);
+            }
+
+            ChangePos();
+            // foreach (var key in Map.Keys)
+            // {
+            //     if (AreIntersected(Player.ObjRectangle, Map[key].ObjRectangle)) Player.ChangeVelocity(KeyButton.Break);
+            // }
+        }
+
+        private void ChangePos(double multiplier=0)
+        {
+            Player.Position = new Point((int) ((int) Player.Speed.X-multiplier + Player.Position.X),
+                (int) ((int) Player.Speed.Y + Player.Position.Y));
             var dx = Player.Position.X < 0 ? Size : Player.Position.X > Size ? -Size : 0;
             var x = Player.Position.X + dx;
             var dy = Player.Position.Y < 0 ? Size : Player.Position.Y > Size ? -Size : 0;
             var y = Player.Position.Y + dy;
             Player.Position = new Point(x, y);
-            // foreach (var key in Map.Keys)
-            // {
-            //     if (AreIntersected(Player.ObjRectangle, Map[key].ObjRectangle)) Player.ChangeVelocity(KeyButton.Break);
-            // }
         }
 
         public void MoveBullets()
@@ -82,14 +93,15 @@ namespace NewGame
         public bool IsPlayerIntersected()
         {
             var playerPos = Player.Position;
-            var leftDot = new Vector(playerPos.X - 17, playerPos.Y - 30).Rotate(Player.Direction);
+            /*var leftDot = new Vector(playerPos.X - 17, playerPos.Y - 30).Rotate(Player.Direction);
             var rightDot = new Vector(playerPos.X + 28, playerPos.Y - 30).Rotate(Player.Direction);
+            */
             //var playerRect = new Rectangle(leftTop., rightTop, 1, 1);
             const int limit = 50;
             for (var dy = -limit; dy <= limit; dy++)
             for (var dx = -limit; dx <= limit; dx++)
             {
-                var potentialPos = new Point((int) playerPos.X + dx, (int) playerPos.Y + dy);
+                var potentialPos = new Point(playerPos.X + dx, playerPos.Y + dy);
                 if (!Map.ContainsKey(potentialPos)) continue;
                 var obj = Map[potentialPos];
                 var objRectangle = obj.ObjRectangle;
@@ -97,13 +109,14 @@ namespace NewGame
                 var bottom = objRectangle.Bottom;
                 var left = objRectangle.Left;
                 var right = objRectangle.Right;
-                return IsIntersected(leftDot, rightDot, left,right, bottom, top);
+                //return IsIntersected(leftDot, rightDot, left,right, bottom, top);
+                return AreIntersected(Player.ObjRectangle, objRectangle);
             }
 
             return false;
         }
 
-        public bool IsIntersected(Vector leftDot, Vector rightDot, int left, int right, int bottom, int top)
+        /*public bool IsIntersected(Vector leftDot, Vector rightDot, int left, int right, int bottom, int top)
         {
             var a = Math.Max(leftDot.X, left) <= Math.Min(rightDot.X, right);
             var b = Math.Max(leftDot.Y, bottom) <= Math.Min(rightDot.Y, top);
@@ -111,12 +124,17 @@ namespace NewGame
             var d = Math.Max(rightDot.Y, bottom) <= Math.Min(leftDot.Y, top);
             //return a && b || c&&d || a&&c || a&&d||b&&c||b&&d;
             return a && b;
-        }
+        }*/
 
         /*private double CalcLength(int point1, int point2)
         {
             return Math.Sqrt(point1 * point1 - point2 * point2);
         }*/
+
+        private bool isIntersected(IGameObject toCheck, IGameObject potentiallyIntersecting)
+        {
+            return false;
+        }
 
         public static bool AreIntersected(Rectangle r1, Rectangle r2)
         {

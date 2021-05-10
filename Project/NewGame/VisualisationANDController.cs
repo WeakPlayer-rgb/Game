@@ -52,8 +52,8 @@ namespace NewGame
 
             var labelX = new Label {Location = new Point(0, 0), Width = 150};
             var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 150};
-            var labelSpeed = new Label {Location = new Point(0, labelY.Size.Height), Width = 150};
-
+            var labelSpeed = new Label {Location = new Point(0, labelY.Location.Y+labelY.Size.Height), Width = 250};
+            
             MouseClick += (sender, args) =>
             {
                 if (coolDownShot <= 0)
@@ -70,7 +70,7 @@ namespace NewGame
             {
                 labelX.Text = $"X: {player.Position.X}";
                 labelY.Text = $"Y: {player.Position.Y}";
-                labelSpeed.Text = $"Speed: {player.Speed}";
+                labelSpeed.Text = $"Speed: {player.Speed.Length}";
                 
                 ReactOnControl(gameModel);
                 gameModel.ChangePosition();

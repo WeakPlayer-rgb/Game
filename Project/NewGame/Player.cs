@@ -96,7 +96,7 @@ namespace NewGame
                     if (velocity is < 0.25 and > -0.25) velocity = 0;
                     break;
                 case KeyButton.Break:
-                    velocity = 0;
+                    velocity = 0.9;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ctrl), ctrl, null);

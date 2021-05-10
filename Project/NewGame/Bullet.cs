@@ -11,7 +11,7 @@ namespace NewGame
 
         public Bullet(Vector direction, Point position,int damage)
         {
-            Direction = (direction / direction.Length * 10);
+            Direction = direction / direction.Length * 10;
             Position = position;
             Damage = damage;
         }
