@@ -6,13 +6,13 @@ namespace NewGame
     {
         
         Rectangle ObjRectangle { get; }
-        public int MaxHealth();
         /// <summary>
         /// Angle of movement
         /// </summary>
         double Direction { get; }
         double Health { get; set; }
         string GetImage();
+        public int MaxHealth();
         int DrawPriority(int priority);
         /// <summary>
         /// Change angle

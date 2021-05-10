@@ -52,6 +52,7 @@ namespace NewGame
 
             var labelX = new Label {Location = new Point(0, 0), Width = 150};
             var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 150};
+            var labelSpeed = new Label {Location = new Point(0, labelY.Size.Height), Width = 150};
 
             MouseClick += (sender, args) =>
             {
@@ -67,8 +68,10 @@ namespace NewGame
             var timer = new Timer {Interval = 5};
             timer.Tick += (sender, args) =>
             {
-                labelX.Text = "X: " + player.Position.X.ToString();
-                labelY.Text = "Y: " + player.Position.Y.ToString();
+                labelX.Text = $"X: {player.Position.X}";
+                labelY.Text = $"Y: {player.Position.Y}";
+                labelSpeed.Text = $"Speed: {player.Speed}";
+                
                 ReactOnControl(gameModel);
                 gameModel.ChangePosition();
                 gameModel.MoveBullets();
@@ -78,6 +81,7 @@ namespace NewGame
 
             Controls.Add(labelY);
             Controls.Add(labelX);
+            Controls.Add(labelSpeed);
             InitializeComponent();
             timer.Start();
         }
@@ -121,16 +125,16 @@ namespace NewGame
                 }
             }
 
-            var forRemove = new List<Bullet>();
+            var toRemove = new List<Bullet>();
 
             foreach (var bullet in gameModel.Bullets)
             {
                 graphic.FillEllipse(Brushes.Black, bullet.Position.X, bullet.Position.Y, 5, 5);
                 bullet.ChangeTick();
-                if (bullet.Tick >= 100) forRemove.Add(bullet);
+                if (bullet.Tick >= 100) toRemove.Add(bullet);
             }
 
-            foreach (var bullet in forRemove) gameModel.Bullets.Remove(bullet);
+            foreach (var bullet in toRemove) gameModel.Bullets.Remove(bullet);
         }
 
         protected override void OnKeyPress(KeyPressEventArgs args)
@@ -215,7 +219,7 @@ namespace NewGame
             return outputImage;
         }
 
-        void ReactOnControl(GameModel game)
+        private void ReactOnControl(GameModel game)
         {
             if (isWdown) game.Player.ChangeVelocity(KeyButton.Forward);
             if (isAdown) game.Player.ChangeDirection(KeyButton.Left);
