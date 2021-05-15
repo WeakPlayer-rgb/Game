@@ -51,7 +51,7 @@ namespace SocketClient
             {
                 var bytesRec = sender.Receive(bytes);
                 Console.WriteLine("\nОтвет от сервера: {0}\n\n", Encoding.UTF8.GetString(bytes, 0, bytesRec));
-                sender.Send(Encoding.UTF8.GetBytes("Сам xyu"));
+                sender.Send(Encoding.UTF8.GetBytes("receive"));
             }
             // Используем рекурсию для неоднократного вызова SendMessageFromSocket()
             // if (message != null && !message.Contains("<TheEnd>"))

@@ -29,6 +29,7 @@ namespace NewGame
         private Player player;
 
 
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Windows.Forms.Internal.DeviceContext")]
         public VisualisationAndController(GameModel g)
         {
             KeyPreview = true;
@@ -96,15 +97,12 @@ namespace NewGame
             graphic.DrawImage(grass, new Point(-(int) carX % 32 - 32, -(int) carY % 32 - 32));
 
             graphic.TranslateTransform(width / 2, height / 2);
-            graphic.RotateTransform(
-                (float) ((float) player.Direction / Math.PI * 180 + 90));
+            graphic.RotateTransform((float) ((float) player.Direction / Math.PI * 180 + 90));
             graphic.DrawImage(images[player.GetImage()], -17, -30);
             graphic.DrawRectangle(Pens.Red, -17, -30, player.ObjRectangle.Width,
                 player.ObjRectangle.Height);
-            ///
             graphic.FillEllipse(Brushes.Brown, -17, -30, 2, 2);
             graphic.FillEllipse(Brushes.Brown, 28, -30, 2, 2);
-            /// 
             //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
             graphic.ResetTransform();
             graphic.TranslateTransform((float) -carX + width / 2, (float) -carY + height / 2);

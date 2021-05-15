@@ -48,7 +48,7 @@ namespace SocketServer
                     {
                         case true when !sendDictionary.ContainsKey(task.Result):
                             sendDictionary[task.Result] =
-                                task.Result.SendAsync(Encoding.UTF8.GetBytes("xyu"), SocketFlags.Broadcast);
+                                task.Result.SendAsync(Encoding.UTF8.GetBytes("send"), SocketFlags.Broadcast);
                             task = sListener.AcceptAsync();
                             break;
                         case true:
@@ -60,7 +60,7 @@ namespace SocketServer
                         sendDictionary[socket].IsCompleted &&
                         (!forReceive.ContainsKey(socket) || forReceive[socket].IsCompleted)))
                     {
-                        socket.SendAsync(Encoding.UTF8.GetBytes("xyu"), SocketFlags.None);
+                        socket.SendAsync(Encoding.UTF8.GetBytes("send"), SocketFlags.None);
                         if (!forReceive.ContainsKey(socket))
                         {
                             clientData.Add(socket,new byte[1024]);
