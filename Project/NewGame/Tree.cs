@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace NewGame
 {
-    class Tree : IGameObject
+    public class Tree : IGameObject
     {
         public Rectangle ObjRectangle => new(Position.X, Position.Y, 50, 85);
         private Point Position { get;  }

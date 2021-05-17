@@ -5,14 +5,13 @@ using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.Loader;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Timers;
 using NewGame;
+using Newtonsoft.Json;
 
-namespace Server
+namespace NewServer
 {
     internal static class Program
     {
@@ -38,9 +37,7 @@ namespace Server
 
 
             var timer = new Timer {Interval = 5};
-            timer.Elapsed += (sender,e) => {
-                MoveBullets();
-            };
+            timer.Elapsed += (sender, e) => { MoveBullets(); };
             timer.Start();
             // Создаем сокет Tcp/Ip
             var sListener = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -49,20 +46,22 @@ namespace Server
             {
                 var sendDictionary = new Dictionary<Socket, Task<int>>();
                 var forReceive = new Dictionary<Socket, Task<int>>();
-                var clientData = new Dictionary<Socket, byte[]>();
+                var clientData = new Dictionary<Socket, ArraySegment<byte>>();
                 fullMap = new Dictionary<Point, IGameObject>();
                 var rnd = new Random();
                 for (var i = 0; i < 500; i++)
                 {
                     var newPoint = new Point(rnd.Next(0, Size / 32), rnd.Next(0, Size / 32)); // 40, 70
                     if (!fullMap.ContainsKey(newPoint))
-                        fullMap[new Point(newPoint.X * 32, newPoint.Y * 32)] =
-                            new Tree(new Point(newPoint.X * 32, newPoint.Y * 32));
+                    {
+                        var point = new Point(newPoint.X * 32, newPoint.Y * 32);
+                        fullMap[point] = new Tree(point);
+                    }
                 }
 
-                serializedMap = JsonSerializer.Serialize(fullMap);
+                serializedMap = JsonConvert.SerializeObject(fullMap);
                 var dataForClient = new Dictionary<Socket, DataFromServerToClient>();
-                var allPlayers = new Dictionary<Socket, Player>();
+                var allPlayers = new Dictionary<Socket, Point>();
                 bullets = new List<Bullet>();
 
                 sListener.Bind(ipEndPoint);
@@ -83,9 +82,11 @@ namespace Server
                             data.OtherPlayers = allPlayers.Values.ToList();
                             dataForClient[task.Result] = new DataFromServerToClient
                                 {Bullets = bullets, OtherPlayers = allPlayers.Values.ToList()};
-                            var send = JsonSerializer.Serialize(data);
+                            var str = JsonConvert.SerializeObject(data);
+                            var send = new ArraySegment<byte>(
+                                Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
                             sendDictionary[task.Result] =
-                                task.Result.SendAsync(Encoding.UTF8.GetBytes(send), SocketFlags.Broadcast);
+                                task.Result.SendAsync(send, SocketFlags.None);
                             foreach (var oldData in dataForClient.Values) oldData.OtherPlayers.Add(data.Player);
                             allPlayers[task.Result] = data.Player;
                             task = sListener.AcceptAsync();
@@ -101,17 +102,19 @@ namespace Server
                     {
                         var data = dataForClient[socket];
                         data.OtherPlayers = allPlayers.Where(x => x.Key != socket).Select(x => x.Value).ToList();
-                        socket.SendAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data)), SocketFlags.None);
+                        socket.SendAsync(
+                            new ArraySegment<byte>(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data))),
+                            SocketFlags.None);
                         if (!forReceive.ContainsKey(socket))
                         {
-                            clientData.Add(socket, new byte[2048]);
+                            clientData.Add(socket, new ArraySegment<byte>(new byte[2048]));
                             forReceive.Add(socket, socket.ReceiveAsync(clientData[socket], SocketFlags.None));
                         }
                         else
                             forReceive[socket] = socket.ReceiveAsync(clientData[socket], SocketFlags.None);
                     }
 
-                    foreach (var socket in forReceive.Keys.Where(socket => forReceive[socket].IsCompleted))
+                    foreach (var socket in forReceive.Keys.Where(socket => forReceive[socket].IsCompleted).ToList())
                     {
                         if (socket.Blocking)
                         {
@@ -119,10 +122,13 @@ namespace Server
                             forReceive.Remove(socket);
                             continue;
                         }
-                        Console.WriteLine(Encoding.UTF8.GetString(clientData[socket]));
-                        var newData = (DataFromClientToServer)JsonSerializer.Deserialize(clientData[socket],typeof(DataFromClientToServer));
+
+                        var newData =
+                            (DataFromClientToServer) JsonConvert.DeserializeObject(
+                                Encoding.UTF8.GetString(clientData[socket].Array),
+                                typeof(DataFromClientToServer));
                         if (newData == null) continue;
-                        allPlayers[socket] = new Player(newData.NewPlayerPosition);
+                        allPlayers[socket] = newData.NewPlayerPosition;
                         bullets.AddRange(newData.NewBullets);
                     }
                     // foreach (var task in TaskList)
@@ -166,10 +172,10 @@ namespace Server
             }
         }
 
-        private static Player CreateNewPlayer()
+        private static Point CreateNewPlayer()
         {
             var rnd = new Random();
-            return new Player(new Point(rnd.Next(Size), rnd.Next(Size)));
+            return new Point(rnd.Next(Size), rnd.Next(Size));
         }
 
         public static void MoveBullets()
@@ -185,23 +191,21 @@ namespace Server
                 {
                     fullMap[point].Health -= bullet.Damage;
                     forRemoveBullets.Add(bullet);
-                    if(fullMap[point].Health <=0)
+                    if (fullMap[point].Health <= 0)
                         forRemoveGameObject.Add(point);
                 }
                 else if (fullMap.ContainsKey(new Point(point.X, point.Y - 32)))
                 {
                     fullMap[new Point(point.X, point.Y - 32)].Health -= bullet.Damage;
                     forRemoveBullets.Add(bullet);
-                    if(fullMap[new Point(point.X, point.Y - 32)].Health <=0)
+                    if (fullMap[new Point(point.X, point.Y - 32)].Health <= 0)
                         forRemoveGameObject.Add(new Point(point.X, point.Y - 32));
                 }
             }
-
-            foreach (var bullet in forRemoveBullets) bullets.Remove(bullet);
-            foreach (var point in forRemoveGameObject)
-            {
-                fullMap.Remove(point);
-            }
+            lock (bullets)
+                foreach (var bullet in forRemoveBullets)
+                    bullets.Remove(bullet);
+            foreach (var point in forRemoveGameObject) fullMap.Remove(point);
         }
     }
 }

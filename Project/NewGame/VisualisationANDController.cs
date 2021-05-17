@@ -58,7 +58,7 @@ namespace NewGame
                 if (coolDownShot <= 0)
                 {
                     coolDownShot = player.CoolDown;
-                    gameModel.AddBullet(new Bullet(new Vector(args.Location.X - ClientSize.Width / 2,
+                    gameModel.Shoot(new Bullet(new Vector(args.Location.X - ClientSize.Width / 2,
                             args.Location.Y - ClientSize.Height / 2),
                         new Point((int) player.Position.X, (int) player.Position.Y),gameModel.Player.Damage));
                 }
@@ -74,7 +74,6 @@ namespace NewGame
                 labelSpeed.Text = player.Speed.ToString();
                 ReactOnControl(gameModel);
                 gameModel.ChangePosition();
-                gameModel.MoveBullets();
                 coolDownShot -= 1;
                 Refresh();
             };
