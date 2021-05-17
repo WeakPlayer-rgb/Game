@@ -34,9 +34,10 @@ namespace NewClient
             // Соединяемся с удаленным устройством
             
             // Устанавливаем удаленную точку для сокета
-            var ipHost = Dns.GetHostEntry("localhost");
+            var ip = Dns.GetHostName();
+            var ipHost = Dns.GetHostEntry(ip);
             var ipAddr = ipHost.AddressList[1];
-            var ipEndPoint = new IPEndPoint(ipAddr, port);
+            var ipEndPoint = new IPEndPoint(IPAddress.Parse("10.97.160.27"), port);
             
             Socket sender = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             

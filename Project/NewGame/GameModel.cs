@@ -65,6 +65,7 @@ namespace NewGame
             {
                 var slowDownMultiplier = Player.Speed.X/2;
                 ChangePos(slowDownMultiplier);
+                return;
             }
 
             ChangePos();
@@ -77,12 +78,41 @@ namespace NewGame
         private void ChangePos(double multiplier=0)
         {
             Player.Position = new Point((int) ((int) Player.Speed.X-multiplier + Player.Position.X),
-                (int) ((int) Player.Speed.Y + Player.Position.Y));
+                (int) Player.Speed.Y + Player.Position.Y);
             var dx = Player.Position.X < 0 ? Size : Player.Position.X > Size ? -Size : 0;
-            var x = Player.Position.X + dx;
             var dy = Player.Position.Y < 0 ? Size : Player.Position.Y > Size ? -Size : 0;
-            var y = Player.Position.Y + dy;
-            Player.Position = new Point(x, y);
+
+            var positionX = Player.Position.X + dx;
+            var positionY = Player.Position.Y + dy;
+            var rect = new Rectangle(positionX, positionY, 45, 80);
+            
+        }
+        
+        public bool IsPlayerIntersected()
+        {
+            var playerPos = Player.Position;
+            /*var leftDot = new Vector(playerPos.X - 17, playerPos.Y - 30).Rotate(Player.Direction);
+            var rightDot = new Vector(playerPos.X + 28, playerPos.Y - 30).Rotate(Player.Direction);
+            */
+            //var playerRect = new Rectangle(leftTop., rightTop, 1, 1);
+            const int limit = 50;
+            for (var dy = -limit; dy <= limit; dy++)
+            for (var dx = -limit; dx <= limit; dx++)
+            {
+                var potentialPos = new Point(playerPos.X + dx, playerPos.Y + dy);
+                if (!Map.ContainsKey(potentialPos)) continue;
+                var obj = Map[potentialPos];
+                var objRectangle = obj.ObjRectangle;
+                var top = objRectangle.Top;
+                var bottom = objRectangle.Bottom;
+                var left = objRectangle.Left;
+                var right = objRectangle.Right;
+                //return IsIntersected(leftDot, rightDot, left,right, bottom, top);
+                return AreIntersected(Player.ObjRectangle, objRectangle);
+                //return IsIntersected(leftDot, rightDot, left, right, bottom, top);
+            }
+
+            return false;
         }
 
         Task MakeAsync()
@@ -117,33 +147,6 @@ namespace NewGame
         async void WorkWithServer()
         {
             await MakeAsync();
-        }
-
-        public bool IsPlayerIntersected()
-        {
-            var playerPos = Player.Position;
-            /*var leftDot = new Vector(playerPos.X - 17, playerPos.Y - 30).Rotate(Player.Direction);
-            var rightDot = new Vector(playerPos.X + 28, playerPos.Y - 30).Rotate(Player.Direction);
-            */
-            //var playerRect = new Rectangle(leftTop., rightTop, 1, 1);
-            const int limit = 50;
-            for (var dy = -limit; dy <= limit; dy++)
-            for (var dx = -limit; dx <= limit; dx++)
-            {
-                var potentialPos = new Point(playerPos.X + dx, playerPos.Y + dy);
-                if (!Map.ContainsKey(potentialPos)) continue;
-                var obj = Map[potentialPos];
-                var objRectangle = obj.ObjRectangle;
-                var top = objRectangle.Top;
-                var bottom = objRectangle.Bottom;
-                var left = objRectangle.Left;
-                var right = objRectangle.Right;
-                //return IsIntersected(leftDot, rightDot, left,right, bottom, top);
-                return AreIntersected(Player.ObjRectangle, objRectangle);
-                //return IsIntersected(leftDot, rightDot, left, right, bottom, top);
-            }
-
-            return false;
         }
 
         /*public bool IsIntersected(Vector leftDot, Vector rightDot, int left, int right, int bottom, int top)

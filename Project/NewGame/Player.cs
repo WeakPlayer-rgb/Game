@@ -7,7 +7,7 @@ namespace NewGame
     public class Player
     {
         public Point Position { get; set; }
-        public int Damage { get; set; }
+        public int Damage { get; }
         public int MaxHealth() => maxHealth;
         public Rectangle ObjRectangle => 
             new(Position.X, Position.Y, 45, 80);
