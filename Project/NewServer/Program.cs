@@ -122,27 +122,29 @@ namespace NewServer
                             forReceive.Remove(socket);
                             continue;
                         }
-                        DataFromClientToServer newData;
+                        var newData = new DataFromClientToServer();
                         lock (clientData[socket].Array)
                         {
+                            var str = Encoding.UTF8.GetString(clientData[socket].Array);
+                            Console.WriteLine(str);
                             newData =
-                                (DataFromClientToServer) JsonConvert.DeserializeObject(
-                                    Encoding.UTF8.GetString(clientData[socket].Array),
+                                (DataFromClientToServer) JsonConvert.DeserializeObject(str,
                                     typeof(DataFromClientToServer));
                         }
+
                         if (newData == null) continue;
                         allPlayers[socket] = newData.NewPlayerPosition;
                         bullets.AddRange(newData.NewBullets);
                     }
 
-                    var IWrote = false;
-                    foreach (var p in allPlayers.Values)
-                    {
-                        Console.Write(p.ToString());
-                        IWrote = true;
-                    }
-                    if(IWrote)
-                        Console.WriteLine();
+                    // var IWrote = false;
+                    // foreach (var p in allPlayers.Values)
+                    // {
+                    //     Console.Write(p.ToString());
+                    //     IWrote = true;
+                    // }
+                    // if(IWrote)
+                    //     Console.WriteLine();
                 }
             }
             catch (Exception ex)

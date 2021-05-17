@@ -22,12 +22,6 @@ namespace NewGame
 
     public class DataFromClientToServer
     {
-        public DataFromClientToServer(Player p)
-        {
-            NewPlayerPosition = p;
-            NewBullets = new List<Bullet>();
-        }
-
         public Player NewPlayerPosition;
         public List<Bullet> NewBullets;
     }

@@ -52,9 +52,9 @@ namespace NewGame
             Map = data.Map;
             Bullets = data.Bullets;
             PlayerMap = data.OtherPlayers;
-            dataFromClientToServer = new DataFromClientToServer(Player)
+            dataFromClientToServer = new DataFromClientToServer()
             {
-                NewBullets = new List<Bullet>()
+                NewBullets = new List<Bullet>(),NewPlayerPosition = Player
             };
             WorkWithServer();
         }
@@ -86,10 +86,11 @@ namespace NewGame
                     connection.Send(Encoding.UTF8.GetBytes(dataForServer));
                     connection.Receive(data);
                     dataFromServerToClient = new DataFromServerToClient();
+                    var str = Encoding.UTF8.GetString(data);
                     lock (dataFromServerToClient)
                     {
                         dataFromServerToClient =
-                            (DataFromServerToClient) JsonConvert.DeserializeObject(Encoding.UTF8.GetString(data),
+                            (DataFromServerToClient) JsonConvert.DeserializeObject(str,
                                 typeof(DataFromServerToClient));
                         Debug.Assert(dataFromServerToClient != null, nameof(dataFromServerToClient) + " != null");
                         Bullets.AddRange(dataFromServerToClient.Bullets);

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
@@ -27,28 +29,44 @@ namespace NewClient
 
         static void SendMessageFromSocket(int port)
         {
-            
+
             // Буфер для входящих данных
-            byte[] bytes = new byte[1024];
+            byte[] bytes = new byte[100000];
 
             // Соединяемся с удаленным устройством
-            
+
             // Устанавливаем удаленную точку для сокета
             var ipHost = Dns.GetHostEntry("localhost");
             var ipAddr = ipHost.AddressList[1];
-            var ipEndPoint = new IPEndPoint(ipAddr, port);
-            
-            Socket sender = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            
+            var ipEndPoint = new IPEndPoint(IPAddress.Parse("10.97.160.27"), 11000);
+            var dataFromClientToServer = new DataFromClientToServer();
+            Socket connection = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            var dataFromServerToClient = new DataFromServerToClient();
+            var Bullets = new List<Bullet>();
+            var Map = new Dictionary<Point, Tree>();
+            var PlayerMap = new List<Player>();
+
             // Соединяем сокет с удаленной точкой
-            sender.Connect(ipEndPoint);
+            connection.Connect(ipEndPoint);
             while (true)
             {
-                sender.Receive(bytes);
-                var str = Encoding.UTF8.GetString(bytes);
-                Console.Write(JsonConvert.DeserializeObject(str,typeof(DataFromServerToClient)));
-                var data = new DataFromClientToServer (new Player(new Point(0, 0))){NewBullets = new List<Bullet>()};
-                sender.Send(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
+                var data = new byte[100000];
+                string dataForServer;
+                lock (dataFromClientToServer) dataForServer = JsonConvert.SerializeObject(dataFromClientToServer);
+                connection.Send(Encoding.UTF8.GetBytes(dataForServer));
+                connection.Receive(data);
+                dataFromServerToClient = new DataFromServerToClient();
+                lock (dataFromServerToClient)
+                {
+                    dataFromServerToClient =
+                        (DataFromServerToClient) JsonConvert.DeserializeObject(Encoding.UTF8.GetString(data),
+                            typeof(DataFromServerToClient));
+                    Debug.Assert(dataFromServerToClient != null, nameof(dataFromServerToClient) + " != null");
+                    Bullets.AddRange(dataFromServerToClient.Bullets);
+                    foreach (var point in Map.Where(x => x.Value.GetType() == typeof(Player)).Select(x => x.Key)
+                        .ToList()) Map.Remove(point);
+                    foreach (var player in dataFromServerToClient.OtherPlayers) PlayerMap.Add(player);
+                }
             }
         }
     }
