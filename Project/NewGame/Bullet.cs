@@ -16,6 +16,11 @@ namespace NewGame
             Damage = damage;
         }
 
+        public void MoveThisBullet()
+        {
+            Position = new Point(Position.X + (int) Direction.X, Position.Y + (int) Direction.Y);
+        }
+
         public void ChangeTick() => Tick += 1;
     }
 }

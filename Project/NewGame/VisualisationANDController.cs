@@ -49,17 +49,16 @@ namespace NewGame
             var bmp = Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "grass.png"));
             var Grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width,
                 ClientSize.Height);
-
-            var labelX = new Label {Location = new Point(0, 0), Width = 150};
-            var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 150};
+            var labelX = new Label {Location = new Point(0, 0), Width = 100};
+            var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 100};
             var labelSpeed = new Label {Location = new Point(0, labelY.Location.Y+labelY.Size.Height), Width = 250};
-            
+
             MouseClick += (sender, args) =>
             {
                 if (coolDownShot <= 0)
                 {
                     coolDownShot = player.CoolDown;
-                    gameModel.AddBullet(new Bullet(new Vector(args.Location.X - ClientSize.Width / 2,
+                    gameModel.Shoot(new Bullet(new Vector(args.Location.X - ClientSize.Width / 2,
                             args.Location.Y - ClientSize.Height / 2),
                         new Point((int) player.Position.X, (int) player.Position.Y),gameModel.Player.Damage));
                 }
@@ -72,9 +71,9 @@ namespace NewGame
                 labelY.Text = $"Y: {player.Position.Y}";
                 labelSpeed.Text = $"Speed: {player.Speed.Length}";
                 
+                labelSpeed.Text = player.Speed.ToString();
                 ReactOnControl(gameModel);
                 gameModel.ChangePosition();
-                gameModel.MoveBullets();
                 coolDownShot -= 1;
                 Refresh();
             };
@@ -101,10 +100,6 @@ namespace NewGame
             graphic.DrawImage(images[player.GetImage()], -17, -30);
             graphic.DrawRectangle(Pens.Red, -17, -30, player.ObjRectangle.Width,
                 player.ObjRectangle.Height);
-            ///
-            graphic.FillEllipse(Brushes.Brown, -17, -30, 2, 2);
-            graphic.FillEllipse(Brushes.Brown, 28, -30, 2, 2);
-            /// 
             //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
             graphic.ResetTransform();
             graphic.TranslateTransform((float) -carX + width / 2, (float) -carY + height / 2);
@@ -125,16 +120,13 @@ namespace NewGame
                 }
             }
 
-            var toRemove = new List<Bullet>();
 
             foreach (var bullet in gameModel.Bullets)
             {
                 graphic.FillEllipse(Brushes.Black, bullet.Position.X, bullet.Position.Y, 5, 5);
                 bullet.ChangeTick();
-                if (bullet.Tick >= 100) toRemove.Add(bullet);
             }
 
-            foreach (var bullet in toRemove) gameModel.Bullets.Remove(bullet);
         }
 
         protected override void OnKeyPress(KeyPressEventArgs args)
@@ -219,6 +211,7 @@ namespace NewGame
             return outputImage;
         }
 
+        
         private void ReactOnControl(GameModel game)
         {
             if (isWdown) game.Player.ChangeVelocity(KeyButton.Forward);

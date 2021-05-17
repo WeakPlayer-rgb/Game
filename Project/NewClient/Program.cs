@@ -4,10 +4,12 @@ using System.Drawing;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
-using System.Text.Json;
 using NewGame;
+using Newtonsoft.Json;
+using DataFromClientToServer = NewGame.DataFromClientToServer;
+using DataFromServerToClient = NewGame.DataFromServerToClient;
 
-namespace SocketClient
+namespace NewClient
 {
     class Program
     {
@@ -42,10 +44,11 @@ namespace SocketClient
             sender.Connect(ipEndPoint);
             while (true)
             {
-                var bytesRec = sender.Receive(bytes);
-                Console.Write(JsonSerializer.Deserialize(bytes,typeof(DataFromServerToClient)));
+                sender.Receive(bytes);
+                var str = Encoding.UTF8.GetString(bytes);
+                Console.Write(JsonConvert.DeserializeObject(str,typeof(DataFromServerToClient)));
                 var data = new DataFromClientToServer {NewBullets = new List<Bullet>(), NewPlayerPosition = new Point(0, 0)};
-                sender.Send(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data)));
+                sender.Send(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
             }
         }
     }
