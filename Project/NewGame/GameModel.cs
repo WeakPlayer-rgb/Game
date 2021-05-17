@@ -15,7 +15,8 @@ namespace NewGame
     public class GameModel
     {
         public readonly Player Player;
-        public Dictionary<Point, IGameObject> Map;
+        public Dictionary<Point, Tree> Map;
+        public List<Player> PlayerMap;
         public readonly int Size;
         public readonly List<Bullet> Bullets;
         private readonly Socket connection;
@@ -40,19 +41,20 @@ namespace NewGame
             // Bullets = new List<Bullet>();
             var ipHost = Dns.GetHostEntry("localhost");
             var ipAddr = ipHost.AddressList[1];
-            var ipEndPoint = new IPEndPoint(ipAddr, 11000);
+            var ipEndPoint = new IPEndPoint(IPAddress.Parse("10.97.160.27"), 11000);
             connection = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             connection.Connect(ipEndPoint);
-            var dataFromServer = new byte[48000];
+            var dataFromServer = new byte[100000];
             connection.Receive(dataFromServer);
             var str = Encoding.UTF8.GetString(dataFromServer);
             var data = (FirstConnection) JsonConvert.DeserializeObject(str, typeof(FirstConnection));
-            Player = new Player(data.Player);
+            Player = data.Player;
             Map = data.Map;
             Bullets = data.Bullets;
-            dataFromClientToServer = new DataFromClientToServer
+            PlayerMap = data.OtherPlayers;
+            dataFromClientToServer = new DataFromClientToServer(Player)
             {
-                NewBullets = new List<Bullet>(), NewPlayerPosition = Player.Position
+                NewBullets = new List<Bullet>()
             };
             WorkWithServer();
         }
@@ -94,6 +96,7 @@ namespace NewGame
                     lock (dataFromClientToServer) dataForServer = JsonConvert.SerializeObject(dataFromClientToServer);
                     connection.Send(Encoding.UTF8.GetBytes(dataForServer));
                     connection.Receive(data);
+                    dataFromServerToClient = new DataFromServerToClient();
                     lock (dataFromServerToClient)
                     {
                         dataFromServerToClient =
@@ -103,10 +106,11 @@ namespace NewGame
                         Bullets.AddRange(dataFromServerToClient.Bullets);
                         foreach (var point in Map.Where(x => x.Value.GetType() == typeof(Player)).Select(x => x.Key)
                             .ToList()) Map.Remove(point);
-                        foreach (var player in dataFromServerToClient.OtherPlayers) Map[player] = new Player(player);
+                        foreach (var player in dataFromServerToClient.OtherPlayers) PlayerMap.Add(player);
                     }
                 }
             });
+            task.Start();
             return task;
         }
 

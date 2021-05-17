@@ -3,10 +3,10 @@ using System.Drawing;
 
 namespace NewGame
 {
-    public class Tree : IGameObject
+    public class Tree
     {
         public Rectangle ObjRectangle => new(Position.X, Position.Y, 50, 85);
-        private Point Position { get;  }
+        public Point Position { get; set; }
         public double Direction { get; }
         public int MaxHealth() => maxHealth;
         public double Health { get; set; }

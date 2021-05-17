@@ -58,7 +58,6 @@
     <Compile Include="Channel.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="DataFromServerToClient.cs" />
-    <Compile Include="Server.cs" />
     <Compile Include="Tree.cs" />
     <Compile Include="GameModel.cs" />
     <Compile Include="IGameObject.cs" />
