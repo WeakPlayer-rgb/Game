@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using Newtonsoft.Json;
 
 namespace NewGame
 {
@@ -9,6 +10,13 @@ namespace NewGame
 
         public readonly double X;
         public readonly double Y;
+
+        [JsonConstructor]
+        public Vector()
+        {
+            X = 0;
+            Y = 0;
+        }
 
         public Vector(double x, double y)
         {

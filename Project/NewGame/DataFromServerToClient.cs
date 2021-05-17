@@ -7,27 +7,28 @@ namespace NewGame
 {
     public class FirstConnection
     {
-        public Point Player;
-        public Dictionary<Point,IGameObject> Map;
+        public Player Player;
+        public Dictionary<Point,Tree> Map;
         public List<Bullet> Bullets;
-        public List<Point> OtherPlayers;
+        public List<Player> OtherPlayers;
     }
 
     public class DataFromServerToClient
     {
         public List<Bullet> Bullets;
-        public List<Point> OtherPlayers;
+        public List<Player> OtherPlayers;
+        public int ChangeHp;
     }
 
     public class DataFromClientToServer
     {
-        public DataFromClientToServer()
+        public DataFromClientToServer(Player p)
         {
-            NewPlayerPosition = Point.Empty;
+            NewPlayerPosition = p;
             NewBullets = new List<Bullet>();
         }
 
-        public Point NewPlayerPosition;
+        public Player NewPlayerPosition;
         public List<Bullet> NewBullets;
     }
 }

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace NewGame
 {
-    public class Player : IGameObject
+    public class Player
     {
         public Point Position { get; set; }
         public int Damage { get; set; }
@@ -101,6 +101,11 @@ namespace NewGame
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ctrl), ctrl, null);
             }
+        }
+
+        public override string ToString()
+        {
+            return Position.ToString();
         }
     }
 }

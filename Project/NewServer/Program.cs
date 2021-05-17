@@ -17,7 +17,7 @@ namespace NewServer
     {
         public const int Size = 8000;
         public static List<Bullet> bullets;
-        public static Dictionary<Point, IGameObject> fullMap;
+        public static Dictionary<Point, Tree> fullMap;
         public static string serializedMap;
 
         [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH",
@@ -31,10 +31,10 @@ namespace NewServer
         static void Main(string[] args)
         {
             // Устанавливаем для сокета локальную конечную точку
-            var ipHost = Dns.GetHostEntry("localhost");
-            var ipAddr = ipHost.AddressList[1];
+            var ip = Dns.GetHostName();
+            var ipHost = Dns.GetHostEntry(ip);
+            var ipAddr = ipHost.AddressList[3];
             var ipEndPoint = new IPEndPoint(ipAddr, 11000);
-
 
             var timer = new Timer {Interval = 5};
             timer.Elapsed += (sender, e) => { MoveBullets(); };
@@ -47,7 +47,7 @@ namespace NewServer
                 var sendDictionary = new Dictionary<Socket, Task<int>>();
                 var forReceive = new Dictionary<Socket, Task<int>>();
                 var clientData = new Dictionary<Socket, ArraySegment<byte>>();
-                fullMap = new Dictionary<Point, IGameObject>();
+                fullMap = new Dictionary<Point, Tree>();
                 var rnd = new Random();
                 for (var i = 0; i < 500; i++)
                 {
@@ -61,7 +61,7 @@ namespace NewServer
 
                 serializedMap = JsonConvert.SerializeObject(fullMap);
                 var dataForClient = new Dictionary<Socket, DataFromServerToClient>();
-                var allPlayers = new Dictionary<Socket, Point>();
+                var allPlayers = new Dictionary<Socket, Player>();
                 bullets = new List<Bullet>();
 
                 sListener.Bind(ipEndPoint);
@@ -84,7 +84,7 @@ namespace NewServer
                                 {Bullets = bullets, OtherPlayers = allPlayers.Values.ToList()};
                             var str = JsonConvert.SerializeObject(data);
                             var send = new ArraySegment<byte>(
-                                Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
+                                Encoding.UTF8.GetBytes(str));
                             sendDictionary[task.Result] =
                                 task.Result.SendAsync(send, SocketFlags.None);
                             foreach (var oldData in dataForClient.Values) oldData.OtherPlayers.Add(data.Player);
@@ -116,50 +116,33 @@ namespace NewServer
 
                     foreach (var socket in forReceive.Keys.Where(socket => forReceive[socket].IsCompleted).ToList())
                     {
-                        if (socket.Blocking)
+                        if (!socket.Connected)
                         {
                             clientData.Remove(socket);
                             forReceive.Remove(socket);
                             continue;
                         }
-
-                        var newData =
-                            (DataFromClientToServer) JsonConvert.DeserializeObject(
-                                Encoding.UTF8.GetString(clientData[socket].Array),
-                                typeof(DataFromClientToServer));
+                        DataFromClientToServer newData;
+                        lock (clientData[socket].Array)
+                        {
+                            newData =
+                                (DataFromClientToServer) JsonConvert.DeserializeObject(
+                                    Encoding.UTF8.GetString(clientData[socket].Array),
+                                    typeof(DataFromClientToServer));
+                        }
                         if (newData == null) continue;
                         allPlayers[socket] = newData.NewPlayerPosition;
                         bullets.AddRange(newData.NewBullets);
                     }
-                    // foreach (var task in TaskList)
-                    // {
-                    //     if(task.IsCompleted) ClientList.Add(task.Result);
-                    // }
 
-                    // Мы дождались клиента, пытающегося с нами соединиться
-
-                    // byte[] bytes = new byte[1024];
-                    // int bytesRec = handler.Receive(bytes);
-                    //
-                    // data += Encoding.UTF8.GetString(bytes, 0, bytesRec);
-                    //
-                    // // Показываем данные на консоли
-                    // Console.Write("Полученный текст: " + data + "\n\n");
-                    //
-                    // // Отправляем ответ клиенту\
-                    // string reply = "Спасибо за запрос в " + data.Length.ToString()
-                    //         + " символов";
-                    // byte[] msg = Encoding.UTF8.GetBytes(reply);
-                    // handler.Send(msg);
-                    //
-                    // if (data.IndexOf("<TheEnd>") > -1)
-                    // {
-                    //     Console.WriteLine("Сервер завершил соединение с клиентом.");
-                    //     break;
-                    // }
-
-                    // handler.Shutdown(SocketShutdown.Both);
-                    // handler.Close();
+                    var IWrote = false;
+                    foreach (var p in allPlayers.Values)
+                    {
+                        Console.Write(p.ToString());
+                        IWrote = true;
+                    }
+                    if(IWrote)
+                        Console.WriteLine();
                 }
             }
             catch (Exception ex)
@@ -172,10 +155,10 @@ namespace NewServer
             }
         }
 
-        private static Point CreateNewPlayer()
+        private static Player CreateNewPlayer()
         {
             var rnd = new Random();
-            return new Point(rnd.Next(Size), rnd.Next(Size));
+            return new Player(new Point(rnd.Next(Size), rnd.Next(Size)));
         }
 
         public static void MoveBullets()
@@ -202,6 +185,7 @@ namespace NewServer
                         forRemoveGameObject.Add(new Point(point.X, point.Y - 32));
                 }
             }
+
             lock (bullets)
                 foreach (var bullet in forRemoveBullets)
                     bullets.Remove(bullet);

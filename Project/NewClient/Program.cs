@@ -47,7 +47,7 @@ namespace NewClient
                 sender.Receive(bytes);
                 var str = Encoding.UTF8.GetString(bytes);
                 Console.Write(JsonConvert.DeserializeObject(str,typeof(DataFromServerToClient)));
-                var data = new DataFromClientToServer {NewBullets = new List<Bullet>(), NewPlayerPosition = new Point(0, 0)};
+                var data = new DataFromClientToServer (new Player(new Point(0, 0))){NewBullets = new List<Bullet>()};
                 sender.Send(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
             }
         }
