@@ -1,18 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NewGame
 {
-    class Tree:IGameObject
+    public class Tree
     {
+        public Rectangle ObjRectangle => new(Position.X, Position.Y, 50, 85);
+        public Point Position { get; set; }
         public double Direction { get; }
+        public int MaxHealth() => maxHealth;
         public double Health { get; set; }
-        public Image GetImage() => Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "tree.png"));
+        private const int maxHealth = 100;
+
+        public Tree(Point position)
+        {
+            Position = position;
+            Health = maxHealth;
+            Direction = Math.PI / 4;
+        }
+
+        public string GetImage() => "tree.png";
 
         public int DrawPriority(int priority) => 0;
 

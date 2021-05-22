@@ -4,26 +4,30 @@ using System.IO;
 
 namespace NewGame
 {
-    public class Player : IGameObject
+    public class Player
     {
-        public Vector Position { get; set; }
-        public double Direction => angle;
+        public Point Position { get; set; }
+        public int Damage { get; set; }
+        public int MaxHealth() => maxHealth;
+        public Rectangle ObjRectangle => 
+            new(Position.X, Position.Y, 45, 80);
+        public float Direction { get; set; }
         public Vector Speed => new Vector(1, 0).Rotate(Direction) * velocity;
-        public double Health { get; set; }
-        private double angle;
+        public int CoolDown { get; set; }
+        public int Health { get; set; }
+        //private float angle;
         private double velocity;
+        private const int maxHealth = 100;
 
-        public Player(Vector p)
+        public Player(Point p, float angle)
         {
             Position = p;
-            angle = 0;
+            Direction = angle;
             velocity = 0;
-            //Direction =  
+            Damage = 10;
         }
 
-        public Image GetImage() => Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "car1.png"));
-
-        public int DrawPriority(int priority) => 0;
+        public string GetImage() => "car1.png";
 
         public void ChangeDirection(KeyButton ctrl)
         {
@@ -31,12 +35,12 @@ namespace NewGame
             {
                 case KeyButton.Left:
                     {
-                        angle -= Math.PI / 40;
+                        Direction -= (float)(Math.PI / 30);
                         break;
                     }
                 case KeyButton.Right:
                     {
-                        angle += Math.PI / 40;
+                        Direction += (float)(Math.PI / 30);
                         break;
                     }
                 case KeyButton.None:
@@ -82,16 +86,24 @@ namespace NewGame
                                 break;
                         }
                         if (velocity is > 0 and < 8) velocity *= 1.07;
-                        if (velocity >= 8) velocity = 7;
+                        if (velocity >= 40) velocity = 40;
                         break;
                     }
                 case KeyButton.None:
                     velocity *= 0.97;
                     if (velocity is < 0.25 and > -0.25) velocity = 0;
                     break;
+                case KeyButton.Break:
+                    velocity = 0;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ctrl), ctrl, null);
             }
+        }
+
+        public override string ToString()
+        {
+            return Position.ToString();
         }
     }
 }
