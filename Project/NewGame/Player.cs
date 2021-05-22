@@ -14,7 +14,7 @@ namespace NewGame
         public double Direction => angle;
         public Vector Speed => new Vector(1, 0).Rotate(Direction) * velocity;
         public int CoolDown { get; set; }
-        public double Health { get; set; }
+        public int Health { get; set; }
         private double angle;
         private double velocity;
         private const int maxHealth = 100;

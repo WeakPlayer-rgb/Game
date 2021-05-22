@@ -17,17 +17,11 @@ namespace NewGame
     {
         public List<Bullet> Bullets;
         public List<Player> OtherPlayers;
-        public int ChangeHp;
+        public int ChangeHpPlayer;
     }
 
     public class DataFromClientToServer
     {
-        public DataFromClientToServer(Player p)
-        {
-            NewPlayerPosition = p;
-            NewBullets = new List<Bullet>();
-        }
-
         public Player NewPlayerPosition;
         public List<Bullet> NewBullets;
     }
