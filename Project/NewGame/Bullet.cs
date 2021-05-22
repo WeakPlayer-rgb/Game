@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Newtonsoft.Json;
 
 namespace NewGame
 {
@@ -7,20 +8,33 @@ namespace NewGame
         public Point Position { get; set; }
         public int Damage { get; }
         public int Tick { get; private set; }
-        public Vector Direction { get; }
+        public float DirectionX { get; }
+        public float DirectionY { get; }
 
-        public Bullet(Vector direction, Point position,int damage)
+        // [JsonConstructor]
+        // public Bullet()
+        // {
+        //     DirectionX = 0;
+        //     DirectionY = 0;
+        //     Position = Point.Empty;
+        //     Damage = 0;
+        // }
+
+        public Bullet(float directionX,float directionY, Point position,int damage)
         {
-            Direction = (direction / direction.Length * 10);
+            DirectionX = directionX;
+            DirectionY = directionY;
             Position = position;
             Damage = damage;
         }
 
         public void MoveThisBullet()
         {
-            Position = new Point(Position.X + (int) Direction.X, Position.Y + (int) Direction.Y);
+            
+            Position = new Point(Position.X + (int)DirectionX, Position.Y +  (int)DirectionY);
+            ChangeTick();
         }
 
-        public void ChangeTick() => Tick += 1;
+        private void ChangeTick() => Tick += 1;
     }
 }

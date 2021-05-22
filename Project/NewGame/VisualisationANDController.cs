@@ -51,16 +51,19 @@ namespace NewGame
                 ClientSize.Height);
             var labelX = new Label {Location = new Point(0, 0), Width = 100};
             var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 100};
-            var labelSpeed = new Label {Location = new Point(0, labelY.Location.Y+labelY.Size.Height), Width = 250};
+            var labelSpeed = new Label {Location = new Point(0, labelY.Location.Y + labelY.Size.Height), Width = 250};
 
             MouseClick += (sender, args) =>
             {
                 if (coolDownShot <= 0)
                 {
                     coolDownShot = player.CoolDown;
-                    gameModel.Shoot(new Bullet(new Vector(args.Location.X - ClientSize.Width / 2,
-                            args.Location.Y - ClientSize.Height / 2),
-                        new Point((int) player.Position.X, (int) player.Position.Y),gameModel.Player.Damage));
+                    var vector = new  Vector(args.Location.X - ClientSize.Width / 2,
+                        args.Location.Y - ClientSize.Height / 2);
+                    vector = vector / vector.Length * 10;
+                    var b = new Bullet((int)vector.X,(int)vector.Y,
+                        new Point((int) player.Position.X, (int) player.Position.Y), gameModel.Player.Damage);
+                    gameModel.Shoot(b);
                 }
             };
 
@@ -70,7 +73,7 @@ namespace NewGame
                 labelX.Text = $"X: {player.Position.X}";
                 labelY.Text = $"Y: {player.Position.Y}";
                 labelSpeed.Text = $"Speed: {player.Speed}";
-                
+
                 labelSpeed.Text = player.Speed.ToString();
                 ReactOnControl(gameModel);
                 gameModel.ChangePosition();
@@ -114,19 +117,19 @@ namespace NewGame
                     if (gameModel.Map[point].Health != gameModel.Map[point].MaxHealth())
                     {
                         graphic.DrawRectangle(Pens.Black, x * 32, (y + 2) * 32, 32, 5);
-                        graphic.FillRectangle(Brushes.GreenYellow, x * 32+1, (y + 2) * 32+1,
-                           (float) 32 * ((float)gameModel.Map[point].Health / gameModel.Map[point].MaxHealth()), 4);
+                        graphic.FillRectangle(Brushes.GreenYellow, x * 32 + 1, (y + 2) * 32 + 1,
+                            (float) 32 * ((float) gameModel.Map[point].Health / gameModel.Map[point].MaxHealth()), 4);
                     }
                 }
             }
 
-
-            foreach (var bullet in gameModel.Bullets)
+            lock (gameModel.Bullets)
             {
-                graphic.FillEllipse(Brushes.Black, bullet.Position.X, bullet.Position.Y, 5, 5);
-                bullet.ChangeTick();
+                foreach (var bullet in gameModel.Bullets)
+                {
+                    graphic.FillEllipse(Brushes.Black, bullet.Position.X, bullet.Position.Y, 5, 5);
+                }
             }
-
         }
 
         protected override void OnKeyPress(KeyPressEventArgs args)
@@ -211,7 +214,7 @@ namespace NewGame
             return outputImage;
         }
 
-        
+
         private void ReactOnControl(GameModel game)
         {
             if (isWdown) game.Player.ChangeVelocity(KeyButton.Forward);
