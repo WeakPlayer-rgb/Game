@@ -24,7 +24,7 @@ namespace NewGame
         private DataFromClientToServer dataFromClientToServer;
         private DataFromServerToClient dataFromServerToClient;
 
-        public GameModel(int s)
+        public GameModel(int s,string text)
         {
             Size = s;
             // Map = new Dictionary<Point, IGameObject>();
@@ -42,7 +42,7 @@ namespace NewGame
             // Bullets = new List<Bullet>();
             var ipHost = Dns.GetHostEntry("localhost");
             var ipAddr = ipHost.AddressList[1];
-            var ipEndPoint = new IPEndPoint(IPAddress.Parse("192.168.1.92"), 11000);
+            var ipEndPoint = new IPEndPoint(IPAddress.Parse(text), 11000);
             connection = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             connection.Connect(ipEndPoint);
             var dataFromServer = new byte[100000];
