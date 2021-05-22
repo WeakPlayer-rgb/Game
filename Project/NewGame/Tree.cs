@@ -16,6 +16,7 @@ namespace NewGame
         {
             Position = position;
             Health = maxHealth;
+            Direction = Math.PI / 4;
         }
 
         public string GetImage() => "tree.png";

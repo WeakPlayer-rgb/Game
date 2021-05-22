@@ -26,7 +26,7 @@ namespace NewGame
         private bool isSdown = false;
         private Dictionary<string, Image> images;
         private Image grass;
-        private Player player;
+        private Player localPlayer;
 
 
         public VisualisationAndController(GameModel g)
@@ -35,8 +35,8 @@ namespace NewGame
             DoubleBuffered = true;
             gameModel = g;
             images = new Dictionary<string, Image>();
-            player = gameModel.Player;
-            player.CoolDown = 10;
+            localPlayer = gameModel.Player;
+            localPlayer.CoolDown = 10;
             var coolDownShot = 0;
 
             var path = Path.Combine(Directory.GetCurrentDirectory(), "Images");
@@ -57,12 +57,12 @@ namespace NewGame
             {
                 if (coolDownShot <= 0)
                 {
-                    coolDownShot = player.CoolDown;
+                    coolDownShot = localPlayer.CoolDown;
                     var vector = new  Vector(args.Location.X - ClientSize.Width / 2,
                         args.Location.Y - ClientSize.Height / 2);
                     vector = vector / vector.Length * 10;
                     var b = new Bullet((int)vector.X,(int)vector.Y,
-                        new Point((int) player.Position.X, (int) player.Position.Y), gameModel.Player.Damage);
+                        new Point((int) localPlayer.Position.X, (int) localPlayer.Position.Y), gameModel.Player.Damage);
                     gameModel.Shoot(b);
                 }
             };
@@ -70,11 +70,11 @@ namespace NewGame
             var timer = new Timer {Interval = 5};
             timer.Tick += (sender, args) =>
             {
-                labelX.Text = $"X: {player.Position.X}";
-                labelY.Text = $"Y: {player.Position.Y}";
-                labelSpeed.Text = $"Speed: {player.Speed}";
+                labelX.Text = $"X: {localPlayer.Position.X}";
+                labelY.Text = $"Y: {localPlayer.Position.Y}";
+                labelSpeed.Text = $"Speed: {localPlayer.Direction}";
 
-                labelSpeed.Text = player.Speed.ToString();
+                // labelSpeed.Text = localPlayer.Speed.ToString();
                 ReactOnControl(gameModel);
                 gameModel.ChangePosition();
                 coolDownShot -= 1;
@@ -91,20 +91,26 @@ namespace NewGame
         protected override void OnPaint(PaintEventArgs args)
         {
             var graphic = args.Graphics;
-            var carX = player.Position.X;
-            var carY = player.Position.Y;
+            var carX = localPlayer.Position.X;
+            var carY = localPlayer.Position.Y;
             var width = ClientSize.Width;
             var height = ClientSize.Height;
             graphic.DrawImage(grass, new Point(-(int) carX % 32 - 32, -(int) carY % 32 - 32));
+            lock (gameModel.PlayerMap)
+            {
+                foreach (var player in gameModel.PlayerMap)
+                {
+                    graphic.TranslateTransform(width / 2, height / 2);
+                    graphic.RotateTransform(
+                        (float) ((float) player.Direction / Math.PI * 180 + 90));
+                    graphic.DrawImage(images[player.GetImage()], -17, -30);
+                    graphic.DrawRectangle(Pens.Red, -17, -30, player.ObjRectangle.Width,
+                        player.ObjRectangle.Height);
+                    //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
+                    graphic.ResetTransform();
+                }
+            }
 
-            graphic.TranslateTransform(width / 2, height / 2);
-            graphic.RotateTransform(
-                (float) ((float) player.Direction / Math.PI * 180 + 90));
-            graphic.DrawImage(images[player.GetImage()], -17, -30);
-            graphic.DrawRectangle(Pens.Red, -17, -30, player.ObjRectangle.Width,
-                player.ObjRectangle.Height);
-            //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
-            graphic.ResetTransform();
             graphic.TranslateTransform((float) -carX + width / 2, (float) -carY + height / 2);
             for (var x = ((int) carX - width / 2) / 32 - 2; x < ((int) carX + width / 2) / 32 + 1; x++)
             for (var y = ((int) carY - height / 2) / 32 - 2; y < ((int) carY + height / 2) / 32 + 1; y++)
@@ -113,7 +119,7 @@ namespace NewGame
                 if (gameModel.Map.ContainsKey(point))
                 {
                     graphic.DrawImage(images[gameModel.Map[point].GetImage()], x * 32, y * 32);
-                    graphic.DrawRectangle(Pens.Red, gameModel.Map[point].ObjRectangle);
+                    //graphic.DrawRectangle(Pens.Red, gameModel.Map[point].ObjRectangle);
                     if (gameModel.Map[point].Health != gameModel.Map[point].MaxHealth())
                     {
                         graphic.DrawRectangle(Pens.Black, x * 32, (y + 2) * 32, 32, 5);
@@ -137,7 +143,7 @@ namespace NewGame
             switch (args.KeyChar)
             {
                 case '.':
-                    player.Position = new Point(10, 10);
+                    localPlayer.Position = new Point(10, 10);
                     break;
                 case 'W' or 'w' or 'ц' or 'Ц':
                     isWdown = true;
