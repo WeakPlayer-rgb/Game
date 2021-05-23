@@ -29,7 +29,7 @@ namespace NewServer
             MessageId = "type: System.RuntimeMethodInfoStub")]
         [SuppressMessage("ReSharper.DPA", "DPA0004: Closure object allocation")]
         [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             // Устанавливаем для сокета локальную конечную точку
             var ip = Dns.GetHostName();
@@ -101,14 +101,12 @@ namespace NewServer
                             break;
                     }
 
-                    if (allPlayers != null)
+                    if (allPlayers == null) continue;
+                    lock (allPlayers)
                     {
-                        lock (allPlayers)
+                        foreach (var p in allPlayers.Values)
                         {
-                            foreach (var p in allPlayers.Values)
-                            {
-                                Console.WriteLine(p.Direction);
-                            }
+                            Console.WriteLine(p.Direction);
                         }
                     }
                 }

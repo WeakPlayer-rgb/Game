@@ -5,7 +5,7 @@ namespace NewGame
     public class Tree
     {
         public Rectangle ObjRectangle => new(_position.X, _position.Y, 50, 85);
-        public static int MaxHealth() => maxHealth;
+        public int MaxHealth() => maxHealth;
         public double Health { get; }
         private const int maxHealth = 100;
         private Point _position;
@@ -16,6 +16,6 @@ namespace NewGame
             Health = maxHealth;
         }
 
-        public static string GetImage() => "tree.png";
+        public string GetImage() => "tree.png";
     }
 }
