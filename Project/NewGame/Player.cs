@@ -15,7 +15,6 @@ namespace NewGame
         public Vector Speed => new Vector(1, 0).Rotate(Direction) * velocity;
         public int CoolDown { get; set; }
         public int Health { get; set; }
-        //private float angle;
         private double velocity;
         private const int maxHealth = 100;
 
@@ -101,9 +100,6 @@ namespace NewGame
             }
         }
 
-        public override string ToString()
-        {
-            return Position.ToString();
-        }
+        public override string ToString() => Position.ToString();
     }
 }

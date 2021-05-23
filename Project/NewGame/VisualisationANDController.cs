@@ -118,13 +118,13 @@ namespace NewGame
                 var point = new Point(NotBehindScreen(x * 32), NotBehindScreen(y * 32));
                 if (gameModel.Map.ContainsKey(point))
                 {
-                    graphic.DrawImage(images[gameModel.Map[point].GetImage()], x * 32, y * 32);
+                    graphic.DrawImage(images[Tree.GetImage()], x * 32, y * 32);
                     //graphic.DrawRectangle(Pens.Red, gameModel.Map[point].ObjRectangle);
-                    if (gameModel.Map[point].Health != gameModel.Map[point].MaxHealth())
+                    if (gameModel.Map[point].Health != Tree.MaxHealth())
                     {
                         graphic.DrawRectangle(Pens.Black, x * 32, (y + 2) * 32, 32, 5);
                         graphic.FillRectangle(Brushes.GreenYellow, x * 32 + 1, (y + 2) * 32 + 1,
-                            (float) 32 * ((float) gameModel.Map[point].Health / gameModel.Map[point].MaxHealth()), 4);
+                            (float) 32 * ((float) gameModel.Map[point].Health / Tree.MaxHealth()), 4);
                     }
                 }
             }

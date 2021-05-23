@@ -8,7 +8,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Newtonsoft.Json;
 
 namespace NewGame
@@ -16,7 +15,7 @@ namespace NewGame
     public class GameModel
     {
         public readonly Player Player;
-        public Dictionary<Point, Tree> Map;
+        public readonly Dictionary<Point, Tree> Map;
         public List<Player> PlayerMap;
         public readonly int Size;
         public List<Bullet> Bullets;
@@ -24,7 +23,7 @@ namespace NewGame
         private DataFromClientToServer dataFromClientToServer;
         private DataFromServerToClient dataFromServerToClient;
 
-        public GameModel(int s,string text)
+        public GameModel(int s, string text)
         {
             Size = s;
             // Map = new Dictionary<Point, IGameObject>();
@@ -42,14 +41,15 @@ namespace NewGame
             // Bullets = new List<Bullet>();
             var ipHost = Dns.GetHostEntry("localhost");
             var ipAddr = ipHost.AddressList[1];
-            var ipEndPoint = new IPEndPoint(IPAddress.Parse("192.168.1.92"), 11000);
+            var ipString = "192.168.31.37";
+            var ipEndPoint = new IPEndPoint(IPAddress.Parse(ipString), 11000);
             connection = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             connection.Connect(ipEndPoint);
             var dataFromServer = new byte[100000];
             connection.Receive(dataFromServer);
             var str = Encoding.UTF8.GetString(dataFromServer);
             var data = (FirstConnection) JsonConvert.DeserializeObject(str, typeof(FirstConnection));
-            Player = new Player(Point.Empty,0);
+            Player = new Player(Point.Empty, 0);
             Map = new Dictionary<Point, Tree>();
             Bullets = new List<Bullet>();
             PlayerMap = new List<Player>();
@@ -60,6 +60,7 @@ namespace NewGame
                 Bullets = data.Bullets;
                 PlayerMap = data.OtherPlayers;
             }
+
             dataFromClientToServer = new DataFromClientToServer
             {
                 NewBullets = new List<Bullet>(), NewPlayerPosition = Player
@@ -71,7 +72,7 @@ namespace NewGame
         {
             if (IsPlayerIntersected())
             {
-                var slowDownMultiplier = Player.Speed.X/2;
+                var slowDownMultiplier = Player.Speed.X / 2;
                 ChangePos(slowDownMultiplier);
                 return;
             }
@@ -83,9 +84,9 @@ namespace NewGame
             // }
         }
 
-        private void ChangePos(double multiplier=0)
+        private void ChangePos(double multiplier = 0)
         {
-            Player.Position = new Point((int) ((int) Player.Speed.X-multiplier + Player.Position.X),
+            Player.Position = new Point((int) ((int) Player.Speed.X - multiplier + Player.Position.X),
                 (int) Player.Speed.Y + Player.Position.Y);
             var dx = Player.Position.X < 0 ? Size : Player.Position.X > Size ? -Size : 0;
             var dy = Player.Position.Y < 0 ? Size : Player.Position.Y > Size ? -Size : 0;
@@ -93,9 +94,8 @@ namespace NewGame
             var positionX = Player.Position.X + dx;
             var positionY = Player.Position.Y + dy;
             var rect = new Rectangle(positionX, positionY, 45, 80);
-            
         }
-        
+
         public bool IsPlayerIntersected()
         {
             var playerPos = Player.Position;
@@ -163,7 +163,7 @@ namespace NewGame
             await MakeAsync();
         }
 
-        public bool IsPlayerIntersected()
+        /*public bool IsPlayerIntersected()
         {
             var playerPos = Player.Position;
             var leftDot = new Vector(playerPos.X - 17, playerPos.Y - 30).Rotate(Player.Direction);
@@ -186,7 +186,7 @@ namespace NewGame
             }
 
             return false;
-        }
+        }*/
 
         public bool IsIntersected(Vector leftDot, Vector rightDot, int left, int right, int bottom, int top)
         {

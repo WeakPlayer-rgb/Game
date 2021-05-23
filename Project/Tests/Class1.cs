@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Drawing;
 using NUnit.Framework;
 using NewGame;
@@ -34,7 +34,7 @@ namespace ClassLibrary1
             /*var intersected = model.IsIntersected(new Vector(ints[0], ints[1]),
                 new Vector(ints[2], ints[3]), ints[4], ints[5], ints[6], ints[7]);
             Assert.IsTrue(intersected);
-        */
+        #1#
         }
     }
-}
+}*/

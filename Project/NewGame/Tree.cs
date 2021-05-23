@@ -1,36 +1,21 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace NewGame
 {
     public class Tree
     {
-        public Rectangle ObjRectangle => new(Position.X, Position.Y, 50, 85);
-        public Point Position { get; set; }
-        public double Direction { get; }
-        public int MaxHealth() => maxHealth;
-        public double Health { get; set; }
+        public Rectangle ObjRectangle => new(_position.X, _position.Y, 50, 85);
+        public static int MaxHealth() => maxHealth;
+        public double Health { get; }
         private const int maxHealth = 100;
+        private Point _position;
 
         public Tree(Point position)
         {
-            Position = position;
+            _position = position;
             Health = maxHealth;
-            Direction = Math.PI / 4;
         }
 
-        public string GetImage() => "tree.png";
-
-        public int DrawPriority(int priority) => 0;
-
-        public void ChangeDirection(KeyButton ctrl)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ChangeVelocity(KeyButton ctrl)
-        {
-            throw new NotImplementedException();
-        }
+        public static string GetImage() => "tree.png";
     }
 }
