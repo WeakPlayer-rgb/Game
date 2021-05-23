@@ -34,9 +34,9 @@ namespace NewServer
             // Устанавливаем для сокета локальную конечную точку
             var ip = Dns.GetHostName();
             var ipHost = Dns.GetHostEntry(ip);
-            var ipAddr = ipHost.AddressList[3];
+            var ipAddr = ipHost.AddressList[2];
             var ipEndPoint = new IPEndPoint(ipAddr, 11000);
-
+        
             var timer = new Timer {Interval = 5};
             timer.Elapsed += (sender, e) => { MoveBullets(); };
             timer.Start();

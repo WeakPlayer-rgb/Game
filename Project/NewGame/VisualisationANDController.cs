@@ -58,21 +58,21 @@ namespace NewGame
                 if (coolDownShot <= 0)
                 {
                     coolDownShot = localPlayer.CoolDown;
-                    var vector = new  Vector(args.Location.X - ClientSize.Width / 2,
+                    var vector = new Vector(args.Location.X - ClientSize.Width / 2,
                         args.Location.Y - ClientSize.Height / 2);
                     vector = vector / vector.Length * 10;
-                    var b = new Bullet((int)vector.X,(int)vector.Y,
+                    var b = new Bullet((int) vector.X, (int) vector.Y,
                         new Point((int) localPlayer.Position.X, (int) localPlayer.Position.Y), gameModel.Player.Damage);
                     gameModel.Shoot(b);
                 }
             };
 
-            var timer = new Timer {Interval = 5};
+            var timer = new Timer {Interval = 16};
             timer.Tick += (sender, args) =>
             {
                 labelX.Text = $"X: {localPlayer.Position.X}";
                 labelY.Text = $"Y: {localPlayer.Position.Y}";
-                labelSpeed.Text = $"Speed: {localPlayer.Direction}";
+                labelSpeed.Text = $"Speed: {localPlayer.Speed}";
 
                 // labelSpeed.Text = localPlayer.Speed.ToString();
                 ReactOnControl(gameModel);
@@ -83,7 +83,7 @@ namespace NewGame
 
             Controls.Add(labelY);
             Controls.Add(labelX);
-            Controls.Add(labelSpeed);
+            // Controls.Add(labelSpeed);
             InitializeComponent();
             timer.Start();
         }
@@ -98,19 +98,23 @@ namespace NewGame
             graphic.DrawImage(grass, new Point(-(int) carX % 32 - 32, -(int) carY % 32 - 32));
             lock (gameModel.PlayerMap)
             {
+                // graphic.TranslateTransform(width / 2, height / 2);
+                // graphic.RotateTransform(
+                //     (float) ((float) localPlayer.Direction / Math.PI * 180 + 90));
+                // graphic.DrawImage(images[localPlayer.GetImage()], -17, -30);
+                // graphic.ResetTransform();
                 foreach (var player in gameModel.PlayerMap)
                 {
-                    graphic.TranslateTransform(width / 2, height / 2);
-                    graphic.RotateTransform(
-                        (float) ((float) player.Direction / Math.PI * 180 + 90));
-                    graphic.DrawImage(images[player.GetImage()], -17, -30);
-                    graphic.DrawRectangle(Pens.Red, -17, -30, player.ObjRectangle.Width,
-                        player.ObjRectangle.Height);
-                    //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
+                    graphic.TranslateTransform(NotBehindScreen(width / 2 - localPlayer.Position.X + player.Position.X),
+                        NotBehindScreen(height / 2 - localPlayer.Position.Y + player.Position.Y));
+                    graphic.FillEllipse(Brushes.Black, 0, 0, 5, 5);
+                    graphic.RotateTransform((float) ((float) player.Direction / Math.PI * 180 + 90));
+                    graphic.DrawImage(images[player.GetImage()], -17,-30);
                     graphic.ResetTransform();
                 }
             }
 
+            graphic.ResetTransform();
             graphic.TranslateTransform((float) -carX + width / 2, (float) -carY + height / 2);
             for (var x = ((int) carX - width / 2) / 32 - 2; x < ((int) carX + width / 2) / 32 + 1; x++)
             for (var y = ((int) carY - height / 2) / 32 - 2; y < ((int) carY + height / 2) / 32 + 1; y++)
@@ -143,7 +147,7 @@ namespace NewGame
             switch (args.KeyChar)
             {
                 case '.':
-                    localPlayer.Position = new Point(10, 10);
+                    localPlayer.Position = new Point(100, 100);
                     break;
                 case 'W' or 'w' or 'ц' or 'Ц':
                     isWdown = true;
