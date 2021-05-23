@@ -58,16 +58,16 @@ namespace NewGame
                 if (coolDownShot <= 0)
                 {
                     coolDownShot = localPlayer.CoolDown;
-                    var vector = new  Vector(args.Location.X - ClientSize.Width / 2,
+                    var vector = new Vector(args.Location.X - ClientSize.Width / 2,
                         args.Location.Y - ClientSize.Height / 2);
                     vector = vector / vector.Length * 10;
-                    var b = new Bullet((int)vector.X,(int)vector.Y,
+                    var b = new Bullet((int) vector.X, (int) vector.Y,
                         new Point((int) localPlayer.Position.X, (int) localPlayer.Position.Y), gameModel.Player.Damage);
                     gameModel.Shoot(b);
                 }
             };
 
-            var timer = new Timer {Interval = 5};
+            var timer = new Timer {Interval = 16};
             timer.Tick += (sender, args) =>
             {
                 labelX.Text = $"X: {localPlayer.Position.X}";
@@ -100,17 +100,16 @@ namespace NewGame
             {
                 foreach (var player in gameModel.PlayerMap)
                 {
-                    graphic.TranslateTransform(width / 2, height / 2);
-                    graphic.RotateTransform(
-                        (float) ((float) player.Direction / Math.PI * 180 + 90));
-                    graphic.DrawImage(images[player.GetImage()], -17, -30);
-                    graphic.DrawRectangle(Pens.Red, -17, -30, player.ObjRectangle.Width,
-                        player.ObjRectangle.Height);
-                    //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
+                    graphic.TranslateTransform(NotBehindScreen(width / 2 - localPlayer.Position.X + player.Position.X),
+                        NotBehindScreen(height / 2 - localPlayer.Position.Y + player.Position.Y));
+                    graphic.FillEllipse(Brushes.Black, 0, 0, 5, 5);
+                    graphic.RotateTransform((float) ((float) player.Direction / Math.PI * 180 + 90));
+                    graphic.DrawImage(images[player.GetImage()], -17,-30);
                     graphic.ResetTransform();
                 }
             }
 
+            graphic.ResetTransform();
             graphic.TranslateTransform((float) -carX + width / 2, (float) -carY + height / 2);
             for (var x = ((int) carX - width / 2) / 32 - 2; x < ((int) carX + width / 2) / 32 + 1; x++)
             for (var y = ((int) carY - height / 2) / 32 - 2; y < ((int) carY + height / 2) / 32 + 1; y++)
@@ -118,13 +117,13 @@ namespace NewGame
                 var point = new Point(NotBehindScreen(x * 32), NotBehindScreen(y * 32));
                 if (gameModel.Map.ContainsKey(point))
                 {
-                    graphic.DrawImage(images[Tree.GetImage()], x * 32, y * 32);
+                    graphic.DrawImage(images[gameModel.Map[point].GetImage()], x * 32, y * 32);
                     //graphic.DrawRectangle(Pens.Red, gameModel.Map[point].ObjRectangle);
-                    if (gameModel.Map[point].Health != Tree.MaxHealth())
+                    if (gameModel.Map[point].Health != gameModel.Map[point].MaxHealth())
                     {
                         graphic.DrawRectangle(Pens.Black, x * 32, (y + 2) * 32, 32, 5);
                         graphic.FillRectangle(Brushes.GreenYellow, x * 32 + 1, (y + 2) * 32 + 1,
-                            (float) 32 * ((float) gameModel.Map[point].Health / Tree.MaxHealth()), 4);
+                            (float) 32 * ((float) gameModel.Map[point].Health / gameModel.Map[point].MaxHealth()), 4);
                     }
                 }
             }
@@ -143,7 +142,7 @@ namespace NewGame
             switch (args.KeyChar)
             {
                 case '.':
-                    localPlayer.Position = new Point(10, 10);
+                    localPlayer.Position = new Point(100, 100);
                     break;
                 case 'W' or 'w' or 'ц' or 'Ц':
                     isWdown = true;
