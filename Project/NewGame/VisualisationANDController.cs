@@ -98,11 +98,6 @@ namespace NewGame
             graphic.DrawImage(grass, new Point(-(int) carX % 32 - 32, -(int) carY % 32 - 32));
             lock (gameModel.PlayerMap)
             {
-                // graphic.TranslateTransform(width / 2, height / 2);
-                // graphic.RotateTransform(
-                //     (float) ((float) localPlayer.Direction / Math.PI * 180 + 90));
-                // graphic.DrawImage(images[localPlayer.GetImage()], -17, -30);
-                // graphic.ResetTransform();
                 foreach (var player in gameModel.PlayerMap)
                 {
                     graphic.TranslateTransform(NotBehindScreen(width / 2 - localPlayer.Position.X + player.Position.X),
