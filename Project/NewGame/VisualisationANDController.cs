@@ -72,7 +72,7 @@ namespace NewGame
             {
                 labelX.Text = $"X: {localPlayer.Position.X}";
                 labelY.Text = $"Y: {localPlayer.Position.Y}";
-                labelSpeed.Text = $"Speed: {localPlayer.Direction}";
+                labelSpeed.Text = $"Speed: {localPlayer.Speed.Length}";
 
                 // labelSpeed.Text = localPlayer.Speed.ToString();
                 ReactOnControl(gameModel);

@@ -7,14 +7,21 @@ namespace NewGame
     public class Player
     {
         public Point Position { get; set; }
-        public int Damage { get; }
-        public int MaxHealth() => maxHealth;
+        public int Damage { get; set; }
+        public int MaxHealth => maxHealth;
+
         public Rectangle ObjRectangle => 
             new(Position.X, Position.Y, 45, 80);
         public float Direction { get; set; }
         public Vector Speed => new Vector(1, 0).Rotate(Direction) * velocity;
         public int CoolDown { get; set; }
-        public int Health { get; set; }
+
+        public int Health
+        {
+            get => MaxHealth - Damage;
+            set => throw new NotImplementedException();
+        }
+
         private double velocity;
         private const int maxHealth = 100;
 
