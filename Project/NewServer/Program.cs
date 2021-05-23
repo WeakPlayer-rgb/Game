@@ -34,7 +34,7 @@ namespace NewServer
             // Устанавливаем для сокета локальную конечную точку
             var ip = Dns.GetHostName();
             var ipHost = Dns.GetHostEntry(ip);
-            var ipAddr = ipHost.AddressList[1];
+            var ipAddr = ipHost.AddressList[2];
             var ipEndPoint = new IPEndPoint(ipAddr, 11000);
 
             var timer = new Timer {Interval = 5};
@@ -93,21 +93,12 @@ namespace NewServer
                             {
                                 allPlayers[task.Result] = data.Player;
                             }
-
+                            Console.WriteLine("I accept new Player " + task.Result.RemoteEndPoint);
                             task = sListener.AcceptAsync();
                             break;
                         case true:
                             task = sListener.AcceptAsync();
                             break;
-                    }
-
-                    if (allPlayers == null) continue;
-                    lock (allPlayers)
-                    {
-                        foreach (var p in allPlayers.Values)
-                        {
-                            Console.WriteLine(p.Direction);
-                        }
                     }
                 }
             }

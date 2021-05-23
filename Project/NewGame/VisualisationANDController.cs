@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
@@ -89,20 +90,21 @@ namespace NewGame
             var width = ClientSize.Width;
             var height = ClientSize.Height;
             graphic.DrawImage(grass, new Point(-(int) carX % 32 - 32, -(int) carY % 32 - 32));
-            PaintPlayers(graphic, width, height);
-
-            graphic.TranslateTransform(width / 2, height / 2);
-            graphic.RotateTransform((float) ((float) player.Direction / Math.PI * 180 + 90));
-            graphic.DrawImage(images[player.GetImage()], -17, -30);
-            graphic.DrawRectangle(Pens.Red, -17, -30, player.ObjRectangle.Width,
-                player.ObjRectangle.Height);
-            graphic.FillEllipse(Brushes.Brown, -17, -30, 2, 2);
-            graphic.FillEllipse(Brushes.Brown, 28, -30, 2, 2);
-            //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
+            lock (gameModel.PlayerMap)
+            {
+                foreach (var player in gameModel.PlayerMap)
+                {
+                    graphic.TranslateTransform(NotBehindScreen(width / 2 - localPlayer.Position.X + player.Position.X),
+                        NotBehindScreen(height / 2 - localPlayer.Position.Y + player.Position.Y));
+                    graphic.FillEllipse(Brushes.Black, 0, 0, 5, 5);
+                    graphic.RotateTransform((float) ((float) player.Direction / Math.PI * 180 + 90));
+                    graphic.DrawImage(images[player.GetImage()], -17, -30);
+                    graphic.ResetTransform();
+                }
+            }
             graphic.ResetTransform();
             graphic.TranslateTransform((float) -carX + width / 2, (float) -carY + height / 2);
             PaintGameObjects(carX, width, carY, height, graphic);
-
             PaintBullets(graphic);
         }
 

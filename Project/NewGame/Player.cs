@@ -10,17 +10,14 @@ namespace NewGame
         public int Damage { get; set; }
         public int MaxHealth => maxHealth;
 
-        public Rectangle ObjRectangle => 
+        public Rectangle ObjRectangle =>
             new(Position.X, Position.Y, 45, 80);
+
         public float Direction { get; set; }
         public Vector Speed => new Vector(1, 0).Rotate(Direction) * velocity;
         public int CoolDown { get; set; }
 
-        public int Health
-        {
-            get => MaxHealth - Damage;
-            set => throw new NotImplementedException();
-        }
+        public int Health { get; set; }
 
         private double velocity;
         private const int maxHealth = 100;
@@ -40,15 +37,15 @@ namespace NewGame
             switch (ctrl)
             {
                 case KeyButton.Left:
-                    {
-                        Direction -= (float)(Math.PI / 30);
-                        break;
-                    }
+                {
+                    Direction -= (float) (Math.PI / 30);
+                    break;
+                }
                 case KeyButton.Right:
-                    {
-                        Direction += (float)(Math.PI / 30);
-                        break;
-                    }
+                {
+                    Direction += (float) (Math.PI / 30);
+                    break;
+                }
                 case KeyButton.None:
                     break;
                 default:
@@ -61,40 +58,42 @@ namespace NewGame
             switch (ctrl)
             {
                 case KeyButton.Backward:
+                {
+                    switch (velocity)
                     {
-                        switch (velocity)
-                        {
-                            case 0:
-                                velocity -= 1;
-                                break;
-                            case < 0.25 and > 0:
-                                velocity = 0;
-                                break;
-                            case < 0:
-                                velocity *= 1.05;
-                                break;
-                            case > 0:
-                                velocity *= 0.6;
-                                break;
-                        }
-                        if (velocity <= -5) velocity = -5;
-                        break;
+                        case 0:
+                            velocity -= 1;
+                            break;
+                        case < 0.25 and > 0:
+                            velocity = 0;
+                            break;
+                        case < 0:
+                            velocity *= 1.05;
+                            break;
+                        case > 0:
+                            velocity *= 0.6;
+                            break;
                     }
+
+                    if (velocity <= -5) velocity = -5;
+                    break;
+                }
                 case KeyButton.Forward:
+                {
+                    switch (velocity)
                     {
-                        switch (velocity)
-                        {
-                            case 0:
-                                velocity += 1;
-                                break;
-                            case <= -0.25:
-                                velocity = 0;
-                                break;
-                        }
-                        if (velocity is > 0 and < 8) velocity *= 1.07;
-                        if (velocity >= 40) velocity = 40;
-                        break;
+                        case 0:
+                            velocity += 1;
+                            break;
+                        case <= -0.25:
+                            velocity = 0;
+                            break;
                     }
+
+                    if (velocity is > 0 and < 8) velocity *= 1.07;
+                    if (velocity >= 40) velocity = 40;
+                    break;
+                }
                 case KeyButton.None:
                     velocity *= 0.97;
                     if (velocity is < 0.25 and > -0.25) velocity = 0;
