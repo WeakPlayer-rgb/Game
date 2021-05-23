@@ -11,25 +11,23 @@ namespace NewGame
         public int MaxHealth() => maxHealth;
         public Rectangle ObjRectangle => 
             new(Position.X, Position.Y, 45, 80);
-        public double Direction => angle;
+        public float Direction { get; set; }
         public Vector Speed => new Vector(1, 0).Rotate(Direction) * velocity;
         public int CoolDown { get; set; }
         public int Health { get; set; }
-        private double angle;
+        //private float angle;
         private double velocity;
         private const int maxHealth = 100;
 
-        public Player(Point p)
+        public Player(Point p, float angle)
         {
             Position = p;
-            angle = 0;
+            Direction = angle;
             velocity = 0;
             Damage = 10;
         }
 
         public string GetImage() => "car1.png";
-
-        public int DrawPriority(int priority) => 0;
 
         public void ChangeDirection(KeyButton ctrl)
         {
@@ -37,12 +35,12 @@ namespace NewGame
             {
                 case KeyButton.Left:
                     {
-                        angle -= Math.PI / 30;
+                        Direction -= (float)(Math.PI / 30);
                         break;
                     }
                 case KeyButton.Right:
                     {
-                        angle += Math.PI / 30;
+                        Direction += (float)(Math.PI / 30);
                         break;
                     }
                 case KeyButton.None:

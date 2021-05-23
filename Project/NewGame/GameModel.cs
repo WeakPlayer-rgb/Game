@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -23,7 +24,7 @@ namespace NewGame
         private DataFromClientToServer dataFromClientToServer;
         private DataFromServerToClient dataFromServerToClient;
 
-        public GameModel(int s)
+        public GameModel(int s,string text)
         {
             Size = s;
             // Map = new Dictionary<Point, IGameObject>();
@@ -48,13 +49,20 @@ namespace NewGame
             connection.Receive(dataFromServer);
             var str = Encoding.UTF8.GetString(dataFromServer);
             var data = (FirstConnection) JsonConvert.DeserializeObject(str, typeof(FirstConnection));
-            Player = data.Player;
-            Map = data.Map;
-            Bullets = data.Bullets;
-            PlayerMap = data.OtherPlayers;
-            dataFromClientToServer = new DataFromClientToServer()
+            Player = new Player(Point.Empty,0);
+            Map = new Dictionary<Point, Tree>();
+            Bullets = new List<Bullet>();
+            PlayerMap = new List<Player>();
+            if (data != null)
             {
-                NewBullets = new List<Bullet>(),NewPlayerPosition = Player
+                Player = data.Player;
+                Map = data.Map;
+                Bullets = data.Bullets;
+                PlayerMap = data.OtherPlayers;
+            }
+            dataFromClientToServer = new DataFromClientToServer
+            {
+                NewBullets = new List<Bullet>(), NewPlayerPosition = Player
             };
             WorkWithServer();
         }
@@ -115,6 +123,8 @@ namespace NewGame
             return false;
         }
 
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.Char[]")]
         Task MakeAsync()
         {
             var task = new Task(() =>
@@ -126,7 +136,7 @@ namespace NewGame
                     lock (dataFromClientToServer) dataFromClientToServer.NewPlayerPosition = Player;
                     lock (dataFromClientToServer) dataForServer = JsonConvert.SerializeObject(dataFromClientToServer);
                     connection.Send(Encoding.UTF8.GetBytes(dataForServer));
-                    lock(dataFromClientToServer)dataFromClientToServer.NewBullets = new List<Bullet>();
+                    lock (dataFromClientToServer) dataFromClientToServer.NewBullets = new List<Bullet>();
                     connection.Receive(data);
                     dataFromServerToClient = new DataFromServerToClient();
                     var str = Encoding.UTF8.GetString(data);
@@ -136,11 +146,11 @@ namespace NewGame
                             (DataFromServerToClient) JsonConvert.DeserializeObject(str,
                                 typeof(DataFromServerToClient));
                         Debug.Assert(dataFromServerToClient != null, nameof(dataFromServerToClient) + " != null");
-                        lock(Bullets) 
+                        lock (Bullets)
                             Bullets = dataFromServerToClient.Bullets.ToList();
                         foreach (var point in Map.Where(x => x.Value.GetType() == typeof(Player)).Select(x => x.Key)
                             .ToList()) Map.Remove(point);
-                        foreach (var player in dataFromServerToClient.OtherPlayers) PlayerMap.Add(player);
+                        PlayerMap = dataFromServerToClient.OtherPlayers;
                     }
                 }
             });
@@ -153,7 +163,32 @@ namespace NewGame
             await MakeAsync();
         }
 
-        /*public bool IsIntersected(Vector leftDot, Vector rightDot, int left, int right, int bottom, int top)
+        public bool IsPlayerIntersected()
+        {
+            var playerPos = Player.Position;
+            var leftDot = new Vector(playerPos.X - 17, playerPos.Y - 30).Rotate(Player.Direction);
+            var rightDot = new Vector(playerPos.X + 28, playerPos.Y - 30).Rotate(Player.Direction);
+            //var playerRect = new Rectangle(leftTop., rightTop, 1, 1);
+            const int limit = 50;
+            for (var dy = -limit; dy <= limit; dy++)
+            for (var dx = -limit; dx <= limit; dx++)
+            {
+                var potentialPos = new Point(
+                    playerPos.X + dx, playerPos.Y + dy);
+                if (!Map.ContainsKey(potentialPos)) continue;
+                var obj = Map[potentialPos];
+                var objRectangle = obj.ObjRectangle;
+                var top = objRectangle.Top;
+                var bottom = objRectangle.Bottom;
+                var left = objRectangle.Left;
+                var right = objRectangle.Right;
+                return IsIntersected(leftDot, rightDot, left, right, bottom, top);
+            }
+
+            return false;
+        }
+
+        public bool IsIntersected(Vector leftDot, Vector rightDot, int left, int right, int bottom, int top)
         {
             var a = Math.Max(leftDot.X, left) <= Math.Min(rightDot.X, right);
             var b = Math.Max(leftDot.Y, bottom) <= Math.Min(rightDot.Y, top);
@@ -161,7 +196,7 @@ namespace NewGame
             var d = Math.Max(rightDot.Y, bottom) <= Math.Min(leftDot.Y, top);
             //return a && b || c&&d || a&&c || a&&d||b&&c||b&&d;
             return a && b;
-        }*/
+        }
 
         /*private double CalcLength(int point1, int point2)
         {

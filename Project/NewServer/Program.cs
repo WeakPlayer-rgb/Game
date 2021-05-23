@@ -107,7 +107,7 @@ namespace NewServer
                         {
                             foreach (var p in allPlayers.Values)
                             {
-                                Console.WriteLine(p);
+                                Console.WriteLine(p.Direction);
                             }
                         }
                     }
@@ -151,8 +151,7 @@ namespace NewServer
                         dataServerClient = new DataFromServerToClient();
                         lock (bullets) dataServerClient.Bullets = bullets;
                         lock (allPlayers)
-                            dataServerClient.OtherPlayers = allPlayers.Values
-                                .Where(x => x.Position != dataClientServer.NewPlayerPosition.Position).ToList();
+                            dataServerClient.OtherPlayers = allPlayers.Values.ToList();
                         lock (allPlayers)
                             if (dataClientServer != null)
                                 dataServerClient.ChangeHpPlayer =
@@ -176,7 +175,7 @@ namespace NewServer
         private static Player CreateNewPlayer()
         {
             var rnd = new Random();
-            return new Player(new Point(rnd.Next(Size), rnd.Next(Size)));
+            return new Player(new Point(rnd.Next(Size), rnd.Next(Size)),0);
         }
 
         private static void MoveBullets()
