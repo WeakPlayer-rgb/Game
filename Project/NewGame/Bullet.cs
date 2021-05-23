@@ -11,15 +11,6 @@ namespace NewGame
         public float DirectionX { get; }
         public float DirectionY { get; }
 
-        // [JsonConstructor]
-        // public Bullet()
-        // {
-        //     DirectionX = 0;
-        //     DirectionY = 0;
-        //     Position = Point.Empty;
-        //     Damage = 0;
-        // }
-
         public Bullet(float directionX,float directionY, Point position,int damage)
         {
             DirectionX = directionX;
