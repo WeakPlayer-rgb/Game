@@ -8,14 +8,20 @@ namespace NewGame
     {
         public Point Position { get; set; }
         public int Damage { get; set; }
-        public int MaxHealth() => maxHealth;
+        public int MaxHealth => maxHealth;
+
         public Rectangle ObjRectangle => 
             new(Position.X, Position.Y, 45, 80);
         public float Direction { get; set; }
         public Vector Speed => new Vector(1, 0).Rotate(Direction) * velocity;
         public int CoolDown { get; set; }
-        public int Health { get; set; }
-        //private float angle;
+
+        public int Health
+        {
+            get => MaxHealth - Damage;
+            set => throw new NotImplementedException();
+        }
+
         private double velocity;
         private const int maxHealth = 100;
 
@@ -94,16 +100,13 @@ namespace NewGame
                     if (velocity is < 0.25 and > -0.25) velocity = 0;
                     break;
                 case KeyButton.Break:
-                    velocity = 0;
+                    velocity = 0.9;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ctrl), ctrl, null);
             }
         }
 
-        public override string ToString()
-        {
-            return Position.ToString();
-        }
+        public override string ToString() => Position.ToString();
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using System.Drawing;
 using NewGame;
 
@@ -21,4 +21,4 @@ namespace Server
         public Point NewPlayerPosition;
         public List<Bullet> NewBullets;
     }
-}
+}*/

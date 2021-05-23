@@ -15,7 +15,7 @@ namespace NewClient
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main()
         {
             try
             {
@@ -31,7 +31,7 @@ namespace NewClient
         {
 
             // Буфер для входящих данных
-            byte[] bytes = new byte[100000];
+            var bytes = new byte[100000];
 
             // Соединяемся с удаленным устройством
 
@@ -40,7 +40,7 @@ namespace NewClient
             var ipAddr = ipHost.AddressList[1];
             var ipEndPoint = new IPEndPoint(IPAddress.Parse("10.97.160.27"), 11000);
             var dataFromClientToServer = new DataFromClientToServer();
-            Socket connection = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            var connection = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             var dataFromServerToClient = new DataFromServerToClient();
             var Bullets = new List<Bullet>();
             var Map = new Dictionary<Point, Tree>();
@@ -48,6 +48,13 @@ namespace NewClient
 
             // Соединяем сокет с удаленной точкой
             connection.Connect(ipEndPoint);
+            ConnectSocket(dataFromClientToServer, connection, Bullets, Map, PlayerMap);
+        }
+
+        private static void ConnectSocket(DataFromClientToServer dataFromClientToServer, Socket connection, List<Bullet> Bullets,
+            Dictionary<Point, Tree> Map, List<Player> PlayerMap)
+        {
+            DataFromServerToClient dataFromServerToClient;
             while (true)
             {
                 var data = new byte[100000];
@@ -65,7 +72,7 @@ namespace NewClient
                     Bullets.AddRange(dataFromServerToClient.Bullets);
                     foreach (var point in Map.Where(x => x.Value.GetType() == typeof(Player)).Select(x => x.Key)
                         .ToList()) Map.Remove(point);
-                    foreach (var player in dataFromServerToClient.OtherPlayers) PlayerMap.Add(player);
+                    PlayerMap.AddRange(dataFromServerToClient.OtherPlayers);
                 }
             }
         }
