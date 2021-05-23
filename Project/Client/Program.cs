@@ -1,65 +1,34 @@
 ﻿using System;
-using System.Text;
-using System.Net;
-using System.Net.Sockets;
 
-namespace SocketClient
+class BRS
 {
-    class Program
+    public static void Main()
     {
-        static void Main(string[] args)
-        {
-            try
-            {
-                SendMessageFromSocket(11000);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-        }
+        var баллЗаДЗ = 2051;
+        var баллЗаСеминары = 10;
+        var баллЗаАктивности = 11;
+        var баллБРСЗаРаботуВСеместре = ВерниБаллБРСЗаРаботуВСеместре(баллЗаДЗ, баллЗаСеминары, баллЗаАктивности);
+        var баллБРС = ВерниБаллБРС(баллБРСЗаРаботуВСеместре, 0);
+        Console.WriteLine(баллБРСЗаРаботуВСеместре);
+        Console.WriteLine(баллБРС);
+    }
 
-        static void SendMessageFromSocket(int port)
-        {
-            
-            // Буфер для входящих данных
-            byte[] bytes = new byte[1024];
+    private static int ВерниБаллБРС(int баллБРСЗаРаботуВСеместре, int баллЗаЭкзамен = 0)
+    {
+        var максимумЗаЭкзамен = 100;
+        return (int) Math.Round(0.6 * баллБРСЗаРаботуВСеместре + 0.4 * баллЗаЭкзамен);
+    }
 
-            // Соединяемся с удаленным устройством
-            
-            // Устанавливаем удаленную точку для сокета
-            var ipHost = Dns.GetHostEntry("localhost");
-            var ipAddr = ipHost.AddressList[1];
-            var ipEndPoint = new IPEndPoint(ipAddr, port);
-            
-            Socket sender = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            
-            // Соединяем сокет с удаленной точкой
-            sender.Connect(ipEndPoint);
-
-            // Console.Write("Введите сообщение: ");
-            //string message = Console.ReadLine();
-            //
-            // Console.WriteLine("Сокет соединяется с {0} ", sender.RemoteEndPoint);
-            // byte[] msg = Encoding.UTF8.GetBytes(message);
-            //
-            // Отправляем данные через сокет
-            // int bytesSent = sender.Send(msg);
-            
-            // Получаем ответ от сервера
-            while (true)
-            {
-                var bytesRec = sender.Receive(bytes);
-                Console.WriteLine("\nОтвет от сервера: {0}\n\n", Encoding.UTF8.GetString(bytes, 0, bytesRec));
-                sender.Send(Encoding.UTF8.GetBytes("receive"));
-            }
-            // Используем рекурсию для неоднократного вызова SendMessageFromSocket()
-            // if (message != null && !message.Contains("<TheEnd>"))
-            //     SendMessageFromSocket(port);
-            
-            // Освобождаем сокет
-            // sender.Shutdown(SocketShutdown.Both);
-            // sender.Close();
-        }
+    private static int ВерниБаллБРСЗаРаботуВСеместре(int баллЗаДЗ, int баллЗаСеминары, int баллЗаАктивности)
+    {
+        var максимумЗаСеминары = 13;
+        var максимумЗаДопАктивности = 12;
+        var максимумЗаДЗ = 2400;
+        var баллЗаРаботуВСеместре =
+            20
+            + 0.5 * Math.Min(баллЗаДЗ, 0.8 * максимумЗаДЗ) / (максимумЗаДЗ * 0.8) * 100
+            + 0.15 * Math.Min(баллЗаСеминары, 0.8 * баллЗаСеминары) / (максимумЗаСеминары * 0.8) * 100
+            + 0.1 * Math.Min(баллЗаАктивности, 0.8 * баллЗаАктивности) / (максимумЗаДопАктивности * 0.8) * 100;
+        return (int) Math.Round(баллЗаРаботуВСеместре);
     }
 }

@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Management.Instrumentation;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.Remoting.Channels;
-using System.Security.Cryptography.X509Certificates;
-using System.Windows.Forms.PropertyGridInternal;
-using static System.Drawing.Bitmap;
 
 // ReSharper disable All
 
@@ -26,7 +17,7 @@ namespace NewGame
         private bool isSdown = false;
         private Dictionary<string, Image> images;
         private Image grass;
-        private Player player;
+        private Player localPlayer;
 
 
         [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Windows.Forms.Internal.DeviceContext")]
@@ -36,8 +27,8 @@ namespace NewGame
             DoubleBuffered = true;
             gameModel = g;
             images = new Dictionary<string, Image>();
-            player = gameModel.Player;
-            player.CoolDown = 10;
+            localPlayer = gameModel.Player;
+            localPlayer.CoolDown = 10;
             var coolDownShot = 0;
 
             var path = Path.Combine(Directory.GetCurrentDirectory(), "Images");
@@ -50,32 +41,34 @@ namespace NewGame
             var bmp = Image.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "Images", "grass.png"));
             var Grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width,
                 ClientSize.Height);
+            var labelX = new Label {Location = new Point(0, 0), Width = 100};
+            var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 100};
+            var labelSpeed = new Label {Location = new Point(0, labelY.Location.Y + labelY.Size.Height), Width = 250};
 
-            var labelX = new Label {Location = new Point(0, 0), Width = 150};
-            var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 150};
-            var labelSpeed = new Label {Location = new Point(0, labelY.Location.Y+labelY.Size.Height), Width = 250};
-            
             MouseClick += (sender, args) =>
             {
                 if (coolDownShot <= 0)
                 {
-                    coolDownShot = player.CoolDown;
-                    gameModel.AddBullet(new Bullet(new Vector(args.Location.X - ClientSize.Width / 2,
-                            args.Location.Y - ClientSize.Height / 2),
-                        new Point((int) player.Position.X, (int) player.Position.Y),gameModel.Player.Damage));
+                    coolDownShot = localPlayer.CoolDown;
+                    var vector = new Vector(args.Location.X - ClientSize.Width / 2,
+                        args.Location.Y - ClientSize.Height / 2);
+                    vector = vector / vector.Length * 10;
+                    var b = new Bullet((int) vector.X, (int) vector.Y,
+                        new Point((int) localPlayer.Position.X, (int) localPlayer.Position.Y), gameModel.Player.Damage);
+                    gameModel.Shoot(b);
                 }
             };
 
-            var timer = new Timer {Interval = 5};
+            var timer = new Timer {Interval = 16};
             timer.Tick += (sender, args) =>
             {
-                labelX.Text = $"X: {player.Position.X}";
-                labelY.Text = $"Y: {player.Position.Y}";
-                labelSpeed.Text = $"Speed: {player.Speed.Length}";
-                
+                labelX.Text = $"X: {localPlayer.Position.X}";
+                labelY.Text = $"Y: {localPlayer.Position.Y}";
+                labelSpeed.Text = $"Speed: {localPlayer.Speed.Length}";
+
+                // labelSpeed.Text = localPlayer.Speed.ToString();
                 ReactOnControl(gameModel);
                 gameModel.ChangePosition();
-                gameModel.MoveBullets();
                 coolDownShot -= 1;
                 Refresh();
             };
@@ -83,6 +76,7 @@ namespace NewGame
             Controls.Add(labelY);
             Controls.Add(labelX);
             Controls.Add(labelSpeed);
+            
             InitializeComponent();
             timer.Start();
         }
@@ -90,11 +84,12 @@ namespace NewGame
         protected override void OnPaint(PaintEventArgs args)
         {
             var graphic = args.Graphics;
-            var carX = player.Position.X;
-            var carY = player.Position.Y;
+            var carX = localPlayer.Position.X;
+            var carY = localPlayer.Position.Y;
             var width = ClientSize.Width;
             var height = ClientSize.Height;
             graphic.DrawImage(grass, new Point(-(int) carX % 32 - 32, -(int) carY % 32 - 32));
+            PaintPlayers(graphic, width, height);
 
             graphic.TranslateTransform(width / 2, height / 2);
             graphic.RotateTransform((float) ((float) player.Direction / Math.PI * 180 + 90));
@@ -106,6 +101,29 @@ namespace NewGame
             //graphic.FillEllipse(Brushes.Black, 0, 0, 2, 2);
             graphic.ResetTransform();
             graphic.TranslateTransform((float) -carX + width / 2, (float) -carY + height / 2);
+            PaintGameObjects(carX, width, carY, height, graphic);
+
+            PaintBullets(graphic);
+        }
+
+        private void PaintPlayers(Graphics graphic, int width, int height)
+        {
+            lock (gameModel.PlayerMap)
+            {
+                foreach (var player in gameModel.PlayerMap)
+                {
+                    graphic.TranslateTransform(NotBehindScreen(width / 2 - localPlayer.Position.X + player.Position.X),
+                        NotBehindScreen(height / 2 - localPlayer.Position.Y + player.Position.Y));
+                    graphic.FillEllipse(Brushes.Black, 0, 0, 5, 5);
+                    graphic.RotateTransform((float) ((float) player.Direction / Math.PI * 180 + 90));
+                    graphic.DrawImage(images[player.GetImage()], -17, -30);
+                    graphic.ResetTransform();
+                }
+            }
+        }
+
+        private void PaintGameObjects(int carX, int width, int carY, int height, Graphics graphic)
+        {
             for (var x = ((int) carX - width / 2) / 32 - 2; x < ((int) carX + width / 2) / 32 + 1; x++)
             for (var y = ((int) carY - height / 2) / 32 - 2; y < ((int) carY + height / 2) / 32 + 1; y++)
             {
@@ -113,26 +131,25 @@ namespace NewGame
                 if (gameModel.Map.ContainsKey(point))
                 {
                     graphic.DrawImage(images[gameModel.Map[point].GetImage()], x * 32, y * 32);
-                    graphic.DrawRectangle(Pens.Red, gameModel.Map[point].ObjRectangle);
                     if (gameModel.Map[point].Health != gameModel.Map[point].MaxHealth())
                     {
                         graphic.DrawRectangle(Pens.Black, x * 32, (y + 2) * 32, 32, 5);
-                        graphic.FillRectangle(Brushes.GreenYellow, x * 32+1, (y + 2) * 32+1,
-                           (float) 32 * ((float)gameModel.Map[point].Health / gameModel.Map[point].MaxHealth()), 4);
+                        graphic.FillRectangle(Brushes.GreenYellow, x * 32 + 1, (y + 2) * 32 + 1,
+                            (float) 32 * ((float) gameModel.Map[point].Health / gameModel.Map[point].MaxHealth()), 4);
                     }
                 }
             }
+        }
 
-            var toRemove = new List<Bullet>();
-
-            foreach (var bullet in gameModel.Bullets)
+        private void PaintBullets(Graphics graphic)
+        {
+            lock (gameModel.Bullets)
             {
-                graphic.FillEllipse(Brushes.Black, bullet.Position.X, bullet.Position.Y, 5, 5);
-                bullet.ChangeTick();
-                if (bullet.Tick >= 100) toRemove.Add(bullet);
+                foreach (var bullet in gameModel.Bullets)
+                {
+                    graphic.FillEllipse(Brushes.Black, bullet.Position.X, bullet.Position.Y, 5, 5);
+                }
             }
-
-            foreach (var bullet in toRemove) gameModel.Bullets.Remove(bullet);
         }
 
         protected override void OnKeyPress(KeyPressEventArgs args)
@@ -140,7 +157,7 @@ namespace NewGame
             switch (args.KeyChar)
             {
                 case '.':
-                    player.Position = new Point(10, 10);
+                    localPlayer.Position = new Point(100, 100);
                     break;
                 case 'W' or 'w' or 'ц' or 'Ц':
                     isWdown = true;
@@ -216,6 +233,7 @@ namespace NewGame
             graphics.DrawImage(Image, new Point(0, Image.Height));
             return outputImage;
         }
+
 
         private void ReactOnControl(GameModel game)
         {
