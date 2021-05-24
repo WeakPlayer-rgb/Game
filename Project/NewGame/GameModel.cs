@@ -151,6 +151,7 @@ namespace NewGame
                         foreach (var point in Map.Where(x => x.Value.GetType() == typeof(Player)).Select(x => x.Key)
                             .ToList()) Map.Remove(point);
                         PlayerMap = dataFromServerToClient.OtherPlayers;
+                        lock (Player) Player.Health -= dataFromServerToClient.ChangeHpPlayer;
                     }
                 }
             });

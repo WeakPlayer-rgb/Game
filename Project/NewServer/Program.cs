@@ -124,6 +124,7 @@ namespace NewServer
             await MakeAsync(socket);
         }
 
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Byte[]")]
         private static Task MakeAsync(Socket connect)
         {
             DataFromServerToClient dataServerClient;

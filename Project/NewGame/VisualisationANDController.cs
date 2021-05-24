@@ -43,8 +43,8 @@ namespace NewGame
             var Grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width,
                 ClientSize.Height);
             var labelX = new Label {Location = new Point(0, 0), Width = 100};
-            var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 100};
-            var labelSpeed = new Label {Location = new Point(0, labelY.Location.Y + labelY.Size.Height), Width = 250};
+            //var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 100};
+            //var labelSpeed = new Label {Location = new Point(0, labelY.Location.Y + labelY.Size.Height), Width = 250};
 
             MouseClick += (sender, args) =>
             {
@@ -63,9 +63,9 @@ namespace NewGame
             var timer = new Timer {Interval = 12};
             timer.Tick += (sender, args) =>
             {
-                labelX.Text = $"X: {localPlayer.Position.X}";
-                labelY.Text = $"Y: {localPlayer.Position.Y}";
-                labelSpeed.Text = $"Speed: {localPlayer.Speed.Length}";
+                labelX.Text = $"X: {localPlayer.Health}";
+                // labelY.Text = $"Y: {localPlayer.Position.Y}";
+                // labelSpeed.Text = $"Speed: {localPlayer.Speed.Length}";
 
                 // labelSpeed.Text = localPlayer.Speed.ToString();
                 ReactOnControl(gameModel);
@@ -74,9 +74,9 @@ namespace NewGame
                 Refresh();
             };
 
-            Controls.Add(labelY);
             Controls.Add(labelX);
-            Controls.Add(labelSpeed);
+            // Controls.Add(labelY);
+            // Controls.Add(labelSpeed);
             
             InitializeComponent();
             timer.Start();
