@@ -39,9 +39,9 @@ namespace NewGame
             // }
             //
             // Bullets = new List<Bullet>();
-            var ipHost = Dns.GetHostEntry("localhost");
-            var ipAddr = ipHost.AddressList[1];
-            // var ipString = "192.168.31.37";
+            var ip = Dns.GetHostName();
+            var ipHost = Dns.GetHostEntry(ip);
+            var ipAddr = ipHost.AddressList[6];
             var ipEndPoint = new IPEndPoint(IPAddress.Parse(text), 11000);
             connection = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             connection.Connect(ipEndPoint);

@@ -34,7 +34,13 @@ namespace NewServer
             // Устанавливаем для сокета локальную конечную точку
             var ip = Dns.GetHostName();
             var ipHost = Dns.GetHostEntry(ip);
-            var ipAddr = ipHost.AddressList[2];
+            Console.WriteLine(@"Choose ip address");
+            for (var i = 0; i < ipHost.AddressList.Length; i++)
+            {
+                Console.WriteLine(i.ToString() +' '+ ipHost.AddressList[i]);
+            }
+            var k = Console.ReadLine();
+            var ipAddr = ipHost.AddressList[int.Parse(k ?? throw new InvalidOperationException())];
             var ipEndPoint = new IPEndPoint(ipAddr, 11000);
 
             var timer = new Timer {Interval = 5};
@@ -93,6 +99,7 @@ namespace NewServer
                             {
                                 allPlayers[task.Result] = data.Player;
                             }
+
                             Console.WriteLine("I accept new Player " + task.Result.RemoteEndPoint);
                             task = sListener.AcceptAsync();
                             break;
@@ -164,7 +171,7 @@ namespace NewServer
         private static Player CreateNewPlayer()
         {
             var rnd = new Random();
-            return new Player(new Point(rnd.Next(Size), rnd.Next(Size)),0);
+            return new Player(new Point(rnd.Next(Size), rnd.Next(Size)), 0);
         }
 
         private static void MoveBullets()

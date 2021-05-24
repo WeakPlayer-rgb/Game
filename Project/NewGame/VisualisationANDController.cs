@@ -60,7 +60,7 @@ namespace NewGame
                 }
             };
 
-            var timer = new Timer {Interval = 16};
+            var timer = new Timer {Interval = 12};
             timer.Tick += (sender, args) =>
             {
                 labelX.Text = $"X: {localPlayer.Position.X}";
