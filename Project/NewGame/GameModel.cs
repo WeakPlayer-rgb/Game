@@ -26,22 +26,8 @@ namespace NewGame
         public GameModel(int s, string text)
         {
             Size = s;
-            // Map = new Dictionary<Point, IGameObject>();
-            // Player = new Player(new Point(Size / 2, Size / 2));
-            //
-            // var rnd = new Random();
-            // for (var i = 0; i < 500; i++)
-            // {
-            //     var newPoint = new Point(rnd.Next(0, Size / 32), rnd.Next(0, Size / 32)); // 40, 70
-            //     if (!Map.ContainsKey(newPoint))
-            //         Map[new Point(newPoint.X * 32, newPoint.Y * 32)] =
-            //             new Tree(new Point(newPoint.X * 32, newPoint.Y * 32));
-            // }
-            //
-            // Bullets = new List<Bullet>();
             var ipHost = Dns.GetHostEntry("localhost");
             var ipAddr = ipHost.AddressList[1];
-            // var ipString = "192.168.31.37";
             var ipEndPoint = new IPEndPoint(IPAddress.Parse(text), 11000);
             connection = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             connection.Connect(ipEndPoint);
@@ -78,10 +64,6 @@ namespace NewGame
             }
 
             ChangePos();
-            // foreach (var key in Map.Keys)
-            // {
-            //     if (AreIntersected(Player.ObjRectangle, Map[key].ObjRectangle)) Player.ChangeVelocity(KeyButton.Break);
-            // }
         }
 
         private void ChangePos(double multiplier = 0)
@@ -99,10 +81,6 @@ namespace NewGame
         public bool IsPlayerIntersected()
         {
             var playerPos = Player.Position;
-            /*var leftDot = new Vector(playerPos.X - 17, playerPos.Y - 30).Rotate(Player.Direction);
-            var rightDot = new Vector(playerPos.X + 28, playerPos.Y - 30).Rotate(Player.Direction);
-            */
-            //var playerRect = new Rectangle(leftTop., rightTop, 1, 1);
             const int limit = 50;
             for (var dy = -limit; dy <= limit; dy++)
             for (var dx = -limit; dx <= limit; dx++)
@@ -115,9 +93,7 @@ namespace NewGame
                 var bottom = objRectangle.Bottom;
                 var left = objRectangle.Left;
                 var right = objRectangle.Right;
-                //return IsIntersected(leftDot, rightDot, left,right, bottom, top);
                 return AreIntersected(Player.ObjRectangle, objRectangle);
-                //return IsIntersected(leftDot, rightDot, left, right, bottom, top);
             }
 
             return false;
@@ -162,47 +138,7 @@ namespace NewGame
         {
             await MakeAsync();
         }
-
-        /*public bool IsPlayerIntersected()
-        {
-            var playerPos = Player.Position;
-            var leftDot = new Vector(playerPos.X - 17, playerPos.Y - 30).Rotate(Player.Direction);
-            var rightDot = new Vector(playerPos.X + 28, playerPos.Y - 30).Rotate(Player.Direction);
-            //var playerRect = new Rectangle(leftTop., rightTop, 1, 1);
-            const int limit = 50;
-            for (var dy = -limit; dy <= limit; dy++)
-            for (var dx = -limit; dx <= limit; dx++)
-            {
-                var potentialPos = new Point(
-                    playerPos.X + dx, playerPos.Y + dy);
-                if (!Map.ContainsKey(potentialPos)) continue;
-                var obj = Map[potentialPos];
-                var objRectangle = obj.ObjRectangle;
-                var top = objRectangle.Top;
-                var bottom = objRectangle.Bottom;
-                var left = objRectangle.Left;
-                var right = objRectangle.Right;
-                return IsIntersected(leftDot, rightDot, left, right, bottom, top);
-            }
-
-            return false;
-        }*/
-
-        public bool IsIntersected(Vector leftDot, Vector rightDot, int left, int right, int bottom, int top)
-        {
-            var a = Math.Max(leftDot.X, left) <= Math.Min(rightDot.X, right);
-            var b = Math.Max(leftDot.Y, bottom) <= Math.Min(rightDot.Y, top);
-            var c = Math.Max(rightDot.X, left) <= Math.Min(leftDot.Y, right);
-            var d = Math.Max(rightDot.Y, bottom) <= Math.Min(leftDot.Y, top);
-            //return a && b || c&&d || a&&c || a&&d||b&&c||b&&d;
-            return a && b;
-        }
-
-        /*private double CalcLength(int point1, int point2)
-        {
-            return Math.Sqrt(point1 * point1 - point2 * point2);
-        }*/
-
+        
         public static bool AreIntersected(Rectangle r1, Rectangle r2)
         {
             var a = Math.Max(r1.Left, r2.Left) <= Math.Min(r1.Right, r2.Right);
