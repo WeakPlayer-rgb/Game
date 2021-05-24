@@ -38,7 +38,7 @@ namespace ClassLibrary1
         */
         }
 
-        /*[TestCase(1,3,4,100, 1000)]
+        [TestCase(1,3,4,100, 1000)]
         [TestCase(1,3,4,100, 50)]
         [TestCase(1, 99)]
         public void DamageMakeDeadTest(params int[] damages)
@@ -59,6 +59,8 @@ namespace ClassLibrary1
                 car.Damage += damage;
             }
             Assert.IsTrue(car.Health > 0);
-        }*/
+        }
+        
+        
     }
 }
