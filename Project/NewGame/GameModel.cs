@@ -14,7 +14,7 @@ namespace NewGame
 {
     public class GameModel
     {
-        public readonly Player Player;
+        public Player Player;
         public readonly Dictionary<Point, Tree> Map;
         public List<Player> PlayerMap;
         public readonly int Size;
@@ -125,6 +125,8 @@ namespace NewGame
 
         [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH",
             MessageId = "type: System.Char[]")]
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.String")]
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.String")]
         Task MakeAsync()
         {
             var task = new Task(() =>
@@ -145,13 +147,25 @@ namespace NewGame
                         dataFromServerToClient =
                             (DataFromServerToClient) JsonConvert.DeserializeObject(str,
                                 typeof(DataFromServerToClient));
+
+                        if (dataFromServerToClient.YourNewPlayer != null)
+                        {
+                            lock (Player)
+                            {
+                                Player.Position = dataFromServerToClient.YourNewPlayer.Position;
+                            }
+                        }
+
                         Debug.Assert(dataFromServerToClient != null, nameof(dataFromServerToClient) + " != null");
                         lock (Bullets)
                             Bullets = dataFromServerToClient.Bullets.ToList();
                         foreach (var point in Map.Where(x => x.Value.GetType() == typeof(Player)).Select(x => x.Key)
                             .ToList()) Map.Remove(point);
                         PlayerMap = dataFromServerToClient.OtherPlayers;
-                        lock (Player) Player.Health -= dataFromServerToClient.ChangeHpPlayer;
+                        lock (Player)
+                        {
+                            Player.Health -= dataFromServerToClient.ChangeHpPlayer;
+                        }
                     }
                 }
             });

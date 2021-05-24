@@ -15,6 +15,7 @@ namespace NewGame
 
     public class DataFromServerToClient
     {
+        public Player YourNewPlayer;
         public List<Bullet> Bullets;
         public List<Player> OtherPlayers;
         public int ChangeHpPlayer;

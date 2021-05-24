@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
@@ -37,8 +38,9 @@ namespace NewServer
             Console.WriteLine(@"Choose ip address");
             for (var i = 0; i < ipHost.AddressList.Length; i++)
             {
-                Console.WriteLine(i.ToString() +' '+ ipHost.AddressList[i]);
+                Console.WriteLine(i.ToString() + ' ' + ipHost.AddressList[i]);
             }
+
             var k = Console.ReadLine();
             var ipAddr = ipHost.AddressList[int.Parse(k ?? throw new InvalidOperationException())];
             var ipEndPoint = new IPEndPoint(ipAddr, 11000);
@@ -124,7 +126,14 @@ namespace NewServer
             await MakeAsync(socket);
         }
 
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.Byte[]")]
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.Char[]")]
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.String")]
         [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Byte[]")]
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.String")]
         private static Task MakeAsync(Socket connect)
         {
             DataFromServerToClient dataServerClient;
@@ -140,7 +149,13 @@ namespace NewServer
                         var str = Encoding.UTF8.GetString(data);
                         dataClientServer = (DataFromClientToServer) JsonConvert.DeserializeObject(str,
                             typeof(DataFromClientToServer));
-                        lock (allPlayers) allPlayers[connect] = dataClientServer?.NewPlayerPosition;
+                        lock (allPlayers)
+                        {
+                            Debug.Assert(dataClientServer?.NewPlayerPosition.Position != null, "dataClientServer?.NewPlayerPosition.Position != null");
+                            allPlayers[connect].Position = (Point) dataClientServer?.NewPlayerPosition.Position;
+                            allPlayers[connect].Direction =  (float) dataClientServer?.NewPlayerPosition.Direction;
+                        }
+
                         lock (bullets)
                             if (dataClientServer?.NewBullets != null)
                                 foreach (var bull in dataClientServer?.NewBullets)
@@ -149,10 +164,23 @@ namespace NewServer
                         lock (bullets) dataServerClient.Bullets = bullets;
                         lock (allPlayers)
                             dataServerClient.OtherPlayers = allPlayers.Values.ToList();
+                        dataServerClient.ChangeHpPlayer = 0;
                         lock (allPlayers)
                             if (dataClientServer != null)
+                            {
                                 dataServerClient.ChangeHpPlayer =
                                     dataClientServer.NewPlayerPosition.Health - allPlayers[connect].Health;
+                            }
+
+                        lock (allPlayers)
+                        {
+                            if (allPlayers[connect].Health < 0)
+                            {
+                                allPlayers[connect] = CreateNewPlayer();
+                                dataServerClient.YourNewPlayer = allPlayers[connect];
+                            }
+                        }
+
                         connect.Send(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(dataServerClient)),
                             SocketFlags.None);
                     }
@@ -172,7 +200,7 @@ namespace NewServer
         private static Player CreateNewPlayer()
         {
             var rnd = new Random();
-            return new Player(new Point(rnd.Next(Size), rnd.Next(Size)), 0);
+            return new Player(new Point(rnd.Next(Size), rnd.Next(Size)), 0) {Health = 100};
         }
 
         private static void MoveBullets()
@@ -196,8 +224,13 @@ namespace NewServer
                         for (var y = bullet.Position.Y - 50; y < bullet.Position.Y + 50; y++)
                         {
                             if (!players.ContainsKey(new Point(x, y)) || bullet.Tick <= 10) continue;
-                            players[new Point(x, y)].Health -= bullet.Damage;
-                            forRemoveBullets.Add(bullet);
+                            foreach (var player in
+                                allPlayers.Values.Where(player => player.Position == new Point(x, y)))
+                            {
+                                player.Health -= bullet.Damage;
+                                forRemoveBullets.Add(bullet);
+                                Console.WriteLine(player.Health);
+                            }
                         }
 
                         if (bullet.Tick > 60)

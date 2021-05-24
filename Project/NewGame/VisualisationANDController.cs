@@ -82,6 +82,7 @@ namespace NewGame
             timer.Start();
         }
 
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Drawing.Point")]
         protected override void OnPaint(PaintEventArgs args)
         {
             var graphic = args.Graphics;
