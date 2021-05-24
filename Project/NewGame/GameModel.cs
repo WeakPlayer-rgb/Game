@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
+using System.Text; 
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -26,8 +26,9 @@ namespace NewGame
         public GameModel(int s, string text)
         {
             Size = s;
-            var ipHost = Dns.GetHostEntry("localhost");
-            var ipAddr = ipHost.AddressList[1];
+            var ip = Dns.GetHostName();
+            var ipHost = Dns.GetHostEntry(ip);
+            var ipAddr = ipHost.AddressList[6];
             var ipEndPoint = new IPEndPoint(IPAddress.Parse(text), 11000);
             connection = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             connection.Connect(ipEndPoint);
