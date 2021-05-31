@@ -113,7 +113,11 @@ namespace NewServer
                     lock (fullMap)
                     {
                         var forDelete = from pair in fullMap where fullMap[pair.Key].Health == 0 select pair.Key;
-                        foreach (var point in forDelete) fullMap.Remove(point);
+                        var enumerable = forDelete as Point[] ?? forDelete.ToArray();
+                        lock (enumerable)
+                        {
+                            foreach (var point in enumerable) fullMap.Remove(point);
+                        }
                     }
                 }
             }
@@ -266,11 +270,14 @@ namespace NewServer
                         {
                             if (players.ContainsKey(new Point(x, y)) && bullet.Tick > 10)
                             {
-                                foreach (var player in
-                                    allPlayers.Values.Where(player => player.Position == new Point(x, y)))
+                                lock (allPlayers)
                                 {
-                                    player.Health -= bullet.Damage;
-                                    forRemoveBullets.Add(bullet);
+                                    foreach (var player in
+                                        allPlayers.Values.Where(player => player.Position == new Point(x, y)))
+                                    {
+                                        player.Health -= bullet.Damage;
+                                        forRemoveBullets.Add(bullet);
+                                    }
                                 }
                             }
 

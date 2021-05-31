@@ -61,7 +61,7 @@ namespace NewGame
                 }
             };
 
-            var timer = new Timer {Interval = 12};
+            var timer = new Timer {Interval = 5};
             timer.Tick += (sender, args) =>
             {
                 labelX.Text = $"Health: {localPlayer.Health}";
@@ -75,7 +75,7 @@ namespace NewGame
                 Refresh();
             };
 
-            Controls.Add(labelX);
+            //Controls.Add(labelX);
             // Controls.Add(labelY);
             // Controls.Add(labelSpeed);
 
@@ -116,6 +116,9 @@ namespace NewGame
             graphic.TranslateTransform((float) -carX + width / 2, (float) -carY + height / 2);
             PaintGameObjects(carX, width, carY, height, graphic);
             PaintBullets(graphic);
+            graphic.ResetTransform();
+            graphic.FillRectangle(Brushes.Red, 5,5,100*(localPlayer.Health/localPlayer.MaxHealth),15);
+            graphic.DrawRectangle(Pens.Black, 5,5,100,15);
         }
 
         private void PaintPlayers(Graphics graphic, int width, int height)
