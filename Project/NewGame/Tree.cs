@@ -6,7 +6,7 @@ namespace NewGame
     {
         public Rectangle ObjRectangle => new(_position.X, _position.Y, 50, 85);
         public int MaxHealth() => maxHealth;
-        public double Health { get; }
+        public int Health { get; set; }
         private const int maxHealth = 100;
         private Point _position;
 

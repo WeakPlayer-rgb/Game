@@ -21,7 +21,8 @@ namespace NewGame
         private Player localPlayer;
 
 
-        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Windows.Forms.Internal.DeviceContext")]
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.Windows.Forms.Internal.DeviceContext")]
         public VisualisationAndController(GameModel g)
         {
             KeyPreview = true;
@@ -43,8 +44,8 @@ namespace NewGame
             var Grass = CreateColumn(CreatLine(bmp, ClientSize.Width, ClientSize.Height), ClientSize.Width,
                 ClientSize.Height);
             var labelX = new Label {Location = new Point(0, 0), Width = 100};
-            //var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 100};
-            //var labelSpeed = new Label {Location = new Point(0, labelY.Location.Y + labelY.Size.Height), Width = 250};
+            var labelY = new Label {Location = new Point(0, labelX.Size.Height), Width = 100};
+            var labelSpeed = new Label {Location = new Point(0, labelY.Location.Y + labelY.Size.Height), Width = 250};
 
             MouseClick += (sender, args) =>
             {
@@ -53,7 +54,7 @@ namespace NewGame
                     coolDownShot = localPlayer.CoolDown;
                     var vector = new Vector(args.Location.X - ClientSize.Width / 2,
                         args.Location.Y - ClientSize.Height / 2);
-                    vector = vector / vector.Length * 10;
+                    vector = vector / vector.Length * 20;
                     var b = new Bullet((int) vector.X, (int) vector.Y,
                         new Point((int) localPlayer.Position.X, (int) localPlayer.Position.Y), gameModel.Player.Damage);
                     gameModel.Shoot(b);
@@ -63,9 +64,9 @@ namespace NewGame
             var timer = new Timer {Interval = 12};
             timer.Tick += (sender, args) =>
             {
-                labelX.Text = $"X: {localPlayer.Health}";
-                // labelY.Text = $"Y: {localPlayer.Position.Y}";
-                // labelSpeed.Text = $"Speed: {localPlayer.Speed.Length}";
+                labelX.Text = $"Health: {localPlayer.Health}";
+                labelY.Text = $"Y: {localPlayer.Position.Y}";
+                labelSpeed.Text = $"Speed: {localPlayer.Speed.Length}";
 
                 // labelSpeed.Text = localPlayer.Speed.ToString();
                 ReactOnControl(gameModel);
@@ -77,12 +78,13 @@ namespace NewGame
             Controls.Add(labelX);
             // Controls.Add(labelY);
             // Controls.Add(labelSpeed);
-            
+
             InitializeComponent();
             timer.Start();
         }
 
-        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Drawing.Point")]
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.Drawing.Point")]
         protected override void OnPaint(PaintEventArgs args)
         {
             var graphic = args.Graphics;
@@ -93,6 +95,12 @@ namespace NewGame
             graphic.DrawImage(grass, new Point(-(int) carX % 32 - 32, -(int) carY % 32 - 32));
             lock (gameModel.PlayerMap)
             {
+                graphic.TranslateTransform(NotBehindScreen(width / 2 - localPlayer.Position.X + localPlayer.Position.X),
+                    NotBehindScreen(height / 2 - localPlayer.Position.Y + localPlayer.Position.Y));
+                graphic.FillEllipse(Brushes.Black, 0, 0, 5, 5);
+                graphic.RotateTransform((float) ((float) localPlayer.Direction / Math.PI * 180 + 90));
+                graphic.DrawImage(images[localPlayer.GetImage()], -17, -30);
+                graphic.ResetTransform();
                 foreach (var player in gameModel.PlayerMap)
                 {
                     graphic.TranslateTransform(NotBehindScreen(width / 2 - localPlayer.Position.X + player.Position.X),
@@ -103,6 +111,7 @@ namespace NewGame
                     graphic.ResetTransform();
                 }
             }
+
             graphic.ResetTransform();
             graphic.TranslateTransform((float) -carX + width / 2, (float) -carY + height / 2);
             PaintGameObjects(carX, width, carY, height, graphic);
@@ -160,7 +169,7 @@ namespace NewGame
             switch (args.KeyChar)
             {
                 case '.':
-                    localPlayer.Position = new Point(100, 100);
+                    localPlayer.Position = new Point(1000, 1000);
                     break;
                 case 'W' or 'w' or 'ц' or 'Ц':
                     isWdown = true;

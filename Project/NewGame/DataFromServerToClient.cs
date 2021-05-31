@@ -19,6 +19,7 @@ namespace NewGame
         public List<Bullet> Bullets;
         public List<Player> OtherPlayers;
         public int ChangeHpPlayer;
+        public Dictionary<Point,int> ChangeHpTree;
     }
 
     public class DataFromClientToServer

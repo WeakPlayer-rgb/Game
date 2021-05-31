@@ -14,31 +14,18 @@ namespace NewGame
 {
     public class GameModel
     {
-        public Player Player;
+        public readonly Player Player;
         public readonly Dictionary<Point, Tree> Map;
         public List<Player> PlayerMap;
         public readonly int Size;
         public List<Bullet> Bullets;
         private readonly Socket connection;
-        private DataFromClientToServer dataFromClientToServer;
+        private readonly DataFromClientToServer dataFromClientToServer;
         private DataFromServerToClient dataFromServerToClient;
 
         public GameModel(int s, string text)
         {
             Size = s;
-            // Map = new Dictionary<Point, IGameObject>();
-            // Player = new Player(new Point(Size / 2, Size / 2));
-            //
-            // var rnd = new Random();
-            // for (var i = 0; i < 500; i++)
-            // {
-            //     var newPoint = new Point(rnd.Next(0, Size / 32), rnd.Next(0, Size / 32)); // 40, 70
-            //     if (!Map.ContainsKey(newPoint))
-            //         Map[new Point(newPoint.X * 32, newPoint.Y * 32)] =
-            //             new Tree(new Point(newPoint.X * 32, newPoint.Y * 32));
-            // }
-            //
-            // Bullets = new List<Bullet>();
             var ip = Dns.GetHostName();
             var ipHost = Dns.GetHostEntry(ip);
             var ipAddr = ipHost.AddressList[6];
@@ -76,12 +63,7 @@ namespace NewGame
                 ChangePos(slowDownMultiplier);
                 return;
             }
-
             ChangePos();
-            // foreach (var key in Map.Keys)
-            // {
-            //     if (AreIntersected(Player.ObjRectangle, Map[key].ObjRectangle)) Player.ChangeVelocity(KeyButton.Break);
-            // }
         }
 
         private void ChangePos(double multiplier = 0)
@@ -127,6 +109,7 @@ namespace NewGame
             MessageId = "type: System.Char[]")]
         [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.String")]
         [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.String")]
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.String")]
         Task MakeAsync()
         {
             var task = new Task(() =>
@@ -166,6 +149,18 @@ namespace NewGame
                         {
                             Player.Health -= dataFromServerToClient.ChangeHpPlayer;
                         }
+
+                        if (dataFromServerToClient.ChangeHpTree == null) continue;
+                        var forDelete = new List<Point>();
+                        foreach (var position in dataFromServerToClient.ChangeHpTree.Keys)
+                        {
+                            lock (Map)
+                            {
+                                Map[position].Health -= dataFromServerToClient.ChangeHpTree[position];
+                                if(Map[position].Health == 0) forDelete.Add(position);
+                            }
+                        }
+                        foreach (var point in forDelete) Map.Remove(point);
                     }
                 }
             });
@@ -173,7 +168,7 @@ namespace NewGame
             return task;
         }
 
-        async void WorkWithServer()
+        public async void WorkWithServer()
         {
             await MakeAsync();
         }
@@ -218,7 +213,7 @@ namespace NewGame
             return Math.Sqrt(point1 * point1 - point2 * point2);
         }*/
 
-        public static bool AreIntersected(Rectangle r1, Rectangle r2)
+        private static bool AreIntersected(Rectangle r1, Rectangle r2)
         {
             var a = Math.Max(r1.Left, r2.Left) <= Math.Min(r1.Right, r2.Right);
             var b = Math.Max(r1.Top, r2.Top) <= Math.Min(r1.Bottom, r2.Bottom);

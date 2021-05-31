@@ -18,6 +18,7 @@ namespace NewGame
         public int CoolDown { get; set; }
 
         public int Health { get; set; }
+        public int Score { get; set; }
 
         private double velocity;
         private const int maxHealth = 100;

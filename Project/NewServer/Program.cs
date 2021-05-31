@@ -109,6 +109,12 @@ namespace NewServer
                             task = sListener.AcceptAsync();
                             break;
                     }
+
+                    lock (fullMap)
+                    {
+                        var forDelete = from pair in fullMap where fullMap[pair.Key].Health == 0 select pair.Key;
+                        foreach (var point in forDelete) fullMap.Remove(point);
+                    }
                 }
             }
             catch (Exception ex)
@@ -132,8 +138,12 @@ namespace NewServer
             MessageId = "type: System.Char[]")]
         [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH",
             MessageId = "type: System.String")]
-        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Byte[]")]
-        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.String")]
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.Byte[]")]
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.String")]
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.Drawing.Point")]
         private static Task MakeAsync(Socket connect)
         {
             DataFromServerToClient dataServerClient;
@@ -142,8 +152,36 @@ namespace NewServer
             {
                 try
                 {
+                    var dict = new Dictionary<Point, Tree>();
+                    foreach (var pair in fullMap)
+                    {
+                        var point = new Point(pair.Key.X, pair.Key.Y);
+                        var tree = new Tree(point);
+                        dict[point] = tree;
+                    }
+
                     while (true)
                     {
+                        var changeTreeHp = new Dictionary<Point, int>();
+                        foreach (var tree in fullMap)
+                        {
+                            if (dict[tree.Key].Health == 0)
+                            {
+                                dict.Remove(tree.Key);
+                                continue;
+                            }
+
+                            if (fullMap[tree.Key] == null)
+                            {
+                                dict[tree.Key].Health = 0;
+                                continue;
+                            }
+
+                            if (tree.Value.Health == dict[tree.Key].Health) continue;
+                            changeTreeHp[tree.Key] = dict[tree.Key].Health - tree.Value.Health;
+                            dict[tree.Key].Health = tree.Value.Health;
+                        }
+
                         var data = new byte[2048];
                         connect.Receive(data);
                         var str = Encoding.UTF8.GetString(data);
@@ -151,9 +189,10 @@ namespace NewServer
                             typeof(DataFromClientToServer));
                         lock (allPlayers)
                         {
-                            Debug.Assert(dataClientServer?.NewPlayerPosition.Position != null, "dataClientServer?.NewPlayerPosition.Position != null");
+                            Debug.Assert(dataClientServer?.NewPlayerPosition.Position != null,
+                                "dataClientServer?.NewPlayerPosition.Position != null");
                             allPlayers[connect].Position = (Point) dataClientServer?.NewPlayerPosition.Position;
-                            allPlayers[connect].Direction =  (float) dataClientServer?.NewPlayerPosition.Direction;
+                            allPlayers[connect].Direction = (float) dataClientServer?.NewPlayerPosition.Direction;
                         }
 
                         lock (bullets)
@@ -163,8 +202,10 @@ namespace NewServer
                         dataServerClient = new DataFromServerToClient();
                         lock (bullets) dataServerClient.Bullets = bullets;
                         lock (allPlayers)
-                            dataServerClient.OtherPlayers = allPlayers.Values.ToList();
+                            dataServerClient.OtherPlayers = allPlayers.Values
+                                .Where(x => x.Position != dataClientServer.NewPlayerPosition.Position).ToList();
                         dataServerClient.ChangeHpPlayer = 0;
+                        dataServerClient.ChangeHpTree = changeTreeHp;
                         lock (allPlayers)
                             if (dataClientServer != null)
                             {
@@ -223,13 +264,21 @@ namespace NewServer
                         for (var x = bullet.Position.X - 50; x < bullet.Position.X + 50; x++)
                         for (var y = bullet.Position.Y - 50; y < bullet.Position.Y + 50; y++)
                         {
-                            if (!players.ContainsKey(new Point(x, y)) || bullet.Tick <= 10) continue;
-                            foreach (var player in
-                                allPlayers.Values.Where(player => player.Position == new Point(x, y)))
+                            if (players.ContainsKey(new Point(x, y)) && bullet.Tick > 10)
                             {
-                                player.Health -= bullet.Damage;
+                                foreach (var player in
+                                    allPlayers.Values.Where(player => player.Position == new Point(x, y)))
+                                {
+                                    player.Health -= bullet.Damage;
+                                    forRemoveBullets.Add(bullet);
+                                }
+                            }
+
+                            var point = new Point(x, y);
+                            if (fullMap.ContainsKey(point))
+                            {
+                                fullMap[point].Health -= bullet.Damage;
                                 forRemoveBullets.Add(bullet);
-                                Console.WriteLine(player.Health);
                             }
                         }
 
