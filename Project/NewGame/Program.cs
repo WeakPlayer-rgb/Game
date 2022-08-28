@@ -19,10 +19,8 @@ namespace NewGame
         [STAThread]
         public static void Main()
         {
-            // Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            // Application.EnableVisualStyles();
-            // Application.SetCompatibleTextRenderingDefault(false);
-            // Application.Run(new Menu());
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             screenSize = new Size(1280, 720);
             Context = new ApplicationContext(new Menu());
             Application.Run(Context);

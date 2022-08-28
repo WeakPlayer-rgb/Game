@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Drawing;
+using Newtonsoft.Json;
 
 namespace NewGame
 {
@@ -10,12 +10,19 @@ namespace NewGame
         public readonly double X;
         public readonly double Y;
 
+        [JsonConstructor]
+        public Vector()
+        {
+            X = 0;
+            Y = 0;
+        }
+
         public Vector(double x, double y)
         {
             X = x;
             Y = y;
         }
-        
+
         public Vector(Vector v)
         {
             X = v.X;
@@ -23,12 +30,8 @@ namespace NewGame
         }
 
         public double Length => Math.Sqrt(X * X + Y * Y);
-        public double Angle
-        {
-            get => Math.Atan2(Y, X);
-            //internal set => Angle = value;
-        }
-        
+        public double Angle => Math.Atan2(Y, X);
+
 
         public static bool DoubleEquals(double a, double b)
         {
@@ -62,17 +65,17 @@ namespace NewGame
 
         public static Vector operator -(Vector a, Vector b)
         {
-            return new Vector(a.X - b.X, a.Y - b.Y);
+            return new(a.X - b.X, a.Y - b.Y);
         }
 
         public static Vector operator *(Vector a, double k)
         {
-            return new Vector(a.X * k, a.Y * k);
+            return new(a.X * k, a.Y * k);
         }
 
         public static Vector operator /(Vector a, double k)
         {
-            return new Vector(a.X / k, a.Y / k);
+            return new(a.X / k, a.Y / k);
         }
 
         public static Vector operator *(double k, Vector a)
@@ -82,22 +85,12 @@ namespace NewGame
 
         public static Vector operator +(Vector a, Vector b)
         {
-            return new Vector(a.X + b.X, a.Y + b.Y);
-        }
-
-        public Vector Normalize()
-        {
-            return Length > 0 ? this * (1 / Length) : this;
+            return new(a.X + b.X, a.Y + b.Y);
         }
 
         public Vector Rotate(double angle)
         {
-            return new Vector(X * Math.Cos(angle) - Y * Math.Sin(angle), X * Math.Sin(angle) + Y * Math.Cos(angle));
-        }
-
-        public Vector BoundTo(Size size)
-        {
-            return new Vector(Math.Max(0, Math.Min(size.Width, X)), Math.Max(0, Math.Min(size.Height, Y)));
+            return new(X * Math.Cos(angle) - Y * Math.Sin(angle), X * Math.Sin(angle) + Y * Math.Cos(angle));
         }
     }
 }

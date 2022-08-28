@@ -31,13 +31,18 @@ namespace NewGame
                 Text = "Exit",
                 BackColor = Color.Aqua,
             };
-
+            var textBox = new TextBox
+            {
+                Text = "Введите ip сервера", Location = new Point(exitButton.Left, exitButton.Bottom)
+            };
+            
+            Controls.Add(textBox);
             Controls.Add(startButton);
             Controls.Add(optionButton);
             Controls.Add(exitButton);
             startButton.Click += (s, e) =>
             {
-                Program.Context.MainForm = new VisualisationAndController(new GameModel(10000));
+                Program.Context.MainForm = new VisualisationAndController(new GameModel(32*250,textBox.Text));
                 Close();
                 Program.Context.MainForm.Show();
             };
